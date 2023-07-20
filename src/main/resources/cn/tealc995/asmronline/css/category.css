@@ -1,0 +1,36 @@
+.background{
+    -fx-background-color: #1a1a21;
+    -fx-background-radius: 0 0 10 0;
+}
+.category-title{
+    -fx-font-size: 24;
+    -fx-text-fill: #e5e3e3;
+}
+.category-search-field{
+    -fx-background-color: #22222a;
+    -fx-pref-height: 40;
+    -fx-pref-width: 400;
+    -fx-padding: 0 0 0 3;
+    -fx-background-insets: 0;
+}
+
+.grid-view .grid-cell{
+    -fx-text-fill: #e5e3e3;
+}
+
+.grid-view .grid-cell .button{
+    -fx-text-fill: #b2b1b1;
+    -fx-background-color: transparent;
+    -fx-font-size: 16;
+
+}
+
+.grid-view .grid-cell .button:hover{
+    -fx-text-fill: #1f6feb;
+    -fx-background-color: #22222a;
+}
+
+
+.loading-dot{
+    -fx-background-color: #1a1a2190;
+}

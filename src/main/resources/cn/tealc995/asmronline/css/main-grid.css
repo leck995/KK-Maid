@@ -1,0 +1,261 @@
+.background{
+    -fx-background-color:  #1a1a21;
+    -fx-background-radius: 0 0 10 0;
+
+}
+
+.all-count-title{
+    -fx-font-size: 25;
+    -fx-text-fill: #e5e3e3;
+    -fx-padding: 0 0 10 0;
+}
+
+.pagination{
+    -fx-page-information-visible: false;
+}
+.pagination .button{
+    -fx-background-color: #2b2b2b;
+}
+.page-field{
+    -fx-background-color: #22222a;
+    -fx-pref-height: 25;
+    -fx-pref-width: 100;
+    -fx-padding: 0 0 0 3;
+    -fx-background-insets: 0;
+    -fx-border-insets: 0;
+}
+.page-skip-btn{
+    -fx-max-width: 10px;
+    -fx-max-height: 10px;
+    -fx-background-color: red;
+    -fx-shape: "M670.134857 97.865143L892.342857 320 670.134857 542.208l-60.269714-60.342857L723.382857 368.274286c-119.442286 12.434286-225.792 44.763429-308.662857 90.112-105.984 57.929143-167.204571 133.12-178.249143 209.115428l-84.48-12.288c16.530286-113.225143 103.716571-207.140571 221.842286-271.725714 98.377143-53.833143 222.646857-89.965714 359.350857-101.888L609.865143 158.208l60.269714-60.342857zM213.357714 832v-85.357714H128v170.715428h768v-170.715428h-85.357714v85.357714H213.357714z";
+
+}
+.page-skip-btn Region{
+    -fx-background-color: white;
+    -fx-pref-width: 16px;
+    -fx-pref-height: 16px;
+}
+
+/*=============================中间部分：=======================*/
+.scroll-pane,
+.scroll-pane FlowPane {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+}
+
+.scroll-pane .viewport{
+    -fx-background-color: transparent;
+}
+.scroll-pane FlowPane {
+    -fx-padding:5;
+}
+
+.rating{
+    -fx-padding: 3 0 0 0;
+    -fx-pref-width: 130;
+    -fx-pref-height: 15;
+    -fx-max-width: 130;
+    -fx-max-height: 15;
+}
+.rating > .container {
+    -fx-spacing: 10;
+
+}
+.rating > .container > .button {
+    -fx-background-color: #767676;
+    -fx-background-image: null;
+    -fx-shape: ""M956 398.496q-8-23.488-26.496-39.008t-42.496-19.488l-204.992-31.008-92-195.008q-11.008-24-32.992-36.992Q536.032 64 512.032 64t-44.992 12.992q-22.016 12.992-32.992 36.992l-92 195.008-204.992 31.008q-24 4-42.496 19.488t-26.496 39.008-2.496 47.008 22.496 41.504l151.008 154.016-36 218.016q-6.016 40 20 70.496t66.016 30.496q22.016 0 42.016-11.008l180.992-100 180.992 100q20 11.008 42.016 11.008 40 0 66.016-30.496t20-70.496l-36-218.016 151.008-154.016q16.992-18.016 22.496-41.504t-2.496-47.008z"";
+    -fx-padding: 8;
+}
+.rating > .container > .button.strong {
+    -fx-background-image: null;
+    -fx-background-color: #ff7b3b;
+}
+.rating > .container > .button:hover {
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 8, 0.0 , 0 , 0 );
+}
+
+
+
+
+
+
+.list-item-pane{
+    -fx-spacing: 4px;
+    -fx-pref-width: 420;
+    -fx-padding: 10;
+    -fx-background-color: #22222a;
+    -fx-background-radius: 5;
+}
+
+.list-item-image{
+    -fx-smooth: true;
+}
+.list-item-title{
+    -fx-padding: 0 0 0 0;
+    -fx-max-height: 120px;
+    -fx-font-size: 20px;
+    -fx-text-fill: #e5e3e3;
+}
+.list-item-star{
+    -fx-min-width: 25;
+    -fx-min-height: 25;
+}
+.list-item-star > Region{
+    -fx-min-width: 25;
+    -fx-min-height: 25;
+    -fx-shape: ""M956 398.496q-8-23.488-26.496-39.008t-42.496-19.488l-204.992-31.008-92-195.008q-11.008-24-32.992-36.992Q536.032 64 512.032 64t-44.992 12.992q-22.016 12.992-32.992 36.992l-92 195.008-204.992 31.008q-24 4-42.496 19.488t-26.496 39.008-2.496 47.008 22.496 41.504l151.008 154.016-36 218.016q-6.016 40 20 70.496t66.016 30.496q22.016 0 42.016-11.008l180.992-100 180.992 100q20 11.008 42.016 11.008 40 0 66.016-30.496t20-70.496l-36-218.016 151.008-154.016q16.992-18.016 22.496-41.504t-2.496-47.008z"";
+    -fx-background-color: transparent;
+    -fx-border-color: white;
+}
+.list-item-star:hover> Region{
+    -fx-background-color: #eb5555;
+}
+.list-item-star:selected > Region{
+    -fx-background-color: #e13d3d;
+}
+.list-item-tag{
+    -fx-padding: 5 8 5 8;
+    -fx-background-color: #9a58b7;
+    -fx-background-radius: 4;
+    -fx-alignment: center;
+    -fx-text-fill: #CCEDEA;
+}
+.list-item-tag-nsfw{
+    -fx-padding: 5 8 5 8;
+    -fx-background-color: #326cf3;
+    -fx-background-radius: 4;
+    -fx-alignment: center;
+    -fx-text-fill: #CCEDEA;
+}
+.list-item-date{
+    -fx-text-fill: #CC0000;
+}
+
+
+
+
+.list-item-head-pane > .list-item-play-btn{
+    visibility: false;
+    -fx-shape: "M512 0c-282.784 0-512 229.216-512 512s229.216 512 512 512 512-229.216 512-512-229.216-512-512-512zM512 928c-229.76 0-416-186.24-416-416s186.24-416 416-416 416 186.24 416 416-186.24 416-416 416zM384 288l384 224-384 224z";
+    -fx-background-color: #1f6feb;
+    -fx-opacity: 0.8;
+    -fx-pref-width: 40;
+    -fx-pref-height: 40;
+    -fx-background-insets:0;
+}
+.list-item-head-pane > .list-item-play-btn:pressed{
+    -fx-background-insets:0;
+}
+.list-item-head-pane > .list-item-play-btn:focused{
+    -fx-background-insets:0;
+}
+.list-item-head-pane:hover > .list-item-play-btn{
+    visibility: true;
+}
+
+.list-item-head-pane > .list-item-star-btn{
+    -fx-background-color: transparent;
+    -fx-pref-width: 40;
+    -fx-pref-height: 40;
+    -fx-padding: 9 7 7 7;
+    -fx-background-radius: 40;
+}
+
+.list-item-head-pane > .list-item-star-btn:selected,
+.list-item-head-pane > .list-item-star-btn:hover{
+    -fx-background-color: #76767675;
+}
+.list-item-head-pane > .list-item-star-btn Region{
+    -fx-shape: "M707.584 93.184c-77.312 0-148.992 38.912-196.608 102.912-47.104-64-119.296-102.912-196.608-102.912-139.264 0-252.416 123.904-252.416 275.968 0 90.624 40.448 154.624 73.216 205.824C229.888 723.968 468.48 908.8 478.72 916.48c9.728 7.68 20.992 11.264 32.256 11.264s22.528-3.584 32.256-11.264c10.24-7.68 248.32-193.024 343.552-341.504 32.768-51.2 73.216-115.2 73.216-205.824 0-152.064-113.152-275.968-252.416-275.968z";
+    -fx-background-color: transparent;
+}
+.list-item-head-pane > .list-item-star-btn:selected Region,
+.list-item--head-pane > .list-item-star-btn:hover Region{
+    -fx-background-color: #f156a4;
+}
+
+
+
+.list-item-circle{
+    -fx-font-size: 15px;
+    -fx-text-fill: #767676;
+}
+.list-item-circle:hover{
+    -fx-text-fill: #9d9d9d;
+}
+.list-item-circle Region{
+    -fx-shape:"M1008.768 393.472L680.32 106.624c-96.384-84.224-240.128-84.224-336.512 0L15.232 393.472c-30.72 26.88-11.776 77.44 29.056 77.44h72.704c10.88 0 19.712 8.832 19.712 19.712v253.568c0 129.024 105.6 234.624 234.624 234.624h456.32c20.992 0 38.144-17.152 38.144-38.144V490.624c0-10.88 8.832-19.712 19.712-19.712h94.336c40.704 0 59.648-50.56 28.928-77.44zM534.272 800.384c-104.064 19.712-193.536-69.76-173.824-173.824 11.008-58.112 57.856-104.96 115.968-115.968 104.064-19.712 193.536 69.76 173.824 173.824-11.008 58.112-57.856 104.96-115.968 115.968z";
+    -fx-pref-width: 16;
+    -fx-pref-height: 16;
+    -fx-background-color: #767676;
+}
+
+
+.list-item-rj,
+.list-item-date {
+    -fx-font-size: 15px;
+    -fx-padding: 3;
+    -fx-background-color: rgb(0,0,0,0.6);
+    -fx-text-fill: #BEBEBE;
+    -fx-background-radius: 2;
+}
+
+
+.list-item-pane .tag-label{
+    -fx-background-color: #1a1a21;
+    -fx-padding: 6 14 6 14;
+    -fx-background-radius: 15;
+    -fx-text-fill: #CCEDEA;
+}
+.list-item-pane .tag-label:hover{
+    -fx-background-color: #595959;
+}
+
+.list-item-pane .actor-label{
+    -fx-background-color: #1f6feb;
+    -fx-padding: 6 14 6 14;
+    -fx-background-radius: 4;
+    -fx-text-fill: #CCEDEA;
+}
+.list-item-pane .actor-label:hover{
+    -fx-background-color: #1f6feb;
+}
+
+.list-item-pane .rating{
+    -fx-padding: 3 0 0 0;
+    -fx-pref-width: 130;
+    -fx-pref-height: 15;
+    -fx-max-width: 130;
+    -fx-max-height: 15;
+}
+.list-item-pane .rating > .container {
+    -fx-spacing: 10;
+
+}
+.list-item-pane .rating > .container > .button {
+    -fx-background-color: #767676;
+    -fx-background-image: null;
+    -fx-shape: "M956 398.496q-8-23.488-26.496-39.008t-42.496-19.488l-204.992-31.008-92-195.008q-11.008-24-32.992-36.992Q536.032 64 512.032 64t-44.992 12.992q-22.016 12.992-32.992 36.992l-92 195.008-204.992 31.008q-24 4-42.496 19.488t-26.496 39.008-2.496 47.008 22.496 41.504l151.008 154.016-36 218.016q-6.016 40 20 70.496t66.016 30.496q22.016 0 42.016-11.008l180.992-100 180.992 100q20 11.008 42.016 11.008 40 0 66.016-30.496t20-70.496l-36-218.016 151.008-154.016q16.992-18.016 22.496-41.504t-2.496-47.008z";
+    -fx-padding: 10;
+}
+.list-item-pane .rating > .container > .button.strong {
+    -fx-background-image: null;
+    -fx-background-color: #ff7b3b;
+}
+.list-item-pane .rating > .container > .button:hover {
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 8, 0.0 , 0 , 0 );
+}
+.list-item-pane .user-rating > .container > .button.strong {
+    -fx-background-color: #2196f3;
+}
+
+
+
+
+
+
+.loading-dot{
+    -fx-background-color: #1a1a2190;
+}

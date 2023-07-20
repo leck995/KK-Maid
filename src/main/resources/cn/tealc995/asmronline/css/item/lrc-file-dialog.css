@@ -1,0 +1,9 @@
+.background{
+    -fx-background-color: #1a1a21;
+    -fx-background-radius: 10;
+}
+
+.list-title{
+    -fx-text-fill: #e5e3e3;
+    -fx-font-size: 16;
+}

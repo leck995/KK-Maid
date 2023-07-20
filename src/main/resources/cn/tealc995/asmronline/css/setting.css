@@ -1,0 +1,20 @@
+.background{
+    -fx-background-color:  #1a1a21;
+    -fx-background-radius: 0 0 10 0;
+}
+.setting-title{
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-padding: 2 0 10 10;
+    -fx-text-fill: white;
+}
+
+.tab-pane > .tab-header-area {
+    -fx-background-insets: 0;
+    -fx-background-color:#22222a;
+    -fx-alignment: CENTER;
+}
+.tab-pane > .tab-header-area > .tab-header-background {
+    -fx-background-insets: 0 0 0 0, 0 0 2px 0;
+    -fx-background-color: #22222a;
+}

@@ -1,0 +1,129 @@
+
+/*------------歌曲列表-------------*/
+.song-list-view-background{
+    -fx-background-color:#2b2b2b;
+    -fx-background-radius: 20;
+    -fx-pref-height: 600;
+}
+.songs-list-view{
+    -fx-background-color: transparent;
+    -fx-spacing: 5;
+    -fx-border-color: transparent;
+}
+
+.songs-list-view .list-cell{
+    -fx-background-color: transparent;
+    -fx-background-radius: 10;
+    -fx-pref-width: 300;
+    -fx-wrap-text: true;
+}
+
+.songs-list-view .list-cell:hover{
+    -fx-background-color: #595959;
+}
+.songs-list-view .list-cell:selected,
+.songs-list-view .list-cell:focused{
+    -fx-background-color: #595959;
+}
+
+.songs-list-view .list-cell:selected{
+    -fx-text-fill:#38B8AE;
+}
+
+.songs-title{
+
+}
+
+.songs-size{
+    -fx-text-fill: #767676;
+}
+
+
+.clear-songs-btn{
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+}
+.clear-songs-btn Region{
+    -fx-pref-width: 16;
+    -fx-pref-height: 16;
+    -fx-shape: "M928 256h-64v576c0 70.692-57.308 128-128 128H288c-70.692 0-128-57.308-128-128V256H96c-17.673 0-32-14.327-32-32 0-17.673 14.327-32 32-32h832c17.673 0 32 14.327 32 32 0 17.673-14.327 32-32 32z m-496 96c0-17.673-14.327-32-32-32-17.673 0-32 14.327-32 32v448c0 17.673 14.327 32 32 32 17.673 0 32-14.327 32-32V352z m224 0c0-17.673-14.327-32-32-32-17.673 0-32 14.327-32 32v448c0 17.673 14.327 32 32 32 17.673 0 32-14.327 32-32V352z m16-224H352c-17.673 0-32-14.327-32-32 0-17.673 14.327-32 32-32h320c17.673 0 32 14.327 32 32 0 17.673-14.327 32-32 32z";
+    -fx-background-color: #767676;
+}
+.to-folder-btn{
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+}
+.to-folder-btn Region{
+    -fx-pref-width: 16;
+    -fx-pref-height: 16;
+    -fx-shape: "M853.333333 298.666667h-298.666666l-59.733334-89.6c-17.066667-25.6-42.666667-38.4-72.533333-38.4H170.666667c-46.933333 0-85.333333 38.4-85.333334 85.333333v512c0 46.933333 38.4 85.333333 85.333334 85.333333h682.666666c46.933333 0 85.333333-38.4 85.333334-85.333333V384c0-46.933333-38.4-85.333333-85.333334-85.333333z m-85.333333 213.333333H256c-21.333333 0-42.666667-21.333333-42.666667-42.666667s21.333333-42.666667 42.666667-42.666666h512c21.333333 0 42.666667 21.333333 42.666667 42.666666s-21.333333 42.666667-42.666667 42.666667z";
+    -fx-background-color: #767676;
+}
+
+.clear-songs-btn:hover Region,
+.to-folder-btn:hover Region{
+    -fx-background-color: white;
+}
+
+
+
+
+
+
+/*===================Galgame模式时================*/
+.galgame-list-dialog{
+    -fx-background-color: rgb(247,247,247,0.6);
+    -fx-background-radius: 20;
+}
+
+.galgame-list-list-view{
+    -fx-background-color: transparent;
+}
+
+.galgame-list-list-view .list-cell{
+    -fx-background-color: transparent;
+    -fx-background-radius: 10;
+    -fx-font-size: 17;
+    -fx-text-fill: rgb(51,51,51);
+    -fx-pref-width: 300;
+}
+
+.galgame-list-list-view .list-cell:hover{
+    -fx-background-color: transparent;
+}
+.galgame-list-list-view .list-cell:selected{
+    -fx-background-color: rgb(218,211,211,0.8);
+}
+
+.galgame-list-songs-title{
+    -fx-text-fill:rgb(51,51,51);
+}
+.galgame-list-songs-size{
+    -fx-text-fill: #767676;
+}
+
+.galgame-list-clear-songs-btn{
+    -fx-background-color: transparent;
+    -fx-text-fill: rgb(51,51,51);
+}
+.galgame-list-clear-songs-btn Region{
+    -fx-pref-width: 16;
+    -fx-pref-height: 16;
+    -fx-shape: SVG-CLEAR;
+    -fx-background-color: #767676;
+}
+.galgame-list-to-folder-btn{
+    -fx-background-color: transparent;
+    -fx-text-fill: rgb(51,51,51);
+}
+.galgame-list-to-folder-btn Region{
+    -fx-pref-width: 16;
+    -fx-pref-height: 16;
+    -fx-shape: SVG-FOLDER;
+    -fx-background-color: #767676;
+}
+
+.galgame-list-clear-songs-btn:hover Region,
+.galgame-list-to-folder-btn:hover Region{
+    -fx-background-color: rgb(61,61,61);
+}

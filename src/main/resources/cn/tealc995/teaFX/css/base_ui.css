@@ -1,0 +1,288 @@
+/*=========全局Button样式===============*/
+.lc-label-btn {
+    -fx-background-color: color-theme-deep;
+    -fx-background-radius: 5px 5px 5px 5px;
+    -fx-border-color: transparent;
+    -fx-border-radius: 0;
+    -fx-text-fill: color-font-white;
+    -fx-font-size: 15px;
+    -fx-padding: 5px 10px 5px 10px;
+    -fx-cursor: HAND;
+}
+.lc-label-btn:hover {
+    -fx-background-color: color-theme-light;
+
+}
+.lc-label-btn:pressed {
+    -fx-background-color: color-theme-deep;
+}
+
+/*带图标文字按钮 小圆角*/
+.lc-svg-label-btn{
+    -fx-max-height: 32px;
+    -fx-max-width: 120px;
+    -fx-pre-height: 32px;
+    -fx-pref-width: 120px;
+    -fx-min-height: 32px;
+    -fx-min-width: 120px;
+    -fx-spacing: 10px;
+    -fx-background-color:#00D6C4;
+    -fx-background-radius: 4px;
+}
+.lc-svg-label-btn:hover{
+    -fx-background-color: #00CCBB;;
+}
+.lc-svg-label-btn:pressed{
+    -fx-background-color: #00B1A3;;
+}
+.lc-svg-label-btn Region{
+    -fx-max-height: 16px;
+    -fx-max-width: 16px;
+    -fx-background-color: white;
+}
+.lc-svg-label-btn .label{
+    -fx-text-fill: white;
+}
+
+/*带图标文字按钮 大圆角*/
+.lc-svg-label-round-btn{
+    -fx-max-height: 32px;
+    -fx-max-width: 120px;
+    -fx-pre-height: 32px;
+    -fx-pref-width: 120px;
+    -fx-min-height: 32px;
+    -fx-min-width: 120px;
+    -fx-spacing: 10px;
+    -fx-background-color:#00D6C4;
+    -fx-background-radius: 40px;
+}
+.lc-svg-label-round-btn:hover{
+    -fx-background-color: #00CCBB;;
+}
+.lc-svg-label-round-btn:pressed{
+    -fx-background-color: #00B1A3;;
+}
+.lc-svg-label-round-btn Region{
+    -fx-max-height: 16px;
+    -fx-max-width: 16px;
+    -fx-background-color: white;
+}
+.lc-svg-label-round-btn .label{
+    -fx-text-fill: white;
+}
+
+/*图标按钮*/
+.lc-svg-btn{
+    -fx-max-height: 16px;
+    -fx-max-width: 16px;
+    -fx-pre-height: 16px;
+    -fx-pref-width: 16px;
+    -fx-min-height: 16px;
+    -fx-min-width: 16px;
+    -fx-background-color:transparent;
+    -fx-border-insets: 0;
+    -fx-padding: 0;
+}
+.lc-svg-btn:hover{
+    -fx-background-color:color-theme-deep;
+}
+
+
+
+.lc-search-pane{
+    -fx-padding: 0 10 0 10;
+    -fx-border-color: #02ae9d;
+    -fx-border-width: 1px;
+    -fx-border-radius: 50px;
+}
+.lc-search-pane:hover{
+    -fx-border-color: #04c3b0;
+}
+.lc-search-pane > .text-field{
+    -fx-border-color: transparent;
+    -fx-background-color: transparent;
+    -fx-background-insets: 0, 2;
+    -fx-background-radius: 0, 0;
+    -fx-text-fill: white;
+}
+.lc-search-pane > .button{
+    -fx-min-width: 25;
+    -fx-min-height: 25;
+}
+.lc-search-pane > .button Region{
+    -fx-shape: SVG-SEARCH;
+}
+
+
+
+/*=====================全局ContextMenu设置======================================*/
+.context-menu{
+    -fx-pref-width: 110;
+    -fx-background-color: color-bg-normal;
+    -fx-background-radius: 10px;
+}
+
+/*=====================全局Menu设置======================================*/
+.menu,
+.menu-item{
+    -fx-pref-width: 80;
+    -fx-pref-height: 30;
+    -fx-max-width: 80;
+    -fx-max-height: 30;
+    -fx-background-radius: 8px;
+}
+.menu-item >.label {
+    -fx-padding: 0em 0em 0em 1.5em;
+    -fx-text-fill: white;
+}
+.menu > .right-container > .arrow {
+    -fx-background-color: transparent;
+    -fx-shape: "";
+}
+
+.scroll-pane{
+    -fx-background-insets: 0;
+    -fx-background-color: transparent;
+}
+
+
+/*========================滚动条===============================*/
+/*改变垂直方向下拉条的宽度，以及下拉条的颜色*/
+.scroll-bar:vertical {
+    -fx-pref-width: 8px;
+    -fx-background-color: transparent;
+}
+/*水平方向下拉条*/
+.scroll-bar:horizontal {
+    -fx-pref-height: 8px;
+    -fx-background-color: transparent;
+}
+.scroll-bar:horizontal .track,
+.scroll-bar:vertical .track {
+    -fx-background-color: transparent;
+    -fx-background-radius: 0em;
+    -fx-background-insets: 10, 0, 0;
+    -fx-border-radius: 2em;
+}
+
+.scroll-bar:vertical .increment-button,
+.scroll-bar:vertical .decrement-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 0em;
+    -fx-padding: 0 10 0 0;
+}
+
+.scroll-bar .increment-arrow,
+.scroll-bar .decrement-arrow {
+    -fx-shape: " ";
+    -fx-padding: 0;
+}
+
+/* 滑条设置*/
+.scroll-bar:horizontal .thumb,
+.scroll-bar:vertical .thumb {
+    -fx-background-color:color-theme-normal;
+    -fx-background-radius: 2em;
+}
+
+
+/*=====================全局ListView设置=====================================*/
+.list-view {
+    -fx-background-color: color-bg-normal;
+    -fx-border-color: color-bg-deep;
+    -fx-border-width: 0px;
+    -fx-background-insets: 0px 0px 0px 0px;
+}
+.list-view .list-cell {
+    -fx-font-size: 15px;
+    -fx-text-fill: color-font-light;
+    -fx-padding: 10px 0px 10px 10px;
+    /*-fx-border-color: color-bg-light;*/
+}
+.list-view .list-cell:odd {
+    -fx-background-color: transparent;
+}
+.list-view .list-cell:even {
+    -fx-background-color: transparent;
+}
+.list-view .list-cell:focused {
+    -fx-background-color:color-hover-light;
+}
+.list-view .list-cell:hover {
+    -fx-background-color:color-hover-deep;
+}
+.list-view:focused .list-cell:selected {
+    -fx-background-color: color-hover-deep;
+    -fx-text-fill: color-font-light;
+}
+
+
+/*=====================全局CheckBox设置=====================================*/
+.check-box {
+    -fx-font-size: 14px;
+    -fx-cursor: HAND;
+    -fx-text-fill: rgba(117, 117, 117, 1);
+}
+.check-box .box {
+    -fx-background-color: rgba(255, 255, 255, 1);
+    -fx-background-radius: 3px 3px 3px 3px;
+    -fx-border-color: rgba(193, 197, 205, 1) rgba(193, 197, 205, 1) rgba(193, 197, 205, 1) rgba(193, 197, 205, 1);
+    -fx-border-radius: 3px 3px 3px 3px;
+}
+.check-box:selected .box {
+    -fx-background-color: color-theme-deep;
+    -fx-border-color: rgba(50, 150, 255, 1) rgba(50, 150, 255, 1) rgba(50, 150, 255, 1) rgba(50, 150, 255, 1);
+}
+.check-box:selected .mark {
+    -fx-background-color: rgba(255, 255, 255, 1);
+    -fx-shape: "M299,396l2-2,3,3,6-6,2,2-8,8Z";
+}
+
+
+.pagination .left-arrow-button {
+    -fx-background-color: rgba(240, 242, 245, 1);
+    -fx-background-insets: 0px 0px 0px 0px;
+    -fx-border-color: rgba(0, 0, 0, 0) rgba(0, 0, 0, 0) rgba(0, 0, 0, 0) rgba(0, 0, 0, 0);
+}
+.pagination .left-arrow-button:hover .left-arrow {
+    -fx-background-color: rgba(64, 158, 255, 1);
+}
+.pagination .left-arrow-button .left-arrow {
+    -fx-shape: "M401.066667 512l302.933333 302.933333-59.733333 59.733334L341.333333 571.733333 281.6 512 341.333333 452.266667l302.933334-302.933334 59.733333 59.733334L401.066667 512z";
+}
+.pagination .right-arrow-button {
+    -fx-background-color: rgba(240, 242, 245, 1);
+    -fx-background-insets: 0px 0px 0px 0px;
+    -fx-border-color: rgba(0, 0, 0, 0) rgba(0, 0, 0, 0) rgba(0, 0, 0, 0) rgba(0, 0, 0, 0);
+}
+.pagination .right-arrow-button:hover {
+    -fx-padding: 0px 0px 0px 0px;
+}
+.pagination .right-arrow-button:hover .right-arrow {
+    -fx-background-color: rgba(64, 158, 255, 1);
+}
+.pagination .right-arrow-button .right-arrow {
+    -fx-shape: "M584.533333 512l-302.933333 302.933333L341.333333 874.666667l302.933334-302.933334 59.733333-59.733333-59.733333-59.733333L341.333333 145.066667 281.6 209.066667l302.933333 302.933333z";
+}
+.pagination .number-button {
+    -fx-background-color: rgba(240, 242, 245, 1);
+    -fx-background-insets: 0px 0px 0px 0px;
+    -fx-background-radius: 3px 3px 3px 3px;
+    -fx-border-color: rgba(0, 0, 0, 0) rgba(0, 0, 0, 0) rgba(0, 0, 0, 0) rgba(0, 0, 0, 0);
+    -fx-cursor: HAND;
+    -fx-text-fill: balck;
+}
+.pagination .number-button:hover {
+    -fx-text-fill: rgba(64, 158, 255, 1);
+}
+.pagination .number-button:selected {
+    -fx-background-color: rgba(64, 158, 255, 1);
+    -fx-text-fill: rgba(255, 255, 255, 1);
+}
+
+
+
+.split-pane > .split-pane-divider {
+    -fx-padding: 2; /* 0 3 0 3 */
+    -fx-background-color: -default-theme-background-3;
+}

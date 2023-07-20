@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>cn.tealc995</groupId>
+    <artifactId>Asmr-Online</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <name>Asmr-Online</name>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <junit.version>5.9.2</junit.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>17.0.6</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-fxml</artifactId>
+            <version>17.0.6</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-media</artifactId>
+            <version>17.0.6</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.14.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.controlsfx</groupId>
+            <artifactId>controlsfx</artifactId>
+            <version>11.1.2</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.mkpaz</groupId>
+            <artifactId>atlantafx-base</artifactId>
+            <version>2.0.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.greenrobot</groupId>
+            <artifactId>eventbus-java</artifactId>
+            <version>3.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.jfoenix</groupId>
+            <artifactId>jfoenix</artifactId>
+            <version>9.0.10</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.lingala.zip4j</groupId>
+            <artifactId>zip4j</artifactId>
+            <version>2.11.5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+                <configuration>
+                    <source>17</source>
+                    <target>17</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.3.0</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <!-- <mainClass>入口类，main 方法所在位置</mainClass> -->
+                            <mainClass>cn.tealc995.asmronline.AppStart</mainClass>
+                        </manifest>
+                        <manifestEntries><SplashScreen-Image></SplashScreen-Image></manifestEntries></archive>
+                    <descriptorRefs>
+                        <!-- jar 携带依赖 -->
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+
+
+
+            <plugin>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-maven-plugin</artifactId>
+                <version>0.0.8</version>
+                <executions>
+                    <execution>
+                        <!-- Default configuration for running with: mvn clean javafx:run -->
+                        <id>default-cli</id>
+                        <configuration>
+                            <mainClass>cn.tealc995.asmronline.App</mainClass>
+                            <launcher>app</launcher>
+                            <jlinkImageName>app</jlinkImageName>
+                            <noManPages>true</noManPages>
+                            <stripDebug>true</stripDebug>
+                            <noHeaderFiles>true</noHeaderFiles>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+
+            <plugin>
+                <groupId>com.gluonhq</groupId>
+                <artifactId>gluonfx-maven-plugin</artifactId>
+                <version>1.0.18</version>
+                <configuration>
+                    <mainClass>cn.tealc995.asmronline.App</mainClass>
+                    <!--
+                    <javaStaticSdkVersion>11-ea+10</javaStaticSdkVersion>
+                    -->
+                    <javafxStaticSdkVersion>17</javafxStaticSdkVersion>
+                    <!-- JavaFx 中使用 ResourceBundle.getBundle("xxxxxx") 的路径，如果没有则不需要配置 -->
+                    <!--<bundlesList>
+                        <list>com.mueeee.desktopjavafx</list>
+                    </bundlesList>-->
+                    <!-- 允许的资源文件后缀 -->
+                    <resourcesList>
+                        <list>.*\\.properties$</list>
+                    </resourcesList>
+                    <!-- 涉及反射的类 -->
+
+                    <nativeImageArgs>
+                        <!-- “快速构建”模式，以减少在开发过程中生成本机可执行文件所需的时间。请注意，此模式可能会对峰值性能和生成的可执行文件的大小产生负面影响，因此建议仅用于开发目的。 -->
+                        <!--<arg>-Ob</arg>-->
+                        <!-- 现在默认启用并已弃用，因为不再需要它。 -->
+                        <!--<arg>&#45;&#45;allow-incomplete-classpath</arg>-->
+                        <!--
+                        2023-05-04，GraalVM-22.3.0
+                        修复在Linux上编译报错：Fatal error: java.lang.IllegalAccessError: class com.gluonhq.substrate.feature.GluonFeature (in unnamed module @0x6c1832aa) cannot access class com.oracle.svm.core.jdk.NativeLibrarySupport (in module org.graalvm.nativeimage.builder) because module org.graalvm.nativeimage.builder does not export com.oracle.svm.core.jdk to unnamed module @0x6c1832aa
+                        https://github.com/oracle/graal/issues/5265
+                        -->
+                        <arg>--add-exports=org.graalvm.nativeimage.builder/com.oracle.svm.core.jdk=ALL-UNNAMED</arg>
+                    </nativeImageArgs>
+                    <releaseConfiguration>
+                        <!-- all targets -->
+                        <!--<packageType></packageType>-->
+                        <description>desktop-javafx</description>
+                        <vendor>muetech</vendor>
+                        <version>${version}</version>
+                        <!-- macOS -->
+                        <macAppStore>false</macAppStore>
+                        <macSigningUserName>muetech</macSigningUserName>
+                        <!--<macAppCategory>public.app-category.utilities</macAppCategory>-->
+                    </releaseConfiguration>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>build</goal>
+                        </goals>
+                        <phase>package</phase>
+                    </execution>
+                </executions>
+            </plugin>
+
+
+
+        </plugins>
+
+
+    </build>
+</project>

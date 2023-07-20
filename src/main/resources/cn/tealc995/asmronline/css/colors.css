@@ -1,0 +1,60 @@
+.root{
+    color-bg-deep:#2b2b2b;
+    color-bg-normal:#1e1e20;
+    color-bg-light:#363636;
+
+
+    color-hover-deep:#2e2e2e;
+    color-hover-normal:#353535;
+    color-hover-light:#595959;
+
+    color-font-deep:#7FD1CB;
+    color-font-normal:#d5d2d2;
+    color-font-light:#CCEDEA;
+    color-font-grey:#767676;
+    color-font-white:white;
+
+    color-theme-deep:#1ecc94;
+    color-theme-normal:#38B8AE;
+    color-theme-light:#02ae9d;
+
+
+
+    color-black:black;
+    color-red-normal:#e13d3d;
+    color-red-light:#eb5555;
+
+
+
+    /*主题色*/
+    -default-theme-color:#1ECE9A;
+    /*图标按钮一般状态颜色*/
+    -default-theme-svg-common-color:white;
+    /*图标按钮触摸颜色*/
+    -default-theme-svg-hover-color:#1ECE9A;
+    /*图标按钮点击颜色*/
+    -default-theme-svg-select-color:#1ECE9A;
+    /*背景色1,颜色逐渐变浅*/
+    -default-theme-background:#2b2b2b;
+    /*背景色2*/
+    -default-theme-background-2:#333333;
+    /*背景色3*/
+    -default-theme-background-3:#363636;
+    /*背景色3*/
+    -default-theme-background-4:#5c5c5c;
+    /*选择颜色，hover颜色*/
+    -default-theme-select:#595959;
+
+    /*选择颜色，hover颜色2,一般是主题色*/
+    -default-theme-select-2:-default-theme-svg-select-color;
+
+    /*默认文本字体颜色*/
+    -default-theme-text-common-color:white;
+
+    /*默认文本字体颜色2*/
+    -default-theme-text-common-color-2:#BEBEBE;
+
+    /*选中文本字体颜色，一般是主题色*/
+    -default-theme-text-select-color:-default-theme-svg-select-color;
+
+}

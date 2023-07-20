@@ -1,0 +1,202 @@
+/*=========全局Button样式===============*/
+.lc-label-btn {
+    -fx-background-color: #1ecc94;
+    -fx-background-radius: 5px 5px 5px 5px;
+    -fx-border-color: transparent;
+    -fx-border-radius: 0;
+    -fx-text-fill: white;
+    -fx-font-size: 15px;
+    -fx-padding: 5px 10px 5px 10px;
+    -fx-cursor: HAND;
+    -fx-background-insets: 0;
+}
+.lc-label-btn:focused {
+    -fx-background-insets: 0;
+
+}
+.lc-label-btn:hover {
+    -fx-opacity: 0.9;
+}
+.lc-label-btn:pressed {
+    -fx-opacity: 0.8;
+}
+
+/*带图标文字按钮 小圆角*/
+.lc-svg-label-btn{
+    -fx-max-height: 32px;
+    -fx-max-width: 120px;
+    -fx-pre-height: 32px;
+    -fx-pref-width: 120px;
+    -fx-min-height: 32px;
+    -fx-min-width: 120px;
+    -fx-spacing: 10px;
+    -fx-background-color:#00D6C4;
+    -fx-background-radius: 4px;
+}
+.lc-svg-label-btn:hover{
+    -fx-opacity: 0.9;
+
+}
+.lc-svg-label-btn:pressed{
+    -fx-opacity: 0.8;
+}
+.lc-svg-label-btn Region{
+    -fx-max-height: 16px;
+    -fx-max-width: 16px;
+    -fx-background-color: white;
+}
+.lc-svg-label-btn .label{
+    -fx-text-fill: white;
+}
+
+/*带图标文字按钮 大圆角*/
+.lc-svg-label-round-btn{
+    -fx-max-height: 32px;
+    -fx-max-width: 120px;
+    -fx-pre-height: 32px;
+    -fx-pref-width: 120px;
+    -fx-min-height: 32px;
+    -fx-min-width: 120px;
+    -fx-spacing: 10px;
+    -fx-background-color:#00D6C4;
+    -fx-background-radius: 40px;
+}
+.lc-svg-label-round-btn:hover{
+    -fx-opacity: 0.9;
+}
+.lc-svg-label-round-btn:pressed{
+    -fx-opacity: 0.8;
+}
+.lc-svg-label-round-btn Region{
+    -fx-max-height: 16px;
+    -fx-max-width: 16px;
+    -fx-pref-width: 16px;
+    -fx-pref-height: 16px;
+    -fx-background-color: white;
+}
+.lc-svg-label-round-btn .label{
+    -fx-text-fill: white;
+}
+
+/*图标按钮*/
+.lc-svg-btn{
+    -fx-pre-height: 16px;
+    -fx-pref-width: 16px;
+    -fx-min-height: 16px;
+    -fx-min-width: 16px;
+    -fx-background-color:transparent;
+    -fx-border-insets: 0;
+    -fx-padding: 0;
+}
+.lc-svg-btn:hover{
+    -fx-background-color:#1ecc94;
+}
+
+
+.lc-svg-toggle-btn{
+    -fx-pre-height: 16px;
+    -fx-pref-width: 16px;
+    -fx-min-height: 16px;
+    -fx-min-width: 16px;
+    -fx-background-color:transparent;
+    -fx-border-insets: 0;
+    -fx-padding: 0;
+}
+
+.lc-svg-toggle-btn:hover > Region{
+    -fx-background-color:#1ecc94;
+}
+
+
+.lc-btn-default{
+    -fx-background-color: rgb(249, 250, 251);
+}
+.lc-btn-success{
+    -fx-background-color: rgb(22, 209, 127);
+}
+.lc-btn-warning{
+    -fx-background-color: rgb(251, 178, 100);
+}
+.lc-btn-secondary{
+    -fx-background-color:rgb(237, 239, 241) ;
+}
+.lc-btn-purple{
+    -fx-background-color: rgb(162, 130, 227);
+}
+.lc-btn-cyan{
+    -fx-background-color:rgb(119, 210, 220) ;
+}
+.lc-btn-brown{
+    -fx-background-color:rgb(119, 210, 220) ;
+}
+.lc-btn-primary{
+    -fx-background-color: rgb(82, 211, 199);
+}
+.lc-btn-info{
+    -fx-background-color: rgb(101, 189, 248);
+}
+.lc-btn-danger{
+    -fx-background-color: rgb(250, 129, 129);
+}
+.lc-btn-dark{
+    -fx-background-color: rgb(81, 93, 112);
+}
+.lc-btn-pink{
+    -fx-background-color: rgb(250, 117, 164);
+}
+.lc-btn-yellow{
+    -fx-background-color: rgb(253, 208, 77);
+}
+.lc-btn-link{
+    -fx-background-color: transparent;
+}
+
+
+
+
+
+.lc-search-pane{
+    -fx-padding: 0 10 0 10;
+    -fx-border-color: transparent;
+    -fx-border-width: 2px;
+    -fx-border-radius: 30px;
+    -fx-pref-height: 30;
+}
+.lc-search-pane:hover{
+    -fx-border-color: #353535;
+}
+.lc-search-pane > .text-field{
+    -fx-border-color: transparent;
+    -fx-background-color: transparent;
+    -fx-background-insets: 0, 2;
+    -fx-background-radius: 0, 0;
+    -fx-text-fill: #bdbdbd;
+}
+.lc-search-pane > .button{
+    -fx-min-width: 25;
+    -fx-min-height: 25;
+}
+.lc-search-pane > .button Region{
+    -fx-shape: SVG-SEARCH;
+}
+
+
+/*=======================TextField样式美化===========================*/
+
+.lc-text-field {
+    -fx-border-radius: 5px 5px 5px 5px;
+    -fx-border-color: rgba(193, 197, 205, 1) rgba(193, 197, 205, 1) rgba(193, 197, 205, 1) rgba(193, 197, 205, 1);
+    -fx-border-width: 1.3px 1.3px 1.3px 1.3px;
+    -fx-accent: rgba(46, 188, 232, 1);
+    -fx-background-color: rgba(255, 255, 255, 1);
+    -fx-padding: 5px 3px 5px 3px;
+    -fx-font-size: 14px;
+}
+
+.lc-text-field:focused {
+    -fx-border-color: #04c3b0;
+    -fx-background-insets: -0.4, 1, 2;
+    -fx-background-radius: 3.4, 2, 2;
+    -fx-prompt-text-fill: transparent;
+
+}
