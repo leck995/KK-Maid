@@ -1,6 +1,6 @@
 # 一、说明
 未来道具11号-KK Maid是一款适配[kikoeru](https://github.com/kikoeru-project/kikoeru-express)的桌面级客户端，目前已实现Kikoeru的部分功能，包括浏览，收藏，播放，本地字幕支持等。有着更出色的UI,更强大的桌面歌词。主要用于对于自建音乐的管理。
-## 由于开发者懒，部分功能为实现，目前版本安装包暂未在github上发布，如需获取请进群下载。
+## 由于开发者懒，部分功能未实现，目前版本安装包暂未在github上发布，如需获取请进群下载。
 **本项目仅供学习交流使用，请在下载后24小时内删除。**
 **交流企鹅群：221915393**
 ![image.png](https://cdn.nlark.com/yuque/0/2023/png/22760263/1689820288640-9da8ed18-2cd2-434f-abb9-e7679dfa748f.png#averageHue=%23344050&clientId=u0a798f1d-1ba0-4&from=paste&height=930&id=u696cb9d6&originHeight=930&originWidth=1540&originalType=binary&ratio=1&rotation=0&showTitle=false&size=1018509&status=done&style=none&taskId=u71c598f8-fcd3-46f1-95bd-73d62eaa0c7&title=&width=1540)
