@@ -12,9 +12,9 @@ public enum CategoryType {
     VA("Va","$va:%s$"),
     TAG("Tag","$tag:%s$"),
     STAR("Star",""),
-    SEARCH("Search","%s");
+    SEARCH("Search","%s"),
 
-
+    PLAY_LIST("Play List","");
     private String title;
     private String format;
 

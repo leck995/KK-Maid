@@ -10,6 +10,7 @@ import cn.tealc995.asmronline.ui.CategoryType;
  */
 public class SearchEvent {
     private String key;
+    private String info;//备用
     private CategoryType type;
 
     public SearchEvent(String key) {
@@ -18,6 +19,12 @@ public class SearchEvent {
 
     public SearchEvent(CategoryType type,String key) {
         this.key = key;
+        this.type = type;
+    }
+
+    public SearchEvent(CategoryType type,String key, String info) {
+        this.key = key;
+        this.info = info;
         this.type = type;
     }
 
@@ -35,5 +42,13 @@ public class SearchEvent {
 
     public void setType(CategoryType type) {
         this.type = type;
+    }
+
+    public String getInfo() {
+        return info;
+    }
+
+    public void setInfo(String info) {
+        this.info = info;
     }
 }

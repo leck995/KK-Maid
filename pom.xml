@@ -75,6 +75,31 @@
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
+
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>2.0.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>2.0.7</version>
+        </dependency>
+
+            <dependency>
+                <groupId>org.kordamp.ikonli</groupId>
+                <artifactId>ikonli-javafx</artifactId>
+                <version>12.3.1</version>
+            </dependency>
+        <dependency>
+            <groupId>org.kordamp.ikonli</groupId>
+            <artifactId>ikonli-material2-pack</artifactId>
+            <version>12.3.1</version>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -157,7 +182,33 @@
                         <list>.*\\.properties$</list>
                     </resourcesList>
                     <!-- 涉及反射的类 -->
+                    <reflectionList>
+                        <list>cn.tealc995.asmronline.api.model.CountDetail</list>
+                        <list>cn.tealc995.asmronline.api.model.LanguageEdition</list>
+                        <list>cn.tealc995.asmronline.api.model.MainWorks</list>
+                        <list>cn.tealc995.asmronline.api.model.Pagination</list>
+                        <list>cn.tealc995.asmronline.api.model.Rank</list>
+                        <list>cn.tealc995.asmronline.api.model.Role</list>
+                        <list>cn.tealc995.asmronline.api.model.RoleEx</list>
+                        <list>cn.tealc995.asmronline.api.model.SearchKey</list>
+                        <list>cn.tealc995.asmronline.api.model.SortType</list>
+                        <list>cn.tealc995.asmronline.api.model.Track</list>
+                        <list>cn.tealc995.asmronline.api.model.User</list>
+                        <list>cn.tealc995.asmronline.api.model.Work</list>
 
+                        <list>cn.tealc995.asmronline.event.GridItemRemoveEvent</list>
+                        <list>cn.tealc995.asmronline.event.MainCenterEvent</list>
+                        <list>cn.tealc995.asmronline.event.MainDialogEvent</list>
+                        <list>cn.tealc995.asmronline.event.MainNotificationEvent</list>
+                        <list>cn.tealc995.asmronline.event.MainPaneEvent</list>
+                        <list>cn.tealc995.asmronline.event.SearchEvent</list>
+
+                        <list>cn.tealc995.asmronline.ui.PlayerUI</list>
+                        <list>cn.tealc995.asmronline.ui.MainGridViewModel</list>
+                        <list>cn.tealc995.asmronline.ui.MainUI</list>
+
+
+                    </reflectionList>
                     <nativeImageArgs>
                         <!-- “快速构建”模式，以减少在开发过程中生成本机可执行文件所需的时间。请注意，此模式可能会对峰值性能和生成的可执行文件的大小产生负面影响，因此建议仅用于开发目的。 -->
                         <!--<arg>-Ob</arg>-->

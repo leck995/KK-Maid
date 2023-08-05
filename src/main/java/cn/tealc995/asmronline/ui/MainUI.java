@@ -18,6 +18,7 @@ import cn.tealc995.teaFX.controls.notification.Notification;
 import cn.tealc995.teaFX.enums.TitleBarStyle;
 import com.jfoenix.controls.JFXDialog;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -32,6 +33,7 @@ import org.greenrobot.eventbus.Subscribe;
 import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.Callable;
 
 /**
  * @program: Asmr-Online
@@ -145,10 +147,30 @@ public class MainUI {
                 starBtn.setSelected(false);
                 Notification.show("使用该功能需要在设置中填写Token", MessageType.WARNING,2000,Pos.TOP_CENTER,App.mainStage);
             }
-
-
-
         });
+
+
+        ToggleButton playListBtn=new ToggleButton("歌单");
+        playListBtn.getStyleClass().addAll("function-button","star-btn");
+        playListBtn.setGraphic(new Region());
+        playListBtn.setToggleGroup(group);
+        playListBtn.setOnAction(actionEvent -> {
+            if (Config.TOKEN.get() != null && Config.TOKEN.get().length() > 0){
+                if (!playListBtn.isSelected()){
+                    playListBtn.setSelected(true);
+                }else {
+                    backBaseCenter();
+
+                    PlayListUI playListUI=new PlayListUI();
+                    addCenter(playListUI.getRoot());
+                }
+            }else {
+                playListBtn.setSelected(false);
+                Notification.show("使用该功能需要在设置中填写Token", MessageType.WARNING,2000,Pos.TOP_CENTER,App.mainStage);
+            }
+        });
+
+
 
 
         ToggleButton circleBtn=new ToggleButton("社团");
@@ -165,7 +187,20 @@ public class MainUI {
 
 
 
+
+
+
+
+
+
+
         ToggleButton tagBtn=new ToggleButton("标签");
+
+
+
+
+
+
         tagBtn.getStyleClass().addAll("function-button","tag-btn");
         tagBtn.setGraphic(new Region());
         tagBtn.setToggleGroup(group);
@@ -192,7 +227,7 @@ public class MainUI {
         });
 
 
-        VBox vBox=new VBox(allBtn,starBtn,circleBtn,tagBtn,vaBtn);
+        VBox vBox=new VBox(allBtn,starBtn,playListBtn,circleBtn,tagBtn,vaBtn);
         vBox.setFillWidth(true);
 
         vBox.setPrefWidth(150);

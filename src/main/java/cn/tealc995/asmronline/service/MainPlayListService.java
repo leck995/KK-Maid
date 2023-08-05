@@ -9,12 +9,10 @@ import cn.tealc995.asmronline.api.model.LanguageEdition;
 import cn.tealc995.asmronline.api.model.MainWorks;
 import cn.tealc995.asmronline.api.model.Work;
 import cn.tealc995.asmronline.ui.CategoryType;
-import javafx.concurrent.ScheduledService;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -25,10 +23,8 @@ import java.util.Set;
  * @author: Leck
  * @create: 2023-07-15 23:16
  */
-public class MainGridService extends Service<MainWorks> {
+public class MainPlayListService extends Service<MainWorks> {
     private Map<String,String> params;
-    private String searchKey;
-    private CategoryType type;
     private String host;
 
     private Set<String> folderList;//保存所有字幕
@@ -44,16 +40,7 @@ public class MainGridService extends Service<MainWorks> {
                     updateList();
                 }
 
-                MainWorks works;
-                if (type==CategoryType.ALL){
-                    works = WorksApi.works(host, params);
-                }else if (type==CategoryType.STAR){
-                    works= StarApi.star(host,params);
-                } else if (type==CategoryType.PLAY_LIST){
-                    works= PlayListApi.works(host,params);
-                }else {
-                    works = SearchApi.search(host,String.format(type.getFormat(),searchKey), params);
-                }
+                MainWorks works= PlayListApi.works(host,params);
 
 
                 if (works != null){
@@ -147,11 +134,4 @@ public class MainGridService extends Service<MainWorks> {
         this.params = params;
     }
 
-    public void setSearchKey(String searchKey) {
-        this.searchKey = searchKey;
-    }
-
-    public void setType(CategoryType type) {
-        this.type = type;
-    }
 }

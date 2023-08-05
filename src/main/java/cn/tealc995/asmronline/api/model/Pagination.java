@@ -1,5 +1,7 @@
 package cn.tealc995.asmronline.api.model;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
+
 /**
  * @program: Asmr-Online
  * @description:
@@ -7,6 +9,7 @@ package cn.tealc995.asmronline.api.model;
  * @create: 2023-07-12 19:37
  */
 public class Pagination {
+    @JsonAlias("page")
     private int currentPage;
     private int pageSize;
     private long totalCount;

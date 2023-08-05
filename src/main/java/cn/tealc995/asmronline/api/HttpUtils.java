@@ -285,8 +285,10 @@ public class HttpUtils {
             conn.setUseCaches(false);
             conn.setDoOutput(true);
             conn.setDoInput(true);
+            if (TOKEN != null){
+                conn.setRequestProperty("Authorization", "Bearer "+TOKEN); //  TOKEN 如果没有token可以删除
+            }
 
-            System.out.println(json);
             byte[] bytes = json.getBytes();
             conn.setRequestProperty("Content-Type", "application/json; charset=utf-8");// 设定
             conn.setRequestProperty("Content-Length", String.valueOf(bytes.length));

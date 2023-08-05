@@ -1,39 +1,34 @@
 package cn.tealc995.asmronline.ui.cell;
 
+import atlantafx.base.theme.Styles;
 import cn.tealc995.asmronline.App;
 import cn.tealc995.asmronline.Config;
 import cn.tealc995.asmronline.api.StarApi;
 import cn.tealc995.asmronline.api.model.Role;
 import cn.tealc995.asmronline.api.model.Work;
-import cn.tealc995.asmronline.event.EventBusUtil;
-import cn.tealc995.asmronline.event.GridItemRemoveEvent;
-import cn.tealc995.asmronline.event.MainDialogEvent;
-import cn.tealc995.asmronline.event.SearchEvent;
+import cn.tealc995.asmronline.api.model.playList.PlayListRemoveWork;
+import cn.tealc995.asmronline.event.*;
 import cn.tealc995.asmronline.ui.CategoryType;
 import cn.tealc995.asmronline.ui.DetailUi;
 import cn.tealc995.asmronline.util.AnchorPaneUtil;
 import cn.tealc995.asmronline.util.FXResourcesLoader;
 import cn.tealc995.teaFX.controls.notification.MessageType;
 import cn.tealc995.teaFX.controls.notification.Notification;
-import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.shape.Rectangle;
 import org.controlsfx.control.Rating;
-
-import java.io.File;
+import org.kordamp.ikonli.javafx.FontIcon;
+import org.kordamp.ikonli.material2.Material2AL;
 
 /**
  * @program: Asmr-Online
@@ -41,8 +36,8 @@ import java.io.File;
  * @author: Leck
  * @create: 2023-07-12 21:53
  */
-public class WorkCell extends VBox {
-    public WorkCell(Work work){
+public class PlayListWorkCell extends VBox {
+    public PlayListWorkCell(Work work){
         setId(work.getId());
         ImageView itemAlbum = new ImageView();
         if (work.getMainCoverUrl().startsWith("/")){
@@ -50,7 +45,6 @@ public class WorkCell extends VBox {
         }else {
             itemAlbum.setImage(new Image(work.getMainCoverUrl(),400,300,true,true,true));
         }
-
 
 
         /* itemAlbum.setViewport(new Rectangle2D(0, 0, 400, 300));*/
@@ -80,6 +74,7 @@ public class WorkCell extends VBox {
         circleLabel.setId("grid-item-circle");
         circleLabel.getStyleClass().add("list-item-circle");
         circleLabel.setOnMouseClicked(mouseEvent -> {
+            EventBusUtil.getDefault().post(new MainCenterEvent(null,false));
             EventBusUtil.getDefault().post(new SearchEvent(CategoryType.CIRCLE,work.getCircle().getName()));
             mouseEvent.consume();
         });
@@ -105,16 +100,20 @@ public class WorkCell extends VBox {
         dateLabel.setId("grid-item-date");
         dateLabel.getStyleClass().add("list-item-date");
 
+        Button cancelBtn=new Button(null,new FontIcon(Material2AL.CANCEL));
+        cancelBtn.getStyleClass().addAll(Styles.BUTTON_ICON,Styles.DANGER);
+        cancelBtn.setOnAction(event -> {
+            EventBusUtil.getDefault().post(new MainPlayListRemoveWorkEvent(work));
+        });
 
 
 
-
-        AnchorPane headPane = new AnchorPane(itemAlbum, rjLabel, dateLabel);
+        AnchorPane headPane = new AnchorPane(itemAlbum, rjLabel, dateLabel,cancelBtn);
         headPane.getStyleClass().add("list-item-head-pane");
         AnchorPaneUtil.setPosition(rjLabel, 10.0, null, null, 10.0);
         AnchorPaneUtil.setPosition(dateLabel, null, 5.0, 5.0, null);
 
-
+        AnchorPaneUtil.setPosition(cancelBtn, 10.0, 5.0, null, null);
 
 
 
@@ -213,10 +212,12 @@ public class WorkCell extends VBox {
         EventHandler<MouseEvent> labelHandler = mouseEvent -> {
             Label source = (Label) mouseEvent.getSource();
             if (source.getAccessibleText().equals("category")) {
+                EventBusUtil.getDefault().post(new MainCenterEvent(null,false));
                 EventBusUtil.getDefault().post(new SearchEvent(CategoryType.TAG,source.getText()));
                 mouseEvent.consume();
             }
             if (source.getAccessibleText().equals("va")) {
+                EventBusUtil.getDefault().post(new MainCenterEvent(null,false));
                 EventBusUtil.getDefault().post(new SearchEvent(CategoryType.VA,source.getText()));
                 mouseEvent.consume();
             }

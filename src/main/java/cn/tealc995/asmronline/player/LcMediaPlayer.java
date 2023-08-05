@@ -25,6 +25,8 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaException;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -40,6 +42,7 @@ import java.util.List;
  * @create: 2023-02-06 22:25
  */
 public class LcMediaPlayer {
+    private static final Logger logger = LoggerFactory.getLogger(LcMediaPlayer.class);
     private static LcMediaPlayer lcMediaPlayer;
     private MediaPlayer mediaPlayer;
     private SimpleObjectProperty<Music> music;

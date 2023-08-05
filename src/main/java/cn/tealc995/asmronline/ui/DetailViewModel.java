@@ -4,9 +4,15 @@ import cn.tealc995.asmronline.Config;
 import cn.tealc995.asmronline.api.TrackApi;
 import cn.tealc995.asmronline.api.model.Track;
 import cn.tealc995.asmronline.api.model.Work;
+import cn.tealc995.asmronline.api.model.playList.PlayList;
+import cn.tealc995.asmronline.api.model.playList.PlayListRemoveWork;
+import cn.tealc995.asmronline.event.EventBusUtil;
+import cn.tealc995.asmronline.event.MainNotificationEvent;
 import cn.tealc995.asmronline.model.Audio;
 import cn.tealc995.asmronline.model.Music;
 import cn.tealc995.asmronline.player.LcMediaPlayer;
+import cn.tealc995.asmronline.service.PlayListRemoveWorkService;
+import cn.tealc995.asmronline.service.PlayListWorkExistService;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -14,7 +20,9 @@ import javafx.collections.ObservableList;
 import javafx.scene.image.Image;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @program: Asmr-Online
@@ -31,6 +39,10 @@ public class DetailViewModel {
     private SimpleStringProperty id;
     private SimpleStringProperty data;
 
+    private ObservableList<PlayList> playLists;
+    private PlayListWorkExistService playListWorkExistService;
+    private PlayListRemoveWorkService playListRemoveWorkService;
+
     public DetailViewModel(Work work) {
         this.work=new SimpleObjectProperty<>(work);
         tracks= FXCollections.observableArrayList(TrackApi.track(Config.HOST.get(), work.getId()));
@@ -38,6 +50,8 @@ public class DetailViewModel {
         title=new SimpleStringProperty(work.getTitle());
         id=new SimpleStringProperty(work.getId());
         data=new SimpleStringProperty(work.getRelease());
+        playLists=FXCollections.observableArrayList();
+
 
     }
 
@@ -50,6 +64,57 @@ public class DetailViewModel {
         }
 
         LcMediaPlayer.getInstance().setMusic(new Music(work.get(),list),0);
+    }
+
+
+    public void getPlayList(){
+        if (playLists.size() > 0)
+            return;
+
+
+        if (playListWorkExistService ==null){
+            playListWorkExistService=new PlayListWorkExistService();
+            playListWorkExistService.valueProperty().addListener((observableValue, mainPlayList, t1) -> {
+                if (t1!=null){
+                    playLists.setAll(t1.getPlayLists());
+                }
+            });
+        }
+
+        Map<String,String> params=new HashMap<>();
+        params.put("version", "2");
+        params.put("workID",work.get().getId());
+
+        playListWorkExistService.setHost(Config.HOST.get());
+        playListWorkExistService.setParams(params);
+        playListWorkExistService.restart();
+
+    }
+
+
+    public void updatePlayListWork(PlayList playList,boolean remove){
+        if (playListRemoveWorkService ==null){
+            playListRemoveWorkService=new PlayListRemoveWorkService();
+            playListRemoveWorkService.valueProperty().addListener((observableValue, mainPlayList, t1) -> {
+                if (t1!=null && t1){
+                    EventBusUtil.getDefault().post(new MainNotificationEvent("修改成功"));
+                }
+            });
+        }
+
+        PlayListRemoveWork playListRemoveWork=new PlayListRemoveWork(playList.getId(),List.of(work.get().getId()),remove);
+
+
+        playListRemoveWorkService.setUrl(Config.HOST.get());
+        playListRemoveWorkService.setWork(playListRemoveWork);
+        playListRemoveWorkService.restart();
+
+
+    }
+
+
+    public ObservableList<PlayList> getPlayLists() {
+        return playLists;
     }
 
     public ObservableList<Track> getTracks() {

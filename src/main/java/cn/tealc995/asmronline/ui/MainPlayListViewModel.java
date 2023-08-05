@@ -1,26 +1,25 @@
 package cn.tealc995.asmronline.ui;
 
 import cn.tealc995.asmronline.Config;
-import cn.tealc995.asmronline.api.SearchApi;
-import cn.tealc995.asmronline.api.StarApi;
-import cn.tealc995.asmronline.api.WorksApi;
 import cn.tealc995.asmronline.api.model.MainWorks;
-import cn.tealc995.asmronline.api.model.SortType;
+import cn.tealc995.asmronline.api.model.playList.PlayList;
 import cn.tealc995.asmronline.api.model.Work;
+import cn.tealc995.asmronline.api.model.playList.PlayListRemoveWork;
 import cn.tealc995.asmronline.event.EventBusUtil;
-import cn.tealc995.asmronline.event.GridItemRemoveEvent;
-import cn.tealc995.asmronline.event.SearchEvent;
-import cn.tealc995.asmronline.service.MainGridService;
+import cn.tealc995.asmronline.event.MainNotificationEvent;
+import cn.tealc995.asmronline.event.MainPlayListRemoveWorkEvent;
+import cn.tealc995.asmronline.service.MainPlayListService;
+import cn.tealc995.asmronline.service.PlayListRemoveWorkService;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Worker;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
 
 /**
  * @program: Asmr-Online
@@ -28,56 +27,41 @@ import java.util.concurrent.Callable;
  * @author: Leck
  * @create: 2023-07-12 23:19
  */
-public class MainGridViewModel {
+public class MainPlayListViewModel {
     private SimpleObjectProperty<MainWorks> mainWorks;
-
     private ObservableList<Work> workItems;
     private SimpleIntegerProperty countPage;
     private SimpleIntegerProperty currentPage;
     private SimpleIntegerProperty pageSize;
     private SimpleLongProperty totalCount;
-    private SimpleObjectProperty<CategoryType> title;
-    private SimpleBooleanProperty subtext;
-
+    private SimpleStringProperty title;
     private SimpleStringProperty playListId;
-
-
-    private SimpleBooleanProperty descOrder;
-
-    private ObservableList<SortType> sortItems= FXCollections.observableArrayList(SortType.release,SortType.create_date,SortType.nsfw,SortType.rate_average_2dp,SortType.dl_count,SortType.price,SortType.review_count,SortType.random);
-
-    private SimpleObjectProperty<SortType> selectSortType;
-    private SimpleStringProperty searchKey;
-
     private SimpleIntegerProperty removeIndex;//用来让界面上的work移除
-
     private SimpleBooleanProperty loading;
     private SimpleStringProperty message;
+    private MainPlayListService service;
+    private final ObservableList<Integer> pageSizeItems=FXCollections.observableArrayList(12,24,48,96);
 
-
-    private MainGridService service;
-    public MainGridViewModel() {
+    private PlayListRemoveWorkService playListRemoveWorkService;
+    public MainPlayListViewModel(PlayList playList) {
         EventBusUtil.getDefault().register(this);
-        init();
+        init(playList);
         update();
     }
 
-    private void init(){
-        title=new SimpleObjectProperty<>(CategoryType.ALL);
+    private void init(PlayList playList){
+        title=new SimpleStringProperty(playList.getName());
+        playListId=new SimpleStringProperty(playList.getId());
+
         mainWorks=new SimpleObjectProperty<>();
         workItems=FXCollections.observableArrayList();
         countPage=new SimpleIntegerProperty(10);
         currentPage=new SimpleIntegerProperty(0);
-        pageSize=new SimpleIntegerProperty(48);
+        pageSize=new SimpleIntegerProperty(24);
         totalCount=new SimpleLongProperty(0);
-        subtext=new SimpleBooleanProperty(Config.gridSubtitleModel.get());
-        descOrder=new SimpleBooleanProperty(Config.gridSortDescModel.get());
-        selectSortType=new SimpleObjectProperty<>(SortType.valueOf(Config.gridOrder.get()));
-        searchKey=new SimpleStringProperty();
         removeIndex=new SimpleIntegerProperty(-1);
         loading=new SimpleBooleanProperty(false);
         message=new SimpleStringProperty();
-        playListId=new SimpleStringProperty();
 
 
         mainWorks.addListener((observableValue, mainWorks1, mainWorks2) -> {
@@ -87,11 +71,8 @@ public class MainGridViewModel {
                 totalCount.set(mainWorks2.getPagination().getTotalCount());
             }
         });
-
-        selectSortType.addListener((observableValue, sortType, t1) -> update());
-        subtext.addListener((observableValue, sortType, t1) -> update());
-        descOrder.addListener((observableValue, sortType, t1) -> update());
         currentPage.addListener((observableValue, number, t1) -> update());
+        pageSize.addListener((observableValue, number, t1) -> update());
     }
 
     public void update(){
@@ -99,64 +80,58 @@ public class MainGridViewModel {
             message.set("请先填写服务器地址");
             return;
         }
-
         if (service==null){
-            service=new MainGridService();
+            service=new MainPlayListService();
             loading.bind(Bindings.createBooleanBinding(() -> Boolean.valueOf(service.getMessage()),service.messageProperty()));
             mainWorks.bind(service.valueProperty());
         }
-
-
-
         Map<String,String> params=new HashMap<>();
-        if (title.get() !=CategoryType.PLAY_LIST){
-            params.put("order",getSelectSortType().name());
-            if(getSelectSortType()==SortType.nsfw){
-                descOrder.set(false);
-            }
-            params.put("sort",isDescOrder() ? "desc":"asc");
-            params.put("page",String.valueOf(getCurrentPage()+1));
-            params.put("subtitle",isSubtext() ? "1" : "0");
-            params.put("pageSize",String.valueOf(pageSize.get()));
-            //params.put("withPlaylistStatus[]","c939f5c9-04ff-49fb-99e7-09872c6b639a");
-            params.put("includeTranslationWorks","true");
-        }else {
-            params.put("page", String.valueOf(currentPage.get() + 1));
-            params.put("pageSize",String.valueOf(pageSize.get()));
-            params.put("id", playListId.get());
-        }
-
-
-
+        params.put("page", String.valueOf(currentPage.get() + 1));
+        params.put("pageSize",String.valueOf(pageSize.get()));
+        params.put("id", playListId.get());
         service.setParams(params);
-        service.setSearchKey(searchKey.get());
-        service.setType(title.get());
         service.setHost(Config.HOST.get());
         service.restart();
-
     }
+
+
 
 
 
     @Subscribe
-    public void setSearchKey(SearchEvent event) {
-        title.set(event.getType());
-        this.searchKey.set(event.getKey());
-        this.playListId.set(event.getInfo());
-        setCurrentPage(0);
-        update();
+    public void removeWork(MainPlayListRemoveWorkEvent event){
+        System.out.println(event.getWork().getId());
+        if (playListRemoveWorkService == null){
+            playListRemoveWorkService=new PlayListRemoveWorkService();
+            playListRemoveWorkService.valueProperty().addListener((observableValue, aBoolean, t1) -> {
+                if (t1 != null && t1) {
+                    EventBusUtil.getDefault().post(new MainNotificationEvent("移除成功"));
+                    Iterator<Work> iterator = workItems.iterator();
+                    while (iterator.hasNext()) {
+                        Work next = iterator.next();
+                        List<String> works = playListRemoveWorkService.getWork().getWorks();
+                        if (works.contains(next.getId())) {
+                            iterator.remove();
+                            System.out.println("移除");
+                        }
+                    }
+                }
+            });
+        }
+        playListRemoveWorkService.setUrl(Config.HOST.get());
+        playListRemoveWorkService.setWork(new PlayListRemoveWork(playListId.get(), List.of(event.getWork().getId()),true));
+        playListRemoveWorkService.restart();
     }
+
 
     public String getTitle() {
-        if (title.get() ==CategoryType.ALL){
-            return title.get().getTitle();
-        }else if (title.get() ==CategoryType.STAR){
-            return title.get().getTitle();
-        }else{
-            return title.get().getTitle()+" : "+searchKey.get();
-        }
+        return " 当前歌单: "+title.get();
     }
 
+
+    public void setPageSize(int pageSize) {
+        this.pageSize.set(pageSize);
+    }
 
     /**
      * @description: 当前功能不知为何没生效，在ui中虽然绑定了removeIndex,但值变化时不会监听到，很奇怪。请注意
@@ -166,7 +141,7 @@ public class MainGridViewModel {
      * @return  void
      * @date:   2023/7/15
      */
-    @Subscribe
+/*    @Subscribe
     public void removeWork(GridItemRemoveEvent event){
         removeIndex.set(-1);
         if (title.get() == CategoryType.STAR){
@@ -178,7 +153,8 @@ public class MainGridViewModel {
             }
         }
 
-    }
+    }*/
+
 
     public boolean isLoading() {
         return loading.get();
@@ -232,38 +208,6 @@ public class MainGridViewModel {
         return totalCount;
     }
 
-    public boolean isSubtext() {
-        return subtext.get();
-    }
-
-    public SimpleBooleanProperty subtextProperty() {
-        return subtext;
-    }
-
-    public boolean isDescOrder() {
-        return descOrder.get();
-    }
-
-    public SimpleBooleanProperty descOrderProperty() {
-        return descOrder;
-    }
-
-    public ObservableList<SortType> getSortItems() {
-        return sortItems;
-    }
-
-    public SortType getSelectSortType() {
-        return selectSortType.get();
-    }
-
-    public SimpleObjectProperty<SortType> selectSortTypeProperty() {
-        return selectSortType;
-    }
-
-    public void setSelectSortType(SortType selectSortType) {
-        this.selectSortType.set(selectSortType);
-    }
-
     public ObservableList<Work> getWorkItems() {
         return workItems;
     }
@@ -274,5 +218,9 @@ public class MainGridViewModel {
 
     public SimpleIntegerProperty removeIndexProperty() {
         return removeIndex;
+    }
+
+    public ObservableList<Integer> getPageSizeItems() {
+        return pageSizeItems;
     }
 }

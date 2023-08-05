@@ -49,7 +49,7 @@ public class Work {
      * @date:   2023/7/19
      */
     public boolean hasLanguages(){
-        return language_editions != null;
+        return language_editions != null && language_editions.size() > 0;
     }
     /**
      * @description: 获取多语言版本的所有rjid
@@ -61,7 +61,7 @@ public class Work {
      */
     public List<String> getAllId(){
         List<String> ids=new ArrayList<>();
-        if (language_editions != null){
+        if (hasLanguages()){
             for (LanguageEdition languageEdition : language_editions) {
                 ids.add(languageEdition.getWorkno());
             }
@@ -236,5 +236,11 @@ public class Work {
 
     public void setLanguage_editions(List<LanguageEdition> language_editions) {
         this.language_editions = language_editions;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        Work temp= (Work) obj;
+        return temp.getId().equals(this.getId());
     }
 }

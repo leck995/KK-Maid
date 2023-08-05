@@ -18,7 +18,7 @@
 }
 .page-field{
     -fx-background-color: #22222a;
-    -fx-pref-height: 25;
+    -fx-pref-height: 26;
     -fx-pref-width: 100;
     -fx-padding: 0 0 0 3;
     -fx-background-insets: 0;
@@ -35,6 +35,13 @@
     -fx-background-color: white;
     -fx-pref-width: 16px;
     -fx-pref-height: 16px;
+}
+
+.page-size-choice-box{
+    -fx-background-color: #22222a;
+    -fx-padding: 3 12 3 12;
+    -fx-pref-height: 26;
+    -fx-pref-width: 65;
 }
 
 /*=============================中间部分：=======================*/
@@ -259,3 +266,5 @@
 .loading-dot{
     -fx-background-color: #1a1a2190;
 }
+
+

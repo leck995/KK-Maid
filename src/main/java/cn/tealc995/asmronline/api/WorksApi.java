@@ -22,24 +22,6 @@ import java.util.Map;
  * @create: 2023-07-12 19:35
  */
 public class WorksApi {
-    private static final String URL="https://api.asmr-200.com";
-    public static MainWorks works(Map<String,String> params){
-        Response response = HttpUtils.get(URL+"/api/works",params);
-        if (response.isSuccess()){
-            ObjectMapper mapper=new ObjectMapper();
-            try {
-                MainWorks mainWorks = mapper.readValue(response.getMessage(), MainWorks.class);
-                return mainWorks;
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
-            }
-        }else {
-            EventBusUtil.getDefault().post(new MainNotificationEvent(response.getMessage()));
-            return null;
-        }
-    }
-
-
     public static MainWorks works(String url,Map<String,String> params){
         Response response = HttpUtils.get(url + "/api/works", params);
         if (response.isSuccess()){

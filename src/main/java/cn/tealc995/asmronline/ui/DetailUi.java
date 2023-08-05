@@ -3,18 +3,24 @@ package cn.tealc995.asmronline.ui;
 import cn.tealc995.asmronline.App;
 import cn.tealc995.asmronline.api.model.Role;
 import cn.tealc995.asmronline.api.model.Work;
+import cn.tealc995.asmronline.api.model.playList.PlayList;
 import cn.tealc995.asmronline.ui.component.FolderTableView;
 import cn.tealc995.asmronline.util.CssLoader;
 import cn.tealc995.teaFX.controls.notification.MessageType;
 import cn.tealc995.teaFX.controls.notification.Notification;
+import javafx.collections.ListChangeListener;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.shape.Rectangle;
+import javafx.util.Callback;
+import javafx.util.StringConverter;
+import org.controlsfx.control.CheckComboBox;
+import org.controlsfx.control.IndexedCheckModel;
+import org.kordamp.ikonli.javafx.FontIcon;
+import org.kordamp.ikonli.material2.Material2AL;
 
 /**
  * @program: Asmr-Online
@@ -39,6 +45,72 @@ public class DetailUi {
         rectangle.setArcHeight(15);
         rectangle.setArcWidth(15);
         imageView.setClip(rectangle);
+
+
+        Button playListBtn=new Button("添加到歌单",new FontIcon(Material2AL.ADD));
+        //playListBtn.setContentDisplay(ContentDisplay.RIGHT);
+        CheckComboBox<PlayList> checkComboBox=new CheckComboBox<>(viewModel.getPlayLists());
+        checkComboBox.setPrefWidth(150.0);
+        checkComboBox.setTitle("添加到歌单");
+        playListBtn.prefWidthProperty().bind(checkComboBox.widthProperty());
+        checkComboBox.setVisible(false);
+        checkComboBox.setConverter(new StringConverter<PlayList>() {
+            @Override
+            public String toString(PlayList playList) {
+                if (playList != null){
+                    return playList.getName();
+                }else
+                    return null;
+
+            }
+            @Override
+            public PlayList fromString(String s) {
+                return null;
+            }
+        });
+
+        playListBtn.setOnAction(event -> {
+            viewModel.getPlayList();
+            checkComboBox.show();
+        });
+
+       checkComboBox.getItems().addListener((ListChangeListener<? super PlayList>) change -> {
+           while (change.next()){
+               if (change.wasAdded()){
+                   for (PlayList playList : change.getAddedSubList()) {
+                       if (playList.getExist()){
+                           checkComboBox.getCheckModel().check(playList);
+                       }
+
+                   }
+               }
+           }
+
+       });
+
+        checkComboBox.getCheckModel().getCheckedItems().addListener((ListChangeListener<? super PlayList>) change -> {
+            while (change.next()){
+                if (change.wasAdded()){
+                    System.out.println(change.getAddedSubList().size());
+                    for (PlayList playList : change.getAddedSubList()) {
+                        viewModel.updatePlayListWork(playList,false);
+                    }
+
+                }
+                if (change.wasRemoved()){
+                    System.out.println(change.getRemoved().size());
+                    for (PlayList playList : change.getRemoved()) {
+                        viewModel.updatePlayListWork(playList,true);
+                    }
+                }
+            }
+        });
+
+
+
+        StackPane playListPane=new StackPane(checkComboBox,playListBtn);
+
+
 
 
         FlowPane tagsPane = new FlowPane();
@@ -92,7 +164,7 @@ public class DetailUi {
         titleLabel.setText(work.getTitle());
 
 
-        VBox left = new VBox(imageView,circleLabel, tagsPane, actorsPane);
+        VBox left = new VBox(imageView,playListPane,circleLabel, tagsPane, actorsPane);
         left.getStyleClass().add("detail-dialog-left");
         left.setAlignment(Pos.TOP_LEFT);
         left.setSpacing(15);
