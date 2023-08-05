@@ -3,11 +3,15 @@ package cn.tealc995.asmronline.ui.component;
 
 import cn.tealc995.asmronline.api.model.Track;
 import cn.tealc995.asmronline.api.model.Work;
+import cn.tealc995.asmronline.event.EventBusUtil;
+import cn.tealc995.asmronline.event.MainDialogEvent;
 import cn.tealc995.asmronline.model.Audio;
 import cn.tealc995.asmronline.model.Music;
 import cn.tealc995.asmronline.model.lrc.LrcFile;
 import cn.tealc995.asmronline.model.lrc.LrcType;
 import cn.tealc995.asmronline.player.LcMediaPlayer;
+import cn.tealc995.asmronline.ui.PosterUI;
+import cn.tealc995.asmronline.ui.stage.ImageViewStage;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -265,6 +269,26 @@ public class FolderTableView extends BorderPane {
 
 
 
+
+                                } else if (temp.equals("image")) {
+                                    List<Track> list = new ArrayList<>();
+                                    int index=0;
+                                    int currentTrack=0;
+                                    for (Track track : items) {
+                                        if (track.getType().equals("image")){
+                                            list.add(track);
+                                            if (track != AsmrFile){
+                                                index+=1;
+                                            }else {
+                                                currentTrack=index;
+                                            }
+                                        }
+                                    }
+
+
+
+                                    ImageViewStage imageViewStage=ImageViewStage.getInstance(list,currentTrack);
+                                    imageViewStage.show();
 
                                 } else {
 

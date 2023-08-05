@@ -29,6 +29,9 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.greenrobot.eventbus.Subscribe;
+import org.kordamp.ikonli.javafx.FontIcon;
+import org.kordamp.ikonli.material2.Material2AL;
+import org.kordamp.ikonli.material2.Material2MZ;
 
 import java.io.IOException;
 import java.util.Timer;
@@ -151,7 +154,7 @@ public class MainUI {
 
 
         ToggleButton playListBtn=new ToggleButton("歌单");
-        playListBtn.getStyleClass().addAll("function-button","star-btn");
+        playListBtn.getStyleClass().addAll("function-button","play-list-btn");
         playListBtn.setGraphic(new Region());
         playListBtn.setToggleGroup(group);
         playListBtn.setOnAction(actionEvent -> {
