@@ -1,17 +1,21 @@
 package cn.tealc995.asmronline.ui;
 
+import cn.tealc995.asmronline.App;
 import cn.tealc995.asmronline.api.model.Track;
 import cn.tealc995.asmronline.util.AnchorPaneUtil;
+import javafx.beans.binding.Bindings;
+import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.stage.FileChooser;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -21,6 +25,7 @@ import java.util.List;
  * @create: 2023-08-06 00:32
  */
 public class PosterUI {
+    private final ImageView imageView;
     private StackPane root;
     private PosterViewModel viewModel;
 
@@ -30,15 +35,24 @@ public class PosterUI {
     public PosterUI(List<Track> filePaths, int index) {
         viewModel=new PosterViewModel(filePaths,index);
         root=new StackPane();
-        ImageView imageView=new ImageView();
+
+
+        imageView = new ImageView();
+        imageView.setManaged(false);
+        imageView.setPreserveRatio(true);
+        imageView.setSmooth(true);
+
+
         imageView.imageProperty().bind(viewModel.imageProperty());
 
-        StackPane centerPane=new StackPane(imageView);
 
+        StackPane centerPane=new StackPane(imageView);
+        centerPane.prefWidthProperty().bind(imageView.fitWidthProperty());
+        centerPane.prefHeightProperty().bind(imageView.fitHeightProperty());
         imageView.setOnMousePressed(mouseEvent -> {
             if (mouseEvent.isPrimaryButtonDown()){
                 dragDistance=new Point2D(mouseEvent.getSceneX(),mouseEvent.getScreenY());
-                dragDistance=dragDistance.subtract(imageView.getParent().localToScene(new Point2D(imageView.getTranslateX(),imageView.getTranslateY())));
+                dragDistance=dragDistance.subtract(imageView.getParent().localToScene(new Point2D(imageView.getTranslateX(), imageView.getTranslateY())));
 
             }
         });
@@ -57,8 +71,28 @@ public class PosterUI {
                 imageView.setScaleY(1.0);
                 imageView.setTranslateX(0.0);
                 imageView.setTranslateY(0.0);
+
+                resize();
+
             }
         });
+
+        // 图片位置绑定
+        imageView.layoutXProperty().bind(Bindings
+                .createDoubleBinding(() -> {
+                            Bounds layoutBounds = imageView.getLayoutBounds();
+                            return (centerPane.getWidth() - layoutBounds.getWidth()) / 2;
+                        },
+                        centerPane.widthProperty(),
+                        imageView.layoutBoundsProperty()));
+        imageView.layoutYProperty().bind(Bindings
+                .createDoubleBinding(() -> {
+                            Bounds layoutBounds = imageView.getLayoutBounds();
+                            return (centerPane.getHeight() - layoutBounds.getHeight()) / 2;
+                        },
+                        centerPane.heightProperty(),
+                        imageView.layoutBoundsProperty()));
+
 
 
         Button preBtn=new Button("上一个");
@@ -71,6 +105,17 @@ public class PosterUI {
 
 
         Button saveBtn=new Button("下载");
+        saveBtn.setOnAction(event -> {
+            FileChooser fileChooser=new FileChooser();
+            fileChooser.setTitle("保存图片");
+            fileChooser.setInitialFileName(viewModel.getImageName());
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("图片","*.jpg","*.jpeg","*.png"));
+
+            File file = fileChooser.showSaveDialog(App.mainStage);
+            if (file != null)
+                viewModel.download(file);
+
+        });
 
 
         AnchorPane anchorPane=new AnchorPane(centerPane,leftPane,rightPane,saveBtn);
@@ -81,30 +126,16 @@ public class PosterUI {
         AnchorPaneUtil.setPosition(saveBtn,10.0,10.0,null,null);
 
 
-/*        BorderPane borderPane=new BorderPane();
-        borderPane.setMouseTransparent(true);
-        borderPane.setLeft(preBtn);
-        borderPane.setRight(nextBtn);
-        borderPane.setTop(saveBtn);
-
-        BorderPane.setAlignment(preBtn, Pos.CENTER);
-        BorderPane.setAlignment(nextBtn, Pos.CENTER);
-        BorderPane.setAlignment(saveBtn, Pos.CENTER_RIGHT);*/
-
-
         root.setOnScroll(scrollEvent -> {
             double size;
             if (scrollEvent.getDeltaY() > 0){
-                size=imageView.getScaleX()+0.1;
+                size= imageView.getScaleX()+0.1;
             }else {
-                size=imageView.getScaleX()-0.1;
+                size= imageView.getScaleX()-0.1;
             }
             if (size < 0.2) return;
             imageView.setScaleX(size);
             imageView.setScaleY(size);
-
-
-
         });
 
         root.getChildren().addAll(anchorPane);
@@ -112,6 +143,26 @@ public class PosterUI {
     }
 
 
+    private void resize(){
+        Image image=imageView.getImage();
+        // 自适应窗口
+        double height = root.getHeight();
+        double width = root.getWidth();
+
+        if (image.getWidth() < width && image.getHeight() < height) {
+            imageView.setFitWidth(image.getWidth());
+            imageView.setFitHeight(image.getHeight());
+        } else {
+            imageView.setFitWidth(width);
+            imageView.setFitHeight(height);
+        }
+    }
+
+
+    public void update(List<Track> filePaths, int index){
+        viewModel.update(filePaths, index);
+
+    }
 
     public StackPane getRoot() {
         return root;

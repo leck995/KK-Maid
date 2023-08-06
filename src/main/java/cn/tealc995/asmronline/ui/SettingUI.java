@@ -1,6 +1,7 @@
 package cn.tealc995.asmronline.ui;
 
 import atlantafx.base.controls.ModalPane;
+import atlantafx.base.controls.Popover;
 import atlantafx.base.controls.ProgressSliderSkin;
 import atlantafx.base.controls.ToggleSwitch;
 import cn.tealc995.asmronline.App;
@@ -177,7 +178,14 @@ public class SettingUI {
 
 
     private Pane initHostTab(){
-        Label hostLabel=new Label("服务器API地址");
+        Popover hostPopover=new Popover(new Label("例如域名是https://baidu.com，那么应填写https://api.baidu.com"));
+        Hyperlink hostLink=new Hyperlink("?");
+        hostLink.setOnAction(event -> hostPopover.show(hostLink));
+        Label hostLabel=new Label("服务器API地址",hostLink);
+        hostLabel.setContentDisplay(ContentDisplay.RIGHT);
+
+
+
         TextField hostField=new TextField();
         hostField.setPromptText("https://api.xxxx.xxx");
         hostField.textProperty().bindBidirectional(viewModel.hostProperty());

@@ -6,6 +6,11 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.image.Image;
 
+import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 /**
@@ -24,7 +29,7 @@ public class PosterViewModel {
         this.filePaths=filePaths;
         this.index=new SimpleIntegerProperty(index);
         title=new SimpleStringProperty(filePaths.get(index).getTitle());
-        image=new SimpleObjectProperty<>(new Image(filePaths.get(index).getMediaStreamUrl(),1920,1080,true,true,true));
+        image=new SimpleObjectProperty<>(new Image(filePaths.get(index).getMediaStreamUrl(),true));
     }
 
 
@@ -47,6 +52,54 @@ public class PosterViewModel {
         }
         title.set(filePaths.get(index.get()).getTitle());
         image.set(new Image(filePaths.get(index.get()).getMediaStreamUrl(),1920,1080,true,true,true));
+    }
+
+
+
+
+
+    public void update(List<Track> filePaths, int index){
+        this.filePaths=filePaths;
+        this.index=new SimpleIntegerProperty(index);
+        title.set(filePaths.get(index).getTitle());
+        image.set(new Image(filePaths.get(index).getMediaStreamUrl(),true));
+    }
+
+    public void download(File file){
+        String urlPath=filePaths.get(index.get()).getMediaStreamUrl();
+        try {
+            URL url=new URL(urlPath);
+            URLConnection urlConnection = url.openConnection();
+            urlConnection.connect();
+            InputStream inputStream = urlConnection.getInputStream();
+
+            if (!file.exists()){
+                file.createNewFile();
+            }
+
+            FileOutputStream fileOutputStream = new FileOutputStream(file);
+            byte[] temp=new byte[1024];
+            int index;
+
+            while ((index = inputStream.read(temp))!= -1.){
+                fileOutputStream.write(temp,0,index);
+            }
+            fileOutputStream.flush();
+            fileOutputStream.close();
+            inputStream.close();
+
+
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+
+    public String getImageName(){
+        return filePaths.get(index.get()).getTitle();
     }
 
     public Image getImage() {

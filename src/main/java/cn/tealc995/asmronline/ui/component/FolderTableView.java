@@ -288,6 +288,9 @@ public class FolderTableView extends BorderPane {
 
 
                                     ImageViewStage imageViewStage=ImageViewStage.getInstance(list,currentTrack);
+                                    imageViewStage.setIconified(false);
+                                    imageViewStage.requestFocus();
+                                    imageViewStage.toFront();
                                     imageViewStage.show();
 
                                 } else {

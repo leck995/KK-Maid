@@ -5,9 +5,12 @@ import cn.tealc995.asmronline.api.model.playList.PlayList;
 import cn.tealc995.asmronline.event.*;
 import cn.tealc995.asmronline.ui.MainPlayListUI;
 import cn.tealc995.asmronline.util.FXResourcesLoader;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.*;
 import javafx.scene.shape.Rectangle;
 
@@ -53,10 +56,31 @@ public class PlayListCell extends VBox {
         setSpacing(6);
         getChildren().addAll(itemAlbum,itemTitle,userLabel,countLabel);
         setOnMouseClicked(mouseEvent -> {
-
-            MainPlayListUI mainPlayListUI=new MainPlayListUI(playList);
-            EventBusUtil.getDefault().post(new MainCenterEvent(mainPlayListUI.getRoot(),true));
+            if ( mouseEvent.getButton()==MouseButton.PRIMARY){
+                MainPlayListUI mainPlayListUI=new MainPlayListUI(playList);
+                EventBusUtil.getDefault().post(new MainCenterEvent(mainPlayListUI.getRoot(),true));
+            }
         });
 
+        MenuItem deleteItem=new MenuItem("删除");
+        deleteItem.setDisable(playList.canDelete());
+
+        deleteItem.setOnAction(event -> {
+            EventBusUtil.getDefault().post(new PlayListRemoveEvent(playList));
+        });
+
+        MenuItem alterItem=new MenuItem("修改");
+        alterItem.setDisable(true);
+        ContextMenu contextMenu=new ContextMenu(alterItem,deleteItem);
+
+        setOnContextMenuRequested(contextMenuEvent -> {
+            contextMenu.show(this,contextMenuEvent.getScreenX(),contextMenuEvent.getScreenY());
+        });
+
+
     }
+
+
+
+
 }

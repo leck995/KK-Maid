@@ -91,16 +91,20 @@ public class DetailUi {
         checkComboBox.getCheckModel().getCheckedItems().addListener((ListChangeListener<? super PlayList>) change -> {
             while (change.next()){
                 if (change.wasAdded()){
-                    System.out.println(change.getAddedSubList().size());
                     for (PlayList playList : change.getAddedSubList()) {
-                        viewModel.updatePlayListWork(playList,false);
+                        if (!playList.getExist()){
+                            viewModel.updatePlayListWork(playList,false);
+                            playList.setExist(true);
+                        }
                     }
-
                 }
                 if (change.wasRemoved()){
-                    System.out.println(change.getRemoved().size());
                     for (PlayList playList : change.getRemoved()) {
-                        viewModel.updatePlayListWork(playList,true);
+                        if (playList.getExist()){
+                            viewModel.updatePlayListWork(playList,true);
+                            playList.setExist(false);
+                        }
+
                     }
                 }
             }

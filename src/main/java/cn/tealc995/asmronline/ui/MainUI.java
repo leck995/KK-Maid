@@ -91,6 +91,7 @@ public class MainUI {
 
         //搜索框
         TextField searchField=new TextField();
+        searchField.setFocusTraversable(false);
         Button searchBtn=new Button();
         searchBtn.setGraphic(new Region());
         HBox searchPane=new HBox(searchField,searchBtn);
@@ -100,6 +101,7 @@ public class MainUI {
                 search(t1);
             }
         });
+
         searchField.setOnAction(event -> search(searchField.getText()));
         searchBtn.setOnAction(event -> search(searchField.getText()));
         root.getTitleBarRightPane().getChildren().add(0,searchPane);
@@ -159,14 +161,10 @@ public class MainUI {
         playListBtn.setToggleGroup(group);
         playListBtn.setOnAction(actionEvent -> {
             if (Config.TOKEN.get() != null && Config.TOKEN.get().length() > 0){
-                if (!playListBtn.isSelected()){
-                    playListBtn.setSelected(true);
-                }else {
-                    backBaseCenter();
-
-                    PlayListUI playListUI=new PlayListUI();
-                    addCenter(playListUI.getRoot());
-                }
+                backBaseCenter();
+                PlayListUI playListUI=new PlayListUI();
+                addCenter(playListUI.getRoot());
+                playListBtn.setSelected(true);
             }else {
                 playListBtn.setSelected(false);
                 Notification.show("使用该功能需要在设置中填写Token", MessageType.WARNING,2000,Pos.TOP_CENTER,App.mainStage);
@@ -183,9 +181,9 @@ public class MainUI {
         circleBtn.setOnAction(actionEvent -> {
             if (!circleBtn.isSelected()){
                 circleBtn.setSelected(true);
-            }else {
-                getCategory(CategoryType.CIRCLE);
             }
+            getCategory(CategoryType.CIRCLE);
+
         });
 
 
@@ -210,9 +208,10 @@ public class MainUI {
         tagBtn.setOnAction(actionEvent -> {
             if (!tagBtn.isSelected()){
                 tagBtn.setSelected(true);
-            }else {
-                getCategory(CategoryType.TAG);
             }
+
+            getCategory(CategoryType.TAG);
+
 
         });
 
@@ -224,9 +223,9 @@ public class MainUI {
         vaBtn.setOnAction(actionEvent -> {
             if (!vaBtn.isSelected()){
                 vaBtn.setSelected(true);
-            }else {
-                getCategory(CategoryType.VA);
             }
+            getCategory(CategoryType.VA);
+
         });
 
 

@@ -3,6 +3,7 @@ package cn.tealc995.asmronline.api;
 import cn.tealc995.asmronline.api.model.playList.MainPlayList;
 import cn.tealc995.asmronline.api.model.MainWorks;
 import cn.tealc995.asmronline.api.model.Response;
+import cn.tealc995.asmronline.api.model.playList.PlayListCreate;
 import cn.tealc995.asmronline.api.model.playList.PlayListRemoveWork;
 import cn.tealc995.asmronline.event.EventBusUtil;
 import cn.tealc995.asmronline.event.MainNotificationEvent;
@@ -110,6 +111,39 @@ public class PlayListApi {
             EventBusUtil.getDefault().post(new MainNotificationEvent(response.getMessage()));
             return null;
         }
+    }
+
+
+    public static boolean create(String url, PlayListCreate param){
+        ObjectMapper mapper=new ObjectMapper();
+        String json = null;
+        try {
+            json = mapper.writeValueAsString(param);
+            Response response = HttpUtils.post(url +"/api/playlist/create-playlist", json);
+            if (response.isSuccess()){
+                return true;
+            }else {
+                EventBusUtil.getDefault().post(new MainNotificationEvent(response.getMessage()));
+                return false;
+            }
+        } catch (JsonProcessingException e) {
+            logger.error(e.getMessage());
+            throw new RuntimeException(e);
+        }
+    }
+
+
+
+    public static boolean delete(String url, String id){
+        String json = String.format("{\"id\":\"%s\"}",id);
+        Response response = HttpUtils.post(url +"/api/playlist/delete-playlist", json);
+        if (response.isSuccess()){
+            return true;
+        }else {
+            EventBusUtil.getDefault().post(new MainNotificationEvent(response.getMessage()));
+            return false;
+        }
+
     }
 
 

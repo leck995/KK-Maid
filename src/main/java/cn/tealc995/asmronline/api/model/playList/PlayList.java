@@ -44,8 +44,10 @@ public class PlayList {
             return "我标记的";
         }else
             return name;
+    }
 
-
+    public boolean canDelete() {
+        return name.equals("__SYS_PLAYLIST_LIKED") || name.equals("__SYS_PLAYLIST_MARKED");
     }
 
     public void setName(String name) {
