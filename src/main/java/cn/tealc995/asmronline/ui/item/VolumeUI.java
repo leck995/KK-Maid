@@ -1,6 +1,7 @@
 package cn.tealc995.asmronline.ui.item;
 
 import cn.tealc995.asmronline.player.LcMediaPlayer;
+import cn.tealc995.asmronline.player.MediaPlayerUtil;
 import cn.tealc995.asmronline.util.CssLoader;
 import com.jfoenix.controls.JFXSlider;
 import javafx.geometry.Insets;
@@ -25,9 +26,9 @@ public class VolumeUI {
         root=new StackPane();
         JFXSlider volumeSlider=new JFXSlider();
         volumeSlider.setIndicatorPosition(JFXSlider.IndicatorPosition.RIGHT);
-        volumeSlider.valueProperty().bindBidirectional(LcMediaPlayer.getInstance().volumeProperty());
+        volumeSlider.valueProperty().bindBidirectional(MediaPlayerUtil.mediaPlayer().volumeProperty());
         volumeSlider.setMin(0);
-        volumeSlider.setMax(1);
+        volumeSlider.setMax(1.0);
         volumeSlider.getStyleClass().add("popup-volume-slider");
         volumeSlider.setOrientation(Orientation.VERTICAL);
         //设置播放条显示格式
@@ -36,7 +37,7 @@ public class VolumeUI {
         separator.setMaxWidth(40);
 
         ToggleButton muteBtnInChild=new ToggleButton();
-        muteBtnInChild.selectedProperty().bindBidirectional(LcMediaPlayer.getInstance().muteProperty());
+        muteBtnInChild.selectedProperty().bindBidirectional(MediaPlayerUtil.mediaPlayer().muteProperty());
         muteBtnInChild.getStyleClass().addAll("lc-svg-toggle-btn","popup-volume-mute-btn");
         muteBtnInChild.setGraphic(new Region());
         VBox volumePane=new VBox(muteBtnInChild,volumeSlider);

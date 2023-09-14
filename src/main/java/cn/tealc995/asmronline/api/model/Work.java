@@ -1,6 +1,7 @@
 package cn.tealc995.asmronline.api.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +37,11 @@ public class Work {
     private List<CountDetail> rate_count_detail;
     private List<Rank> rank;
 
+    @JsonDeserialize(using = LanguageEditionDeserialize.class)
     private List<LanguageEdition> language_editions;
+
+    private boolean black; //黑名单
+    private boolean hasLocalSubtitle;//本地字幕
 
 
 
@@ -238,9 +243,25 @@ public class Work {
         this.language_editions = language_editions;
     }
 
+    public boolean isBlack() {
+        return black;
+    }
+
+    public void setBlack(boolean black) {
+        this.black = black;
+    }
+
     @Override
     public boolean equals(Object obj) {
         Work temp= (Work) obj;
         return temp.getId().equals(this.getId());
+    }
+
+    public boolean isHasLocalSubtitle() {
+        return hasLocalSubtitle;
+    }
+
+    public void setHasLocalSubtitle(boolean hasLocalSubtitle) {
+        this.hasLocalSubtitle = hasLocalSubtitle;
     }
 }

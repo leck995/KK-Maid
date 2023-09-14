@@ -1,0 +1,28 @@
+
+.tree-view{
+    -fx-border-color: transparent;
+}
+
+.text-area {
+    -fx-background-insets: 0;
+    -fx-padding: 1;
+}
+
+.text-area > .scroll-pane {
+    -fx-background-color: transparent;
+}
+
+.text-area .content {
+    -fx-padding: 3 5 3 5;
+    -fx-cursor: text;
+}
+
+.text-area:focused {
+    -fx-background-color: transparent;
+    -fx-background-insets:0;
+    -fx-prompt-text-fill: transparent;
+}
+.card > .container {
+    -fx-border-color: transparent;
+    -fx-background-radius: 15;
+}

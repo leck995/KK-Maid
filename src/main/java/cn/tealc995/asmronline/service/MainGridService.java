@@ -9,6 +9,7 @@ import cn.tealc995.asmronline.api.model.LanguageEdition;
 import cn.tealc995.asmronline.api.model.MainWorks;
 import cn.tealc995.asmronline.api.model.Work;
 import cn.tealc995.asmronline.ui.CategoryType;
+import javafx.collections.ObservableSet;
 import javafx.concurrent.ScheduledService;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
@@ -16,6 +17,7 @@ import javafx.concurrent.Task;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -56,29 +58,39 @@ public class MainGridService extends Service<MainWorks> {
                 }
 
 
+                ObservableSet<String> workBlackList = Config.workBlackList;
                 if (works != null){
-                    for (Work work : works.getWorks()) {
+                    Iterator<Work> iterator = works.getWorks().iterator();
+                    while (iterator.hasNext()){
+                        Work work = iterator.next();
+                        if (workBlackList.contains(work.getFullId())){
+                            iterator.remove();
+                            continue;
+                        }else {
+                            work.setBlack(false);
+                        }
                         if (!work.isHas_subtitle() && folderList != null){
                             for (String s : folderList) {
                                 boolean exist = exist(work, s);
                                 if (exist){
-                                    work.setHas_subtitle(true);
-                                    System.out.println("存在字幕文件夹");
+                                    work.setHas_subtitle(true);//存在字幕文件夹
+                                    break;
                                 }
                             }
                         }
-
                         if (!work.isHas_subtitle() && zipList != null){
                             for (String s : zipList) {
                                 boolean exist = exist(work, s);
                                 if (exist){
-                                    work.setHas_subtitle(true);
-                                    System.out.println("存在字幕zip包");
+                                    work.setHas_subtitle(true);//存在字幕zip包
+                                    break;
                                 }
                             }
                         }
                     }
                 }
+
+
                 updateMessage("false");
                 return works;
             }

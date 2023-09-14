@@ -59,7 +59,7 @@ public class CategoryViewModel {
 
     public void search(CategoryType type,String key){
         EventBusUtil.getDefault().post(new SearchEvent(type,key));
-        EventBusUtil.getDefault().post(new MainCenterEvent(null,false));
+        EventBusUtil.getDefault().post(new MainCenterEvent(null,false,true));
     }
 
     public void filter(){

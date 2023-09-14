@@ -1,30 +1,44 @@
 package cn.tealc995.asmronline.ui;
 
-import atlantafx.base.controls.ModalPane;
-import atlantafx.base.controls.Popover;
-import atlantafx.base.controls.ProgressSliderSkin;
-import atlantafx.base.controls.ToggleSwitch;
+import atlantafx.base.controls.*;
+import atlantafx.base.theme.Styles;
 import cn.tealc995.asmronline.App;
 import cn.tealc995.asmronline.Config;
 import cn.tealc995.asmronline.api.model.SortType;
 import cn.tealc995.asmronline.event.EventBusUtil;
 import cn.tealc995.asmronline.event.MainNotificationEvent;
+import cn.tealc995.asmronline.model.StringKeyIntValue;
 import cn.tealc995.asmronline.player.LcMediaPlayer;
+import cn.tealc995.asmronline.player.MediaPlayerUtil;
 import cn.tealc995.asmronline.util.AnchorPaneUtil;
 import cn.tealc995.asmronline.util.CssLoader;
+import cn.tealc995.asmronline.util.OSUtil;
 import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXDialogLayout;
+import com.jianggujin.registry.JExecResult;
+import com.jianggujin.registry.JQueryOptions;
+import com.jianggujin.registry.JRegistry;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.DirectoryChooser;
 import javafx.util.StringConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.awt.*;
 import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 /**
  * @program: Asmr-Online
@@ -33,6 +47,7 @@ import java.io.File;
  * @create: 2023-07-15 03:46
  */
 public class SettingUI {
+    private static final Logger logger= LoggerFactory.getLogger(SettingUI.class);
     private StackPane root;
     private SettingUIViewModel viewModel;
 
@@ -54,6 +69,13 @@ public class SettingUI {
         Tab mainTab=new Tab("主界面");
         mainTab.setContent(initMainTab());
         mainTab.setClosable(false);
+        Tab playerUITab=new Tab("播放界面");
+        playerUITab.setContent(initplayerUITab());
+        playerUITab.setClosable(false);
+
+        Tab playerTab=new Tab("播放");
+        playerTab.setContent(initPlayerTab());
+        playerTab.setClosable(false);
 
         Tab hostTab=new Tab("服务器");
         hostTab.setContent(initHostTab());
@@ -69,10 +91,20 @@ public class SettingUI {
         lrcTab.setContent(initLrcTab());
         lrcTab.setClosable(false);
 
+
+        Tab blacklistTab=new Tab("黑名单");
+        blacklistTab.setContent(initBlackListTab());
+        blacklistTab.setClosable(false);
+
+
+        Tab downloadTab=new Tab("下载");
+        downloadTab.setContent(initDownloadTab());
+        downloadTab.setClosable(false);
+
         Tab aboutTab=new Tab("关于");
         aboutTab.setContent(initAboutTab());
         aboutTab.setClosable(false);
-        tabPane.getTabs().addAll(baseTab,mainTab,hostTab,desktopTab,lrcTab,aboutTab);
+        tabPane.getTabs().addAll(baseTab,mainTab,playerUITab,playerTab,hostTab,desktopTab,lrcTab,blacklistTab,downloadTab,aboutTab);
 
 
         Button saveBtn=new Button("保存");
@@ -128,12 +160,26 @@ public class SettingUI {
         });
         Pane pane2 = initRowPane(heightLabel, heightField);
 
+        Button setSizeButton=new Button("设置当前尺寸为默认尺寸");
+        setSizeButton.setOnAction(event -> {
+            widthField.setText(String.valueOf((int)App.mainStage.getWidth()));
+            heightField.setText(String.valueOf((int)App.mainStage.getHeight()));
+        });
+        StackPane pane3=new StackPane(setSizeButton);
+        pane3.setPadding(new Insets(10,20,10,20));
+        pane3.setAlignment(Pos.CENTER_RIGHT);
+
+
         Label versionLabel=new Label("检查更新");
         ToggleSwitch versionSwitch=new ToggleSwitch();
         versionSwitch.setDisable(true);
         versionSwitch.selectedProperty().bindBidirectional(viewModel.autoCheckVersionProperty());
-        Pane pane3 = initRowPane(versionLabel, versionSwitch);
-        VBox vBox=new VBox(pane1,pane2,new Separator(Orientation.HORIZONTAL),pane3);
+        Pane pane4 = initRowPane(versionLabel, versionSwitch);
+
+
+
+
+        VBox vBox=new VBox(pane1,pane2,pane3,new Separator(Orientation.HORIZONTAL),pane4);
         vBox.setPadding(new Insets(10,20,10,20));
         return vBox;
     }
@@ -173,6 +219,134 @@ public class SettingUI {
         return vBox;
 
     }
+
+    private Pane initplayerUITab(){
+        Label gaussianLabel=new Label("高斯模糊(越大越模糊)");
+        Slider gaussianSlider=new Slider();
+        gaussianSlider.setMin(5);
+        gaussianSlider.setMax(80);
+        gaussianSlider.setSkin(new ProgressSliderSkin(gaussianSlider));
+        gaussianSlider.valueProperty().bindBidirectional(viewModel.gaussianSizeProperty());
+        Pane pane1 = initRowPane(gaussianLabel, gaussianSlider);
+
+        Label darkerLabel=new Label("暗角(越大越亮)");
+        Slider darkerSlider=new Slider();
+        darkerSlider.setMin(0.4);
+        darkerSlider.setMax(0.9);
+        darkerSlider.setSkin(new ProgressSliderSkin(darkerSlider));
+        darkerSlider.valueProperty().bindBidirectional(viewModel.darkerSizeProperty());
+        Pane pane2 = initRowPane(darkerLabel, darkerSlider);
+
+        Label radiusModelLabel=new Label("封面圆角");
+        ToggleSwitch radiusModelSwitch=new ToggleSwitch();
+        radiusModelSwitch.selectedProperty().bindBidirectional(viewModel.detailAlbumRadiusModelProperty());
+        Pane pane3 = initRowPane(radiusModelLabel, radiusModelSwitch);
+
+
+        Label radiusSizeLabel=new Label("圆角尺寸");
+        Slider radiusSizeSlider=new Slider();
+
+        radiusSizeSlider.setMin(5);
+        radiusSizeSlider.setMax(80);
+        radiusSizeSlider.setSkin(new ProgressSliderSkin(radiusSizeSlider));
+        radiusSizeSlider.valueProperty().bindBidirectional(viewModel.detailAlbumRadiusSizeProperty());
+        Pane pane4 = initRowPane(radiusSizeLabel, radiusSizeSlider);
+        pane4.disableProperty().bind(radiusModelSwitch.selectedProperty().not());
+/*        Label effectModelLabel=new Label("封面阴影");
+        ToggleSwitch effectModelSwitch=new ToggleSwitch();
+        effectModelSwitch.selectedProperty().bindBidirectional(viewModel.detailAlbumEffectModelProperty());
+        Pane pane5 = initRowPane(effectModelLabel, effectModelSwitch);
+
+
+        Label effectSizeLabel=new Label("阴影尺寸");
+        Slider effectSizeSlider=new Slider();
+        effectSizeSlider.setMin(1);
+        effectSizeSlider.setMax(20);
+        effectSizeSlider.setSkin(new ProgressSliderSkin(effectSizeSlider));
+        effectSizeSlider.valueProperty().bindBidirectional(viewModel.detailAlbumEffectSizeProperty());
+        Pane pane6 = initRowPane(effectSizeLabel, effectSizeSlider);*/
+
+        VBox vBox=new VBox(pane1,pane2,new Separator(Orientation.HORIZONTAL),pane3,pane4);
+        vBox.setPadding(new Insets(10,20,10,20));
+        return vBox;
+
+    }
+    private Pane initPlayerTab(){
+
+        Label selectPlayerLabel=new Label("播放器内核(推荐使用VLC内核，更改需重启)");
+        ChoiceBox<String> selectPlayerChoiceBox=new ChoiceBox<>(viewModel.getPlayers());
+
+        selectPlayerChoiceBox.getSelectionModel().select(viewModel.getSelectPlayerIndex());
+        selectPlayerChoiceBox.getSelectionModel().selectedIndexProperty().addListener((observableValue, number, t1) ->{
+            int i= t1.intValue();
+            viewModel.setSelectPlayerIndex(t1.intValue());
+            if (i==1){
+                Card card=new Card();
+
+                JFXDialog dialog=new JFXDialog(root,card, JFXDialog.DialogTransition.CENTER);
+                dialog.setOverlayClose(false);
+
+                String tip=new String("KK Maid支持使用VLC内核进行播放，使用前请确保电脑中已经安装VLC播放器，否则将无法播放。如未安装请点击下方链接前往官网下载安装(64位电脑安装64位VLC，32位电脑安装32位VLC)");
+                Label introductionLabel=new Label(tip);
+                introductionLabel.setPrefWidth(550.0);
+                introductionLabel.setWrapText(true);
+                card.setHeader(introductionLabel);
+
+                introductionLabel.setWrapText(true);
+                Hyperlink vlcLink=new Hyperlink("未安装，前往VLC官网下载");
+                vlcLink.setOnAction(event -> {
+                    try {
+                        Desktop.getDesktop().browse(new URI("https://www.videolan.org/vlc/"));
+                    } catch (IOException | URISyntaxException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+
+                Button cancelBtn=new Button("已安装");
+                cancelBtn.setOnAction(event -> dialog.close());
+
+
+                HBox footPane=new HBox(vlcLink,cancelBtn);
+                footPane.setSpacing(15);
+                footPane.setAlignment(Pos.CENTER_RIGHT);
+                card.setFooter(footPane);
+
+                dialog.show();
+            }
+        });
+        Pane pane1 = initRowPane(selectPlayerLabel, selectPlayerChoiceBox);
+
+
+
+        Label checkLabel=new Label("Windows电脑可点击右侧按钮检测是否已安装VLC");
+        checkLabel.getStyleClass().add(Styles.TEXT_MUTED);
+
+        Button checkVlcBtn=new Button("检测VLC");
+        checkVlcBtn.setOnAction(event ->
+            EventBusUtil.getDefault().post(new MainNotificationEvent(installVLC() ? "VLC播放器已安装" : "VLC播放器未安装"))
+        );
+        checkVlcBtn.setDisable(!OSUtil.isWindows());
+        Pane pane2 = initRowPane(checkLabel, checkVlcBtn);
+
+
+
+        Label stopPlayOnEndLabel=new Label("作品播放完毕后停止播放");
+        ToggleSwitch stopPlayOnEndSwitch=new ToggleSwitch();
+        stopPlayOnEndSwitch.selectedProperty().bindBidirectional(viewModel.stopPlayOnEndProperty());
+        Pane pane3 = initRowPane(stopPlayOnEndLabel, stopPlayOnEndSwitch);
+
+
+        VBox vBox=new VBox(pane1,pane2,new Separator(Orientation.HORIZONTAL),pane3);
+        vBox.setPadding(new Insets(10,20,10,20));
+
+
+
+
+
+        return vBox;
+
+    }
+
 
 
 
@@ -257,7 +431,7 @@ public class SettingUI {
         Label showLrcLabel=new Label("显示歌词");
         ToggleSwitch showLrcSwitch=new ToggleSwitch();
         Pane pane1 = initRowPane(showLrcLabel, showLrcSwitch);
-        showLrcSwitch.selectedProperty().bindBidirectional(LcMediaPlayer.getInstance().desktopLrcShowProperty());
+        showLrcSwitch.selectedProperty().bindBidirectional(MediaPlayerUtil.mediaPlayer().desktopLrcShowProperty());
 
 
 
@@ -371,9 +545,68 @@ public class SettingUI {
         return vBox;
 
     }
+
+    private Pane initBlackListTab(){
+        Label workLabel=new Label("作品黑名单(空格分隔)");
+        workLabel.getStyleClass().add("title-2");
+        TextArea workArea=new TextArea();
+        workArea.setPromptText("这里输入作品，以空格分隔");
+
+        workArea.textProperty().bindBidirectional(viewModel.workBlackListProperty());
+        VBox vBox=new VBox(workLabel,workArea);
+        vBox.setPadding(new Insets(10,20,10,20));
+        return vBox;
+    }
+
+
+
+    private Pane initDownloadTab(){
+        Label downloadLabel=new Label("下载目录");
+        TextField  downloadField=new TextField();
+        downloadField.setDisable(true);
+        downloadField.textProperty().bindBidirectional(viewModel.downloadDirProperty());
+        Button downloadBtn=new Button("选择");
+        downloadBtn.setOnAction(event -> {
+            DirectoryChooser directoryChooser=new DirectoryChooser();
+            directoryChooser.setTitle("选择下载目录");
+            File file = directoryChooser.showDialog(App.mainStage);
+            if (file != null)
+                downloadField.setText(file.getAbsolutePath());
+        });
+        HBox hBox=new HBox(downloadField,downloadBtn);
+        hBox.setSpacing(10);
+        Pane pane1 = initRowPane(downloadLabel, hBox);
+
+
+        Popover hostPopover=new Popover(new Label("本地Aira2一般填写http://localhost:6800/jsonrpc，本地Motrix一般填写http://localhost:16800/jsonrpc"));
+        Hyperlink hostLink=new Hyperlink("?");
+        hostLink.setOnAction(event -> hostPopover.show(hostLink));
+        Label hostLabel=new Label("Aria2地址",hostLink);
+        hostLabel.setContentDisplay(ContentDisplay.RIGHT);
+        TextField heightField=new TextField();
+        heightField.textProperty().bindBidirectional(viewModel.aria2HostProperty());
+        Pane pane2 = initRowPane(hostLabel, heightField);
+
+
+
+        Label tokenLabel=new Label("Aria2 Token(RPC密钥)");
+        TextField tokenField=new TextField();
+        tokenField.textProperty().bindBidirectional(viewModel.ariaRPCKeyProperty());
+        Pane pane3 = initRowPane(tokenLabel, tokenField);
+
+
+
+
+
+
+
+        VBox vBox=new VBox(pane1,new Separator(Orientation.HORIZONTAL),pane2,pane3);
+        vBox.setPadding(new Insets(10,20,10,20));
+        return vBox;
+    }
     private Pane initAboutTab(){
 
-        Label label=new Label("未来道具11号(KK Maid) 1.0");
+        Label label=new Label("未来道具11号(KK Maid) 1.1");
         label.getStyleClass().add("title-2");
 
 
@@ -392,9 +625,36 @@ public class SettingUI {
         AnchorPaneUtil.setPosition(node1,10.0,null,null,0.0);
         AnchorPaneUtil.setPosition(node2,0.0,0.0,null,null);
 
+
         return anchorPane;
     }
 
+
+
+
+    private boolean installVLC(){
+        if (OSUtil.isWindows()){
+            JExecResult result = null;
+            try {
+                result = JRegistry.query("HKEY_CLASSES_ROOT\\Applications\\",
+                        new JQueryOptions().useF("\"vlc.exe\""));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            JRegistry.dump(result);
+            logger.info("Windows系统，VLC播放器是否安装:{}", result.isSuccess());
+            return result.isSuccess();
+        }else {
+            return false;
+        }
+
+
+
+
+
+    }
 
     public StackPane getRoot() {
         return root;

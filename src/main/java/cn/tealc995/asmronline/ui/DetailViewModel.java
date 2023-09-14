@@ -11,6 +11,7 @@ import cn.tealc995.asmronline.event.MainNotificationEvent;
 import cn.tealc995.asmronline.model.Audio;
 import cn.tealc995.asmronline.model.Music;
 import cn.tealc995.asmronline.player.LcMediaPlayer;
+import cn.tealc995.asmronline.player.MediaPlayerUtil;
 import cn.tealc995.asmronline.service.PlayListRemoveWorkService;
 import cn.tealc995.asmronline.service.PlayListWorkExistService;
 import javafx.beans.property.SimpleObjectProperty;
@@ -63,7 +64,7 @@ public class DetailViewModel {
             list.add(new Audio(track.getTitle(),track.getMediaDownloadUrl(),track.getMediaStreamUrl(),track.getStreamLowQualityUrl(),track.getDuration()));
         }
 
-        LcMediaPlayer.getInstance().setMusic(new Music(work.get(),list),0);
+        MediaPlayerUtil.mediaPlayer().setMusic(new Music(work.get(),list),0);
     }
 
 

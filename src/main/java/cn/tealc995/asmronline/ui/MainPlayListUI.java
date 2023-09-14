@@ -1,8 +1,10 @@
 package cn.tealc995.asmronline.ui;
 
+import atlantafx.base.controls.Tile;
 import cn.tealc995.asmronline.api.model.playList.PlayList;
 import cn.tealc995.asmronline.api.model.Work;
 import cn.tealc995.asmronline.ui.cell.PlayListWorkCell;
+import cn.tealc995.asmronline.ui.cell.WorkCell;
 import cn.tealc995.asmronline.util.AnchorPaneUtil;
 import cn.tealc995.asmronline.util.CssLoader;
 import cn.tealc995.teaFX.controls.LoadingDot;
@@ -42,10 +44,11 @@ public class MainPlayListUI {
         allCountTitle.textProperty().bind(Bindings.createStringBinding(() -> String.format("%s (%d)",viewModel.getTitle(),viewModel.getTotalCount()),viewModel.totalCountProperty()));
         allCountTitle.getStyleClass().add("all-count-title");
 
-
         BorderPane topPane=new BorderPane();
         topPane.setTop(allCountTitle);
         topPane.setPadding(new Insets(5));
+
+
 
 
 
@@ -69,11 +72,19 @@ public class MainPlayListUI {
         }
 
         workItems.addListener((ListChangeListener<? super Work>) change -> {
-            flowPane.getChildren().clear();
-            for (Work work : change.getList()) {
-                flowPane.getChildren().add(new PlayListWorkCell(work));
+            while (change.next()){
+                if (change.wasRemoved()){ //此处remove必须放在add前面，这是因为setAll()时会同时产生remove和add事件(其实还会参数replace事件)，一旦顺序颠倒，则第一个work会消失。
+                    flowPane.getChildren().remove(change.getFrom());
+                }
+
+                if (change.wasAdded()){
+                    flowPane.getChildren().clear();
+                    for (Work work : workItems) {
+                        flowPane.getChildren().add(new PlayListWorkCell(work));
+                    }
+                    scrollPane.setVvalue(0);
+                }
             }
-            scrollPane.setVvalue(0);
         });
 
         SimpleIntegerProperty removeIndex=new SimpleIntegerProperty();
@@ -113,6 +124,9 @@ public class MainPlayListUI {
         });
         pageField.setOnAction(actionEvent -> {
             commit(pageField.getText());
+            pageField.setText("");
+            root.requestFocus();
+
         });
 
 

@@ -8,6 +8,7 @@ import cn.tealc995.asmronline.api.model.Role;
 import cn.tealc995.asmronline.api.model.Work;
 import cn.tealc995.asmronline.api.model.playList.PlayListRemoveWork;
 import cn.tealc995.asmronline.event.*;
+import cn.tealc995.asmronline.service.StarWorkRemoveService;
 import cn.tealc995.asmronline.ui.CategoryType;
 import cn.tealc995.asmronline.ui.DetailUi;
 import cn.tealc995.asmronline.util.AnchorPaneUtil;
@@ -16,13 +17,12 @@ import cn.tealc995.teaFX.controls.notification.MessageType;
 import cn.tealc995.teaFX.controls.notification.Notification;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ToggleButton;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.shape.Rectangle;
@@ -74,7 +74,7 @@ public class PlayListWorkCell extends VBox {
         circleLabel.setId("grid-item-circle");
         circleLabel.getStyleClass().add("list-item-circle");
         circleLabel.setOnMouseClicked(mouseEvent -> {
-            EventBusUtil.getDefault().post(new MainCenterEvent(null,false));
+            EventBusUtil.getDefault().post(new MainCenterEvent(null,false,true));
             EventBusUtil.getDefault().post(new SearchEvent(CategoryType.CIRCLE,work.getCircle().getName()));
             mouseEvent.consume();
         });
@@ -131,8 +131,13 @@ public class PlayListWorkCell extends VBox {
         }
 
         if (work.isHas_subtitle()) {
-            Label label = new Label("字幕");
+            Label label = new Label();
             label.setId("grid-item-subtext");
+            if (work.isHasLocalSubtitle()){
+                label.setText("本地字幕");
+            }else {
+                label.setText("字幕");
+            }
             label.getStyleClass().add("list-item-tag");
             tagPane.getChildren().add(label);
         }
@@ -152,17 +157,22 @@ public class PlayListWorkCell extends VBox {
             starBtn.getStyleClass().addAll("lc-svg-btn", "list-item-star-btn");
             starBtn.setOnAction(actionEvent -> {
                 starBtn.setVisible(false);
-                EventBusUtil.getDefault().post(new GridItemRemoveEvent(work));
-                rating.getStyleClass().remove("user-rating");
-                //rating.setRating(work.getRate_average_2dp());
-                boolean b = StarApi.deleteStar(Config.HOST.get(), work.getId());
-
-                if (b){
-                    Notification.show(String.format("成功取消收藏作品(RJ%s)",work.getId()), MessageType.SUCCESS,Pos.TOP_CENTER, App.mainStage);
-                }else {
-                    Notification.show(String.format("错误：无法取消收藏作品(RJ%s)",work.getId()), MessageType.FAILED,Pos.TOP_CENTER, App.mainStage);
-                }
-
+                StarWorkRemoveService service=new StarWorkRemoveService();
+                service.valueProperty().addListener((observableValue, aBoolean, t1) -> {
+                    if (t1 != null){
+                        if(t1){
+                            EventBusUtil.getDefault().post(new GridItemRemoveEvent(work));
+                            rating.getStyleClass().remove("user-rating");
+                            Notification.show(String.format("成功取消收藏作品(RJ%s)",work.getId()), MessageType.SUCCESS,Pos.TOP_CENTER, App.mainStage);
+                        }else {
+                            starBtn.setVisible(true);
+                            Notification.show(String.format("错误：无法取消收藏作品(RJ%s)",work.getId()), MessageType.FAILED,Pos.TOP_CENTER, App.mainStage);
+                        }
+                    }
+                });
+                service.setUrl(Config.HOST.get());
+                service.setId(work.getId());
+                service.start();
 
             });
             headPane.getChildren().add(starBtn);
@@ -186,9 +196,6 @@ public class PlayListWorkCell extends VBox {
 
         rating.ratingProperty().addListener((observableValue, old, t1) -> {
             int i = (int) Math.ceil(t1.doubleValue());
-            if ((int) Math.ceil(old.doubleValue()) == i){
-                return;
-            }
 
             rating.getStyleClass().add("user-rating");
             rating.setRating(i);
@@ -212,13 +219,14 @@ public class PlayListWorkCell extends VBox {
         EventHandler<MouseEvent> labelHandler = mouseEvent -> {
             Label source = (Label) mouseEvent.getSource();
             if (source.getAccessibleText().equals("category")) {
-                EventBusUtil.getDefault().post(new MainCenterEvent(null,false));
                 EventBusUtil.getDefault().post(new SearchEvent(CategoryType.TAG,source.getText()));
+                EventBusUtil.getDefault().post(new MainCenterEvent(null,false,true));
                 mouseEvent.consume();
             }
             if (source.getAccessibleText().equals("va")) {
-                EventBusUtil.getDefault().post(new MainCenterEvent(null,false));
+
                 EventBusUtil.getDefault().post(new SearchEvent(CategoryType.VA,source.getText()));
+                EventBusUtil.getDefault().post(new MainCenterEvent(null,false,true));
                 mouseEvent.consume();
             }
             mouseEvent.consume();
@@ -259,9 +267,62 @@ public class PlayListWorkCell extends VBox {
         getStyleClass().add("list-item-pane");
 
         setOnMouseClicked(mouseEvent -> {
-            DetailUi detailUi=new DetailUi(work);
-            EventBusUtil.getDefault().post(new MainDialogEvent(detailUi.getRoot()));
+            if (mouseEvent.getButton() == MouseButton.PRIMARY){
+                DetailUi detailUi=new DetailUi(work);
+                EventBusUtil.getDefault().post(new MainDialogEvent(detailUi.getRoot()));
+            }
+
         });
+
+
+        setOnContextMenuRequested(contextMenuEvent -> {
+
+
+
+            MenuItem copyTitleItem=new MenuItem("标题");
+            copyTitleItem.setOnAction(event -> {
+                Clipboard clipboard = Clipboard.getSystemClipboard();
+                ClipboardContent content = new ClipboardContent();
+                content.putString(work.getTitle());
+                clipboard.setContent(content);
+                Notification.show(String.format("%s:已经复制标题到剪切板", work.getFullId()), MessageType.SUCCESS,2000, Pos.TOP_CENTER, App.mainStage);
+                event.consume();
+            });
+            MenuItem copyRJItem=new MenuItem("RJ");
+            copyRJItem.setOnAction(event -> {
+                Clipboard clipboard = Clipboard.getSystemClipboard();
+                ClipboardContent content = new ClipboardContent();
+                content.putString(work.getFullId());
+                clipboard.setContent(content);
+                Notification.show(String.format("%s:已经复制RJ到剪切板", work.getFullId()), MessageType.SUCCESS,2000, Pos.TOP_CENTER, App.mainStage);
+                event.consume();
+            });
+            MenuItem copyCircleItem=new MenuItem("社团");
+            copyCircleItem.setOnAction(event -> {
+                Clipboard clipboard = Clipboard.getSystemClipboard();
+                ClipboardContent content = new ClipboardContent();
+                content.putString(work.getCircle().getName());
+                clipboard.setContent(content);
+                Notification.show(String.format("%s:已经复制团到剪切板", work.getFullId()), MessageType.SUCCESS,2000, Pos.TOP_CENTER, App.mainStage);
+                event.consume();
+            });
+
+            Menu copyParentItem=new Menu("复制");
+            copyParentItem.getItems().addAll(copyTitleItem,copyRJItem,copyCircleItem);
+
+
+
+
+
+            MenuItem blacklistItem=new MenuItem("加入黑名单");
+            blacklistItem.setOnAction(event -> {
+                Config.workBlackList.add(work.getFullId());
+                EventBusUtil.getDefault().post(new BlackWorkEvent(work));
+            });
+            ContextMenu contextMenu=new ContextMenu(copyParentItem,blacklistItem);
+            contextMenu.show(this,contextMenuEvent.getScreenX(),contextMenuEvent.getScreenY());
+        });
+
 
     }
 }

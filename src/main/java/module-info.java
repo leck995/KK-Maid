@@ -12,6 +12,12 @@ module cn.tealc995.asmronline {
     requires jdk.crypto.cryptoki;
     requires net.lingala.zip4j;
     requires org.slf4j;
+    requires uk.co.caprica.vlcj;
+    requires jaudiotagger;
+    requires JRegistry;
+    requires net.coobird.thumbnailator;
+    requires filters;
+    requires javafx.swing;
 
     requires org.kordamp.ikonli.core;
     requires org.kordamp.ikonli.javafx;
@@ -27,4 +33,6 @@ module cn.tealc995.asmronline {
     exports cn.tealc995.asmronline.zip;
     exports cn.tealc995.asmronline.event;
     exports cn.tealc995.asmronline.api.model.playList;
+    exports cn.tealc995.aria2.model;
+    exports cn.tealc995.aria2;
 }

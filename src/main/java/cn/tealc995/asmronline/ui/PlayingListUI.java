@@ -5,6 +5,8 @@ import cn.tealc995.asmronline.event.EventBusUtil;
 import cn.tealc995.asmronline.event.MainDialogEvent;
 import cn.tealc995.asmronline.model.Audio;
 import cn.tealc995.asmronline.player.LcMediaPlayer;
+import cn.tealc995.asmronline.player.MediaPlayerUtil;
+import cn.tealc995.asmronline.player.TeaMediaPlayer;
 import cn.tealc995.asmronline.util.CssLoader;
 import com.jfoenix.controls.JFXDialogLayout;
 import javafx.scene.control.*;
@@ -24,7 +26,7 @@ public class PlayingListUI {
 
     private JFXDialogLayout root;
     public PlayingListUI() {
-        LcMediaPlayer player=LcMediaPlayer.getInstance();
+        TeaMediaPlayer player= MediaPlayerUtil.mediaPlayer();
         root = new JFXDialogLayout();
         root.getStylesheets().add(CssLoader.getCss(CssLoader.playing_list));
 
@@ -56,6 +58,19 @@ public class PlayingListUI {
                         if (songInformation!=null){
                             this.setDisable(false);
                             setText(songInformation.getTitle());
+                            MenuItem playItem=new MenuItem("播放");
+                            playItem.setOnAction(event -> {
+                                player.init(listView.getItems().indexOf(songInformation),true);
+                                listView.getSelectionModel().select(songInformation);
+                            });
+                            MenuItem deleteItem=new MenuItem("移除");
+                            deleteItem.setOnAction(event -> {
+                                player.removeAudio(listView.getItems().indexOf(songInformation));
+                                listView.getSelectionModel().select(player.getPlayingIndexInList());
+                                songSizeLabel.setText(String.format("共%d首",player.getSongs().size()));
+                            });
+                            ContextMenu contextMenu=new ContextMenu(playItem,deleteItem);
+                            setContextMenu(contextMenu);
                         }else {
                             this.setText(null);
                             this.setDisable(true);
@@ -77,7 +92,7 @@ public class PlayingListUI {
                 }
             }
         });
-        if (player.getPlayingAudio()!=null)
+        if (player.getPlayingAudio() != null)
             listView.getSelectionModel().select(player.getPlayingAudio());
 
 
@@ -94,49 +109,21 @@ public class PlayingListUI {
         toFolderBtn.setTooltip(new Tooltip("打开ASMR目录"));
         toFolderBtn.getStyleClass().addAll("to-folder-btn");
         toFolderBtn.setOnAction(actionEvent -> {
-        /*    if (LcMediaPlayer.getInstance().mediaPlayer ==null) return;
-            if (SettingProperties.viewModel == 1){ //网格布局时显示
-                MainGridController.getInstance().showDetail(URLUtils.getFolderParentPath(LcMediaPlayer.getInstance().getUrl()));
-            }else{ //表格布局时显示
-
-            }*/
-            Work work = LcMediaPlayer.getInstance().getWork();
+            Work work = player.getWork();
             if (work != null){
                 DetailUi detailUi=new DetailUi(work);
-
                 EventBusUtil.getDefault().post(new MainDialogEvent(detailUi.getRoot()));
             }
-
-
         });
         Button clearBtn=new Button("清空列表");
         clearBtn.setGraphic(new Region());
         clearBtn.setTooltip(new Tooltip("清空歌曲列表"));
         clearBtn.getStyleClass().addAll("clear-songs-btn");
         clearBtn.setOnAction(actionEvent -> {
-          /*  vsongs.clear();
-            songSizeLabel.setText(String.format("共%d首",songs.size()));
-            setDispose();*/
+            player.clearPlayingList();
+            songSizeLabel.setText(String.format("共%d首",0));
         });
         root.setActions(toFolderBtn,clearBtn);
-
-   /*     JFXDialog dialog = new JFXDialog(root, content, JFXDialog.DialogTransition.CENTER);
-        StackPane dialogContainer = (StackPane) dialog.getChildren().get(0);
-        dialogContainer.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT,null,null)));
-        dialogContainer.setPrefHeight(root.getHeight()-200);
-        dialogContainer.setPrefWidth(350);
-        double offsetX = root.getWidth()/2;
-        dialogContainer.setTranslateX(offsetX-180);
-        dialogContainer.setAlignment(Pos.BOTTOM_RIGHT);
-        dialog.setAlignment(Pos.BOTTOM_RIGHT);
-        dialog.show();*/
-
-    /*    dialog.setOnDialogClosed(event -> {
-            StackPane  node = (StackPane) event.getSource();
-            node.getChildren().clear();
-            node=null;
-        });*/
-
     }
 
     public JFXDialogLayout getRoot() {

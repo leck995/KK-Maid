@@ -7,11 +7,13 @@ import cn.tealc995.asmronline.event.MainDialogEvent;
 import cn.tealc995.asmronline.event.MainPaneEvent;
 import cn.tealc995.asmronline.model.lrc.LrcBean;
 import cn.tealc995.asmronline.player.LcMediaPlayer;
+import cn.tealc995.asmronline.player.MediaPlayerUtil;
+import cn.tealc995.asmronline.player.TeaMediaPlayer;
 import cn.tealc995.asmronline.ui.component.LrcView;
 import cn.tealc995.asmronline.util.AnchorPaneUtil;
 import cn.tealc995.asmronline.util.CssLoader;
 import cn.tealc995.asmronline.util.TimeFormatUtil;
-import cn.tealc995.teaFX.controls.SceneBar;
+
 import cn.tealc995.teaFX.enums.TitleBarStyle;
 import com.jfoenix.controls.JFXSlider;
 import javafx.beans.binding.Bindings;
@@ -60,11 +62,11 @@ public class PlayerUI2 {
 
     private ContextMenu soundPopup;
 
-    private LcMediaPlayer player;
+    private TeaMediaPlayer player;
 
 
     public PlayerUI2(){
-        player=LcMediaPlayer.getInstance();
+        player= MediaPlayerUtil.mediaPlayer();
         root=new StackPane();
         root.getStyleClass().add("background");
         root.getStylesheets().add(CssLoader.getCss(CssLoader.baseUI));
@@ -91,9 +93,9 @@ public class PlayerUI2 {
         AnchorPaneUtil.setPosition(gridPane,0.0,0.0,0.0,0.0);
         AnchorPaneUtil.setPosition(backBtn,null,15.0,15.0,null);
 
-        SceneBar sceneBar=new SceneBar(App.mainStage, TitleBarStyle.NO_LEFT,false);
+   /*     SceneBar sceneBar=new SceneBar(App.mainStage, TitleBarStyle.NO_LEFT,false);
         sceneBar.setContent(mainPane);
-        root.getChildren().addAll(bgPane1,bgPane,sceneBar);
+        root.getChildren().addAll(bgPane1,bgPane,sceneBar);*/
 
 
     }

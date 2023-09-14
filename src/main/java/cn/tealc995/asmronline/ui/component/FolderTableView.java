@@ -1,17 +1,29 @@
 package cn.tealc995.asmronline.ui.component;
 
 
+import atlantafx.base.theme.Styles;
+import cn.tealc995.asmronline.App;
+import cn.tealc995.asmronline.Config;
+import cn.tealc995.asmronline.api.HttpUtils;
 import cn.tealc995.asmronline.api.model.Track;
 import cn.tealc995.asmronline.api.model.Work;
 import cn.tealc995.asmronline.event.EventBusUtil;
 import cn.tealc995.asmronline.event.MainDialogEvent;
+import cn.tealc995.asmronline.filter.SupportAudioFormat;
+import cn.tealc995.asmronline.filter.SupportImageFormat;
+import cn.tealc995.asmronline.filter.SupportSubtitleFormat;
 import cn.tealc995.asmronline.model.Audio;
 import cn.tealc995.asmronline.model.Music;
 import cn.tealc995.asmronline.model.lrc.LrcFile;
 import cn.tealc995.asmronline.model.lrc.LrcType;
 import cn.tealc995.asmronline.player.LcMediaPlayer;
+import cn.tealc995.asmronline.player.MediaPlayerUtil;
+import cn.tealc995.asmronline.ui.DownloadUI;
 import cn.tealc995.asmronline.ui.PosterUI;
 import cn.tealc995.asmronline.ui.stage.ImageViewStage;
+import cn.tealc995.asmronline.ui.stage.SubtitleStage;
+import cn.tealc995.teaFX.controls.notification.MessageType;
+import cn.tealc995.teaFX.controls.notification.Notification;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -32,6 +44,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.util.Callback;
+import org.kordamp.ikonli.javafx.FontIcon;
+import org.kordamp.ikonli.material2.Material2AL;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -60,6 +74,7 @@ public class FolderTableView extends BorderPane {
     private StringProperty rootPath;
     private StringProperty currentPath;
     private PathViewPane pathViewPane;
+    private HBox controlsPane;
     private Image audioImage,picImage,otherImage,videoImage,folderImage;
 
     public FolderTableView(Work work,ObservableList<Track> items) {
@@ -70,12 +85,54 @@ public class FolderTableView extends BorderPane {
         currentPath=new SimpleStringProperty("根目录");
         initTableView();
         initPathView();
+        initControls();
 
         setTop(pathViewPane);
         setCenter(tableView);
-        //setBottom(initFilterPane());
+
+        setBottom(controlsPane);
     }
 
+
+
+    private void initControls(){
+        Button downloadBtn=new Button(null,new FontIcon(Material2AL.ARROW_DOWNWARD));
+        downloadBtn.getStyleClass().add(Styles.BUTTON_ICON);
+        downloadBtn.setOnAction(event -> {
+            if (Config.downloadDir.get() == null || Config.aria2Host ==null || Config.ariaRPCKey ==null){
+                Notification.show("先在设置中配置下载目录和Aria2", MessageType.WARNING,2000, Pos.TOP_CENTER, App.mainStage);
+            }else {
+                Track track=new Track();
+                track.setTitle(work.getFullId());
+                track.setType("folder");
+                track.setChildren(itemsBack);
+                DownloadUI downloadUI=new DownloadUI(work,track);
+                EventBusUtil.getDefault().post(new MainDialogEvent(downloadUI.getRoot()));
+            }
+
+        });
+
+/*        Button selectBtn=new Button(null,new FontIcon(Material2AL.CHECK_BOX));
+
+        selectBtn.setOnAction(event -> {
+            if (tableView.getSelectionModel().getSelectedItems().size() > 1){
+                tableView.getSelectionModel().clearSelection();
+            }else {
+                tableView.getSelectionModel().selectAll();
+            }
+        });
+
+
+
+        selectBtn.getStyleClass().add(Styles.BUTTON_ICON);
+
+        Label tipLabel=new Label("按住Shift进行多选");
+        tipLabel.getStyleClass().add(Styles.TEXT_SUBTLE);*/
+        controlsPane=new HBox(downloadBtn);
+        controlsPane.setAlignment(Pos.CENTER_RIGHT);
+        controlsPane.setSpacing(8.0);
+        controlsPane.setPadding(new Insets(3,5,3,5));
+    }
 
 
 
@@ -121,37 +178,6 @@ public class FolderTableView extends BorderPane {
         }));
     }
 
-/*    private Pane initFilterPane(){
-        ToggleGroup filterBtnToggleGroup=new ToggleGroup();
-
-        ToggleButton allBtn=new ToggleButton("全部");
-        allBtn.setToggleGroup(filterBtnToggleGroup);
-        allBtn.getStyleClass().addAll("lc-label-btn","lc-btn-dark");
-
-        ToggleButton audioBtn=new ToggleButton("音频");
-        audioBtn.setToggleGroup(filterBtnToggleGroup);
-        audioBtn.getStyleClass().addAll("lc-label-btn","lc-btn-dark");
-
-        ToggleButton videoBtn=new ToggleButton("视频");
-        videoBtn.setToggleGroup(filterBtnToggleGroup);
-        videoBtn.getStyleClass().addAll("lc-label-btn","lc-btn-dark");
-
-        ToggleButton picBtn=new ToggleButton("图片");
-        picBtn.setToggleGroup(filterBtnToggleGroup);
-        picBtn.getStyleClass().addAll("lc-label-btn","lc-btn-dark");
-
-        allBtn.setOnAction(actionEvent -> filter(FolderTableView.ALL));
-        audioBtn.setOnAction(actionEvent -> filter(FolderTableView.AUDIO));
-        videoBtn.setOnAction(actionEvent -> filter(FolderTableView.VIDEO));
-        picBtn.setOnAction(actionEvent -> filter(FolderTableView.PICTURE));
-
-        HBox filterPane=new HBox(allBtn,audioBtn,videoBtn,picBtn);
-        filterPane.setPadding(new Insets(10.0,10.0,0.0,0.0));
-        filterPane.setSpacing(8.0);
-        filterPane.setAlignment(Pos.CENTER_RIGHT);
-        return filterPane;
-    }*/
-
     private void initTableView(){
         //rootPath.set(file.getPath());
         //currentPath.set(file.getPath());
@@ -164,6 +190,8 @@ public class FolderTableView extends BorderPane {
         TableColumn<Track, String> typeCol = new TableColumn<>("类型");
         nameCol.getStyleClass().add("detail-table-type");
         typeCol.setPrefWidth(60);
+
+
         tableView.getColumns().addAll(typeCol, nameCol);
         nameCol.setCellValueFactory(new PropertyValueFactory<Track, String>("title"));
         typeCol.setCellValueFactory(new PropertyValueFactory<Track, String>("type"));
@@ -209,107 +237,101 @@ public class FolderTableView extends BorderPane {
             }
         });
 
-/*        tableView.setSortPolicy(table -> {
-            Comparator<AsmrFile> comparator = new Comparator<AsmrFile>() {
-                @Override
-                public int compare(AsmrFile o1, AsmrFile o2) {
-                    if (o1.isDir() && !o2.isDir()) {
-                        return -1;
-                    }
-                    if (!o1.isDir() && o2.isDir()) {
-                        return 1;
-                    }
-
-                    return o1.getFilename().compareTo(o2.getFilename());
-                }
-            };
-            FXCollections.sort(table.getItems(), comparator);
-            return true;
-        });*/
-
         tableView.setRowFactory(view -> {
             TableRow<Track> row = new TableRow<>(){
                 @Override
-                protected void updateItem(Track AsmrFile, boolean b) {
-                    super.updateItem(AsmrFile, b);
+                protected void updateItem(Track asmrFile, boolean b) {
+                    super.updateItem(asmrFile, b);
                     if (!b) {
+                        setDisable(false);
                         setOnMouseClicked(mouseEvent -> {
                             if (mouseEvent.getButton() == MouseButton.PRIMARY && mouseEvent.getClickCount() == 2) {
-                                if (AsmrFile == null) return;
-                                String temp = AsmrFile.getType();
+                                if (asmrFile == null) return;
+                                String temp = asmrFile.getType();
                                 if (temp.equals("folder")) {
-                                    update(AsmrFile);
+                                    update(asmrFile);
                                 } else if (temp.equals("audio")) {
                                     List<Audio> list = new ArrayList<>();
                                     int index=0;
                                     int currentTrack=0;
+                                    boolean hasSubtitle = false;
+                                    List<LrcFile> lrcList=new ArrayList<>();
                                     for (Track track : items) {
                                         if (track.getType().equals("audio")){
-                                            list.add(new Audio(track.getTitle(), track.getMediaDownloadUrl(), track.getMediaStreamUrl(), track.getStreamLowQualityUrl(), track.getDuration()));
-                                            if (track != AsmrFile){
-                                                index+=1;
-                                            }else {
-                                                currentTrack=index;
+                                            if (SupportAudioFormat.compareFile(track.getTitle())){
+                                                list.add(new Audio(track.getTitle(), track.getMediaDownloadUrl(), track.getMediaStreamUrl(), track.getStreamLowQualityUrl(), track.getDuration()));
+                                                if (track != asmrFile){
+                                                    index+=1;
+                                                }else {
+                                                    currentTrack=index;
+                                                }
+                                            }
+                                        }else if (track.getType().equals("text")){
+                                            if (SupportSubtitleFormat.compareFile(track.getTitle())){
+                                                lrcList.add(new LrcFile(track.getTitle(),track.getMediaDownloadUrl(), LrcType.NET));
+                                                hasSubtitle=true; //当前目录有字幕文件
                                             }
                                         }
                                     }
 
-                                    List<LrcFile> lrcList=new ArrayList<>();
-                                    for (Track track : itemsBack) {
-                                       lrc(track,lrcList);
+                                    if (!hasSubtitle){ //当前文件夹内没有字幕时，去所有目录寻找
+                                        for (Track track : itemsBack) {
+                                            lrc(track,lrcList);
+                                        }
+                                        lrcList.sort(Comparator.comparing(LrcFile::getTitle));
                                     }
-                                    lrcList.sort(Comparator.comparing(LrcFile::getTitle));
-
 
                                     if (lrcList.size() > 0){
-                                        LcMediaPlayer.getInstance().setMusic(new Music(work, list,lrcList),currentTrack);
+                                        MediaPlayerUtil.mediaPlayer().setMusic(new Music(work, list,lrcList),currentTrack);
                                     }else {
-                                        LcMediaPlayer.getInstance().setMusic(new Music(work, list),currentTrack);
+                                        MediaPlayerUtil.mediaPlayer().setMusic(new Music(work, list),currentTrack);
                                     }
-
-
-
 
                                 } else if (temp.equals("image")) {
-                                    List<Track> list = new ArrayList<>();
-                                    int index=0;
-                                    int currentTrack=0;
-                                    for (Track track : items) {
-                                        if (track.getType().equals("image")){
-                                            list.add(track);
-                                            if (track != AsmrFile){
-                                                index+=1;
-                                            }else {
-                                                currentTrack=index;
+                                    if (SupportImageFormat.compareFile(asmrFile.getTitle())){
+                                        List<Track> list = new ArrayList<>();
+                                        int index=0;
+                                        int currentTrack=0;
+                                        for (Track track : items) {
+                                            if (track.getType().equals("image")){
+                                                list.add(track);
+                                                if (track != asmrFile){
+                                                    index+=1;
+                                                }else {
+                                                    currentTrack=index;
+                                                }
                                             }
                                         }
+                                        ImageViewStage imageViewStage=ImageViewStage.getInstance(list,currentTrack);
+                                        imageViewStage.setIconified(false);
+                                        imageViewStage.requestFocus();
+                                        imageViewStage.toFront();
+                                        imageViewStage.show();
+                                    }else { //不支持的图片格式的处理，通知消息线程进行提醒
+
                                     }
-
-
-
-                                    ImageViewStage imageViewStage=ImageViewStage.getInstance(list,currentTrack);
-                                    imageViewStage.setIconified(false);
-                                    imageViewStage.requestFocus();
-                                    imageViewStage.toFront();
-                                    imageViewStage.show();
-
-                                } else {
-
+                                } else if (temp.equals("text")){ //对文本文件进行处理，查看文本文件
+                                    String row = HttpUtils.download(asmrFile.getMediaDownloadUrl());
+                                    SubtitleStage stage=new SubtitleStage(row);
+                                    stage.show();
                                 }
                             }
                         });
+            /*            MenuItem downloadItem=new MenuItem("下载");
+                        downloadItem.setOnAction(event -> {
+                            System.out.println("当前下载的url:"+asmrFile.getMediaDownloadUrl());
+                        });
+                        downloadItem.setDisable(true);
+                        ContextMenu contextMenu=new ContextMenu(downloadItem);
+                        setContextMenu(contextMenu);*/
+                    }else {
+                        setDisable(true);
                     }
-
                 }
             };
 
-
             return row;
         });
-
-
-
-
     }
 
 
@@ -319,7 +341,7 @@ public class FolderTableView extends BorderPane {
                lrc(child,list);
            }
        }else {
-           if (track.getTitle().toLowerCase().endsWith(".lrc")){
+           if (SupportSubtitleFormat.compareFile(track.getTitle())){
                list.add(new LrcFile(track.getTitle(),track.getMediaDownloadUrl(), LrcType.NET));
            }
        }
@@ -340,37 +362,8 @@ public class FolderTableView extends BorderPane {
         pathViewPane.setPath(currentPath.get());
         //tableView.sort();
     }
-    public void update(){
 
-        //tableView.sort();
-    }
 
-/*    public void filter(int filterType){
-        if (filterItems == null){
-            if (ALL==filterType) return;
-            filterItems=FXCollections.observableArrayList();
-            filterItems.setAll(tableView.getItems());
-        }
-        if (ALL==filterType){
-            tableView.setItems(filterItems);
-            return;
-        }
-
-        FilteredList<AsmrFile> filteredData = new FilteredList<>(filterItems, new Predicate<AsmrFile>() {
-            @Override
-            public boolean test(AsmrFile AsmrFile) {
-                if (PICTURE == filterType){
-                    return SupportImageFormat.contains(AsmrFile.getType());
-                }else if (AUDIO ==filterType){
-                    return SupportAudioFormat.contains(AsmrFile.getType());
-                }else if (VIDEO==filterType){
-                    return SupportVideoFormat.contains(AsmrFile.getType());
-                }
-                return false;
-            }
-        });
-        tableView.setItems(filteredData);
-    }*/
 
     private Image getAudioImage() {
         if (audioImage == null){

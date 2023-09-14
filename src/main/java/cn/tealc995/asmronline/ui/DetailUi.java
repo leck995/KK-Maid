@@ -1,5 +1,6 @@
 package cn.tealc995.asmronline.ui;
 
+import atlantafx.base.theme.Styles;
 import cn.tealc995.asmronline.App;
 import cn.tealc995.asmronline.api.model.Role;
 import cn.tealc995.asmronline.api.model.Work;
@@ -175,6 +176,7 @@ public class DetailUi {
         left.setPrefWidth(290);
         ScrollPane leftScrollPane = new ScrollPane(left);
         leftScrollPane.setPrefWidth(300);
+
 
         FolderTableView folderTableView = new FolderTableView(work,viewModel.getTracks());
 

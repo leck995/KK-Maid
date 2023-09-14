@@ -58,7 +58,7 @@ public class PlayListCell extends VBox {
         setOnMouseClicked(mouseEvent -> {
             if ( mouseEvent.getButton()==MouseButton.PRIMARY){
                 MainPlayListUI mainPlayListUI=new MainPlayListUI(playList);
-                EventBusUtil.getDefault().post(new MainCenterEvent(mainPlayListUI.getRoot(),true));
+                EventBusUtil.getDefault().post(new MainCenterEvent(mainPlayListUI.getRoot(),true,true));
             }
         });
 
@@ -70,7 +70,10 @@ public class PlayListCell extends VBox {
         });
 
         MenuItem alterItem=new MenuItem("修改");
-        alterItem.setDisable(true);
+        alterItem.setDisable(playList.canDelete());
+        alterItem.setOnAction(event -> {
+            EventBusUtil.getDefault().post(new PlayListAlterEvent(playList));
+        });
         ContextMenu contextMenu=new ContextMenu(alterItem,deleteItem);
 
         setOnContextMenuRequested(contextMenuEvent -> {

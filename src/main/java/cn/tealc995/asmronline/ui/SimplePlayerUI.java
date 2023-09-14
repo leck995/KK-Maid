@@ -3,19 +3,21 @@ package cn.tealc995.asmronline.ui;
 import atlantafx.base.controls.Popover;
 import atlantafx.base.controls.ProgressSliderSkin;
 import atlantafx.base.theme.Styles;
+import atlantafx.base.util.Animations;
+import cn.tealc995.asmronline.App;
 import cn.tealc995.asmronline.event.EventBusUtil;
 import cn.tealc995.asmronline.event.MainDialogEvent;
 import cn.tealc995.asmronline.event.MainPaneEvent;
 import cn.tealc995.asmronline.player.LcMediaPlayer;
+import cn.tealc995.asmronline.player.MediaPlayerUtil;
+import cn.tealc995.asmronline.player.TeaMediaPlayer;
 import cn.tealc995.asmronline.ui.item.VolumeUI;
 import cn.tealc995.asmronline.util.AnchorPaneUtil;
 import cn.tealc995.asmronline.util.CssLoader;
 import cn.tealc995.asmronline.util.FXResourcesLoader;
 import cn.tealc995.asmronline.util.TimeFormatUtil;
 import com.jfoenix.controls.JFXSlider;
-import javafx.animation.Interpolator;
-import javafx.animation.RotateTransition;
-import javafx.animation.Timeline;
+import javafx.animation.*;
 import javafx.beans.binding.Bindings;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -24,6 +26,7 @@ import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.DropShadow;
@@ -49,7 +52,7 @@ public class SimplePlayerUI {
     public Boolean isMouseMove = false;
     public SimplePlayerUI() {
         root=new StackPane();
-        LcMediaPlayer player=LcMediaPlayer.getInstance();
+        TeaMediaPlayer player=MediaPlayerUtil.mediaPlayer();
 
         ImageView album=new ImageView();
         album.imageProperty().bind(player.albumProperty());
@@ -64,7 +67,12 @@ public class SimplePlayerUI {
         album.setOnMouseClicked(mouseEvent -> {
             FXMLLoader fl=new FXMLLoader(FXResourcesLoader.loadURL("/cn/tealc995/asmronline/fxml/player.fxml"));
             try {
-                EventBusUtil.getDefault().post(new MainPaneEvent(fl.load(),true));
+                Pane parent = fl.load();
+                parent.setTranslateY(App.mainStage.getHeight());
+                EventBusUtil.getDefault().post(new MainPaneEvent(parent,true));
+
+                Timeline timeline=new Timeline(new KeyFrame(Duration.millis(240),new KeyValue(parent.translateYProperty(),0)));
+                timeline.play();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

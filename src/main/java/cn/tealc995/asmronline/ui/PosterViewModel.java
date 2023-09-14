@@ -1,5 +1,6 @@
 package cn.tealc995.asmronline.ui;
 
+import cn.tealc995.asmronline.App;
 import cn.tealc995.asmronline.api.model.Track;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -29,7 +30,8 @@ public class PosterViewModel {
         this.filePaths=filePaths;
         this.index=new SimpleIntegerProperty(index);
         title=new SimpleStringProperty(filePaths.get(index).getTitle());
-        image=new SimpleObjectProperty<>(new Image(filePaths.get(index).getMediaStreamUrl(),true));
+        image=new SimpleObjectProperty<>(null);
+        image.set(new Image(filePaths.get(index).getMediaDownloadUrl(), true));
     }
 
 
@@ -41,7 +43,7 @@ public class PosterViewModel {
             index.set(0);
         }
         title.set(filePaths.get(index.get()).getTitle());
-        image.set(new Image(filePaths.get(index.get()).getMediaStreamUrl(),1920,1080,true,true,true));
+        image.set(new Image(filePaths.get(index.get()).getMediaDownloadUrl(),true));
     }
 
     public void pre(){
@@ -51,7 +53,7 @@ public class PosterViewModel {
             index.set(index.get()-1);
         }
         title.set(filePaths.get(index.get()).getTitle());
-        image.set(new Image(filePaths.get(index.get()).getMediaStreamUrl(),1920,1080,true,true,true));
+        image.set(new Image(filePaths.get(index.get()).getMediaDownloadUrl(),true));
     }
 
 

@@ -3,6 +3,7 @@ package cn.tealc995.asmronline.api;
 import cn.tealc995.asmronline.api.model.playList.MainPlayList;
 import cn.tealc995.asmronline.api.model.MainWorks;
 import cn.tealc995.asmronline.api.model.Response;
+import cn.tealc995.asmronline.api.model.playList.PlayListAlter;
 import cn.tealc995.asmronline.api.model.playList.PlayListCreate;
 import cn.tealc995.asmronline.api.model.playList.PlayListRemoveWork;
 import cn.tealc995.asmronline.event.EventBusUtil;
@@ -13,6 +14,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 /**
@@ -114,6 +116,24 @@ public class PlayListApi {
     }
 
 
+    public static boolean alter(String url, PlayListAlter param){
+        ObjectMapper mapper=new ObjectMapper();
+        String json = null;
+        try {
+            json = mapper.writeValueAsString(param);
+            Response response = HttpUtils.post(url +"/api/playlist/edit-playlist-metadata", json);
+            if (response.isSuccess()){
+                return true;
+            }else {
+                EventBusUtil.getDefault().post(new MainNotificationEvent(response.getMessage()));
+                return false;
+            }
+        } catch (JsonProcessingException e) {
+            logger.error(e.getMessage());
+            throw new RuntimeException(e);
+        }
+    }
+
     public static boolean create(String url, PlayListCreate param){
         ObjectMapper mapper=new ObjectMapper();
         String json = null;
@@ -143,7 +163,6 @@ public class PlayListApi {
             EventBusUtil.getDefault().post(new MainNotificationEvent(response.getMessage()));
             return false;
         }
-
     }
 
 

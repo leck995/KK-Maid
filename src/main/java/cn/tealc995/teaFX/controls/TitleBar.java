@@ -1,9 +1,11 @@
 package cn.tealc995.teaFX.controls;
 
+import cn.tealc995.asmronline.App;
 import cn.tealc995.teaFX.config.Config;
 import cn.tealc995.teaFX.enums.TitleBarStyle;
-import cn.tealc995.teaFX.handler.DragWindowHandler;
-import cn.tealc995.teaFX.handler.ResizeWindowHandler;
+import cn.tealc995.teaFX.stage.RoundStage;
+import cn.tealc995.teaFX.stage.handler.DragWindowHandler;
+import cn.tealc995.teaFX.stage.handler.ResizeWindowHandler;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
@@ -29,15 +31,12 @@ import javafx.stage.Stage;
  * @create: 2023-06-03 09:07
  */
 public class TitleBar extends StackPane {
-    private Stage stage;
+    private RoundStage stage;
     private StackPane icon;
     private HBox leftHBox,rightHBox;
     private Label title;
     private Button closeBtn,minBtn;
     private ToggleButton maxBtn,fullScreenBtn;
-    private StackPane resizePane;
-    private Region resizeConner;
-    private ResizeWindowHandler resizeWindowHandler;
     private AnchorPane titleBarPane;
     private AnchorPane contentPane;
     private BoundingBox maximizedBox;
@@ -47,35 +46,22 @@ public class TitleBar extends StackPane {
     private double insertSize=5.0;
     private Color bgColor;
 
-    private boolean main;
-    public TitleBar(Stage stage, TitleBarStyle style, boolean main) {
+    public TitleBar(RoundStage stage, TitleBarStyle style) {
         this.stage=stage;
-        this.main=main;
 
         AnchorPane mainPane=new AnchorPane();
-
-
-        resizeConner = new Region();
-        SVGPath svgPath = new SVGPath();
-        svgPath.setContent("M542.72 884.053333l341.333333-341.333333a32 32 0 0 1 47.445334 42.816l-2.197334 2.432-341.333333 341.333333a32 32 0 0 1-47.466667-42.837333l2.197334-2.432 341.333333-341.333333-341.333333 341.333333z m-437.333333-10.666666l778.666666-778.666667a32 32 0 0 1 47.445334 42.816l-2.197334 2.432-778.666666 778.666667a32 32 0 0 1-47.466667-42.837334l2.197333-2.432 778.666667-778.666666-778.666667 778.666666z");
-        resizeConner.setShape(svgPath);
-        resizeConner.setBackground(new Background(new BackgroundFill(Color.GREY, null,null)));
-        resizeConner.setMaxSize(16.0,16.00);
-        resizeConner.setPrefSize(16.0,16.0);
-        resizePane=new StackPane(resizeConner);
-        ResizeWindowHandler resizeWindowHandler = new ResizeWindowHandler(stage);
-        resizePane.setOnMousePressed(resizeWindowHandler);
-        resizePane.setOnMouseDragged(resizeWindowHandler);
-        resizePane.setOnMouseEntered(resizeWindowHandler);
-        resizePane.setOnMouseExited(resizeWindowHandler);
-
-
         titleBarPane=new AnchorPane();
         titleBarPane.setPrefHeight(60.0);
         titleBarPane.getStyleClass().add("scene-bar-title");
-        DragWindowHandler dragWindowHandler=new DragWindowHandler(stage);
-        titleBarPane.setOnMousePressed(dragWindowHandler);/* 鼠标按下 */
-        titleBarPane.setOnMouseDragged(dragWindowHandler);/* 鼠标拖动 */
+
+        DragWindowHandler handler=new DragWindowHandler(stage,true);
+        titleBarPane.setOnMousePressed(handler);
+        titleBarPane.setOnMouseDragged(handler);
+        titleBarPane.setOnMouseReleased(handler);
+        titleBarPane.setOnMouseClicked(handler);
+
+
+
         titleBarPane.setOnMouseClicked(mouseEvent -> {
             if (mouseEvent.getClickCount()==2){
                 if (maxBtn != null){
@@ -108,10 +94,8 @@ public class TitleBar extends StackPane {
             fullScreenBtn.setGraphic(new Region());
             minBtn = new Button();
             minBtn.setGraphic(new Region());
-            maxBtn.selectedProperty().bindBidirectional(Config.SCREEN_MAXED);
-            maxBtn.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
-                setMaxed(t1);
-            });
+            maxBtn.selectedProperty().bindBidirectional(stage.maxedProperty());
+
 
 
             minBtn.setOnMouseClicked(mouseEvent -> {
@@ -119,12 +103,10 @@ public class TitleBar extends StackPane {
                 Stage stage1 =(Stage)node.getScene().getWindow();
                 stage1.setIconified(true);
             });
-            closeBtn.setOnAction(event -> Platform.exit());
+            closeBtn.setOnAction(event -> stage.close());
             rightHBox=new HBox(fullScreenBtn,minBtn,maxBtn,closeBtn);
-            fullScreenBtn.selectedProperty().bindBidirectional(Config.SCREEN_FULL);
-            fullScreenBtn.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
-                setFullScreen(t1);
-            });
+            fullScreenBtn.selectedProperty().bindBidirectional(stage.fullScreenedProperty());
+
             rightHBox.setSpacing(5.0);
             rightHBox.setPadding(new Insets(0,10,0,0));
             rightHBox.setAlignment(Pos.CENTER_RIGHT);
@@ -135,74 +117,23 @@ public class TitleBar extends StackPane {
             fullScreenBtn.getStyleClass().add("full-btn");
             titleBarPane.getChildren().add(rightHBox);
             setPosition(rightHBox,0.0,0.0,0.0,null);
+            getStylesheets().add(TitleBar.class.getResource("/cn/tealc995/teaFX/css/title-bar.css").toExternalForm());
         }
 
         contentPane=new AnchorPane();
         contentPane.getStyleClass().add("scene-bar-content");
-        mainPane.getChildren().addAll(titleBarPane,contentPane,resizePane);
+        mainPane.getChildren().addAll(contentPane,titleBarPane);
         setPosition(titleBarPane,0.0,0.0,null,0.0);
-
-        setPosition(resizePane,null,5.0,5.0,null);
-
         setPosition(contentPane,titleBarPane.getPrefHeight(),0.0,0.0,0.0);
 
         mainPane.getStyleClass().add("scene-bar");
         getChildren().add(mainPane);
-        setBackground(new Background(new BackgroundFill(Color.TRANSPARENT,new CornerRadii(10),null)));
 
-        if (Config.SCREEN_FULL.get() || Config.SCREEN_MAXED.get()){
-            setPadding(new Insets(0));
-            resizePane.setVisible(false);
-        }else {
-            if (main){
-                setPadding(new Insets(20));
-            }
-        }
     }
 
-    public void setMaxed(boolean maxed){
-        if (maxed){
-            if (main) {
-                //Config.SCREEN_MAXED.set(true);
-                Config.ORIGINAL_SIZE= new BoundingBox(stage.getX(), stage.getY(), stage.getWidth(), stage.getHeight());
-                Screen screen = Screen.getScreensForRectangle(stage.getX(),stage.getY(),stage.getWidth(), stage.getHeight()).get(0);
-                Rectangle2D bounds = screen.getVisualBounds();
-                maximizedBox = new BoundingBox(bounds.getMinX(), bounds.getMinY(), bounds.getWidth(), bounds.getHeight());
-                stage.setX(maximizedBox.getMinX());
-                stage.setY(maximizedBox.getMinY());
-                stage.setWidth(maximizedBox.getWidth());
-                stage.setHeight(maximizedBox.getHeight());
-                setPadding(new Insets(0));
-            }
-            resizePane.setVisible(false);
-        }else {
-            if (main){
-                stage.setX(Config.ORIGINAL_SIZE.getMinX());
-                stage.setY(Config.ORIGINAL_SIZE.getMinY());
-                stage.setWidth(Config.ORIGINAL_SIZE.getWidth());
-                stage.setHeight(Config.ORIGINAL_SIZE.getHeight());
-                setPadding(new Insets(20));
-            }
-            resizePane.setVisible(true);
-        }
-    }
 
-    public void setFullScreen(boolean full){
-        if (!main) return;
-        if (full){
-            if (main){
-                stage.setFullScreen(true);
-                setPadding(new Insets(0));
-            }
-            resizePane.setVisible(false);
-        }else {
-            if (main){
-                stage.setFullScreen(false);
-                setPadding(new Insets(20));
-            }
-            resizePane.setVisible(true);
-        }
-    }
+
+
 
 
     /**
@@ -245,15 +176,13 @@ public class TitleBar extends StackPane {
     public void setTitle(String title){
         this.title.setText(title);
     }
-
-    public void hideResizeConner(Boolean b){
-        resizeConner.setVisible(!b);
+    public void setTitleIcon(Node node){
+        this.title.setGraphic(node);
     }
-
 
     public void setRoot(Node node){
         getChildren().add(node);
-        setPosition(node,10.0,10.0,10.0,10.0);
+        setPosition(node,0.0,0.0,0.0,0.0);
     }
 
 

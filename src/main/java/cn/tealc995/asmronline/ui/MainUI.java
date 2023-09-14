@@ -11,7 +11,6 @@ import cn.tealc995.asmronline.event.*;
 import cn.tealc995.asmronline.service.CheckLoginTask;
 import cn.tealc995.asmronline.ui.item.LrcZipDialogUI;
 import cn.tealc995.asmronline.util.CssLoader;
-import cn.tealc995.teaFX.controls.SceneBar;
 import cn.tealc995.teaFX.controls.TitleBar;
 import cn.tealc995.teaFX.controls.notification.MessageType;
 import cn.tealc995.teaFX.controls.notification.Notification;
@@ -24,6 +23,8 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -34,6 +35,8 @@ import org.kordamp.ikonli.material2.Material2AL;
 import org.kordamp.ikonli.material2.Material2MZ;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Callable;
@@ -49,6 +52,7 @@ public class MainUI {
     private TitleBar root;
     private BorderPane parent;
     private JFXDialog dialog;
+    private List<JFXDialog> dialogs;
 
     private StackPane center;
     private StackPane content;
@@ -56,8 +60,9 @@ public class MainUI {
     public MainUI() {
         EventBusUtil.getDefault().register(this);
         viewModel=new MainViewModel();
-        root=new TitleBar(App.mainStage, TitleBarStyle.ALL,true);
-        root.setTitle("   KK Maid");
+        root=new TitleBar(App.mainStage, TitleBarStyle.ALL);
+        root.setTitle("    KK Maid");
+
 
         parent=new BorderPane();
         parent.setLeft(createSideBar());
@@ -69,14 +74,12 @@ public class MainUI {
         parent.setCenter(center);
 
 
-        dialog=new JFXDialog();
-        dialog.setDialogContainer(root);
-        dialog.setTransitionType(JFXDialog.DialogTransition.CENTER);
-        dialog.setOnDialogClosed(jfxDialogEvent -> dialog.setContent(null));
-        //dialog.getStyleClass().add("main-dialog");
-        StackPane dialogContainer = (StackPane) dialog.getChildren().get(0);
-        dialogContainer.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT,null,null)));
 
+
+        dialog=createDialog();
+        dialog.setOnDialogClosed(jfxDialogEvent -> dialog.setContent(null));
+        dialogs=new ArrayList<>();
+        dialogs.add(dialog);
 
 
         Button settingBtn = new Button();
@@ -285,13 +288,48 @@ public class MainUI {
     @Subscribe
     public void showDialog(MainDialogEvent event){
         if (event.getPane()!=null){
-            dialog.setContent(event.getPane());
-            dialog.show();
+            if (dialog.isVisible()){ //jfxDialog的show是无法获取状态的，故采用visible
+                JFXDialog dialog1 = createDialog();
+                dialog1.setContent(event.getPane());
+                dialogs.add(dialog1);
+                dialog1.setOnDialogClosed(jfxDialogEvent -> {
+                    dialog1.setContent(null);
+                    dialogs.remove(dialog1);
+                });
+                dialog1.show();
+            }else {
+                dialog.setVisible(true);
+                dialog.setContent(event.getPane());
+                dialog.show();
+            }
         }else {
-            dialog.close();
+            if (dialogs.size() == 1){
+                dialog.close();
+                dialog.setDisable(false);
+            }else {
+                JFXDialog dialog1 = dialogs.get(dialogs.size() - 1);
+                dialog1.close();
+            }
         }
     }
 
+
+    /**
+     * @description: 创建dialog
+     * @name: createDialog
+     * @author: Leck
+     * @param:
+     * @return  com.jfoenix.controls.JFXDialog
+     * @date:   2023/9/13
+     */
+    private JFXDialog createDialog(){
+        JFXDialog dialog1=new JFXDialog();
+        dialog1.setDialogContainer(root);
+        dialog1.setTransitionType(JFXDialog.DialogTransition.CENTER);
+        StackPane dialogContainer = (StackPane) dialog1.getChildren().get(0);
+        dialogContainer.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT,null,null)));
+        return dialog1;
+    }
     @Subscribe
     public void showNotification(MainNotificationEvent event){
         if (event.getMessage() != null){
@@ -341,8 +379,10 @@ public class MainUI {
         if (event.isAdd()){
             root.getChildren().add(event.getPane());
         }else {
-            if (root.getChildren().size()  >= 2)
+            if (root.getChildren().size()  >= 2){
                 root.getChildren().remove(root.getChildren().size()-1);
+            }
+
         }
 
     }
@@ -378,7 +418,14 @@ public class MainUI {
         if (event.isAdd()){
             addCenter(event.getPane());
         }else {
-            backBaseCenter();
+            if (event.isToBase()){
+                backBaseCenter();
+            }else {
+                int size = center.getChildren().size();
+                if (size > 1){
+                    center.getChildren().remove(size-1);
+                }
+            }
         }
 
     }

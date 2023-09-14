@@ -1,5 +1,6 @@
 package cn.tealc995.asmronline.ui;
 
+import atlantafx.base.util.Animations;
 import cn.tealc995.asmronline.App;
 import cn.tealc995.asmronline.Config;
 import cn.tealc995.asmronline.event.EventBusUtil;
@@ -7,6 +8,8 @@ import cn.tealc995.asmronline.event.MainDialogEvent;
 import cn.tealc995.asmronline.event.MainPaneEvent;
 import cn.tealc995.asmronline.model.lrc.LrcBean;
 import cn.tealc995.asmronline.player.LcMediaPlayer;
+import cn.tealc995.asmronline.player.MediaPlayerUtil;
+import cn.tealc995.asmronline.player.TeaMediaPlayer;
 import cn.tealc995.asmronline.ui.component.LrcView;
 import cn.tealc995.asmronline.ui.item.*;
 import cn.tealc995.asmronline.util.TimeFormatUtil;
@@ -16,10 +19,16 @@ import com.jfoenix.controls.JFXHamburger;
 import com.jfoenix.controls.JFXNodesList;
 import com.jfoenix.controls.JFXSlider;
 import com.jfoenix.transitions.hamburger.HamburgerBasicCloseTransition;
+import com.jhlabs.image.ContrastFilter;
+import com.jhlabs.image.GaussianFilter;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -28,14 +37,21 @@ import javafx.scene.control.*;
 import javafx.scene.effect.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
+import javafx.util.Duration;
+import net.coobird.thumbnailator.Thumbnails;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 
 
 public class PlayerUI {
@@ -71,16 +87,22 @@ public class PlayerUI {
 
     private ContextMenu soundPopup;
 
-    private LcMediaPlayer player;
+    private TeaMediaPlayer player;
+    private GaussianFilter gaussianFilter;
+    private ContrastFilter contrastFilter;
 
 
     public PlayerUI(){
-        player=LcMediaPlayer.getInstance();
+        player= MediaPlayerUtil.mediaPlayer();
     }
 
 
     @FXML
     private void  initialize(){
+        GaussianFilter gaussianFilter=new GaussianFilter(Config.detailGaussianSize.get());
+        ContrastFilter contrastFilter=new ContrastFilter();
+        contrastFilter.setBrightness(Config.detailDarkerSize.floatValue());
+
         Rectangle rectangle=new Rectangle();
         rectangle.setFill(Color.RED);
         rectangle.widthProperty().bind(bgPane.widthProperty());
@@ -90,21 +112,37 @@ public class PlayerUI {
         root.setClip(rectangle);
 
 
-        TitleBar sceneBar=new TitleBar(App.mainStage, TitleBarStyle.NO_LEFT,false);
+        TitleBar sceneBar=new TitleBar(App.mainStage, TitleBarStyle.NO_LEFT);
         sceneBar.setContent(root.getChildren().get(2));
         root.getChildren().add(sceneBar);
 
 
         if (player.mainCover() != null){
             Image image = new Image(player.mainCover(), true);
-            BackgroundImage backgroundImage=new BackgroundImage(
-                    image,
-                    BackgroundRepeat.NO_REPEAT,
-                    BackgroundRepeat.NO_REPEAT,
-                    BackgroundPosition.CENTER,
-                    new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO,true,true,true,true));
-            Background background=new Background(backgroundImage);
-            bgPane.setBackground(background);
+            image.progressProperty().addListener((observableValue, number, t1) -> {
+                if (t1.intValue() == 1){
+
+                    try {
+                        BufferedImage bufferedImage = Thumbnails.of(SwingFXUtils.fromFXImage(image, null)).width(100).asBufferedImage();
+
+                        BufferedImage filter = gaussianFilter.filter(bufferedImage, null);
+
+                        filter=contrastFilter.filter(filter,null);
+                        BackgroundImage backgroundImage=new BackgroundImage(
+                                SwingFXUtils.toFXImage(filter,null),
+                                BackgroundRepeat.NO_REPEAT,
+                                BackgroundRepeat.NO_REPEAT,
+                                BackgroundPosition.CENTER,
+                                new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO,true,true,true,true));
+                        Background background=new Background(backgroundImage);
+                        bgPane.setBackground(background);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                }
+            });
+
             album.setImage(image);
         }
 
@@ -147,14 +185,14 @@ public class PlayerUI {
 
 
 
-        GaussianBlur gaussianBlur=new GaussianBlur();
-        gaussianBlur.setRadius(40);
+/*        GaussianBlur gaussianBlur=new GaussianBlur();
+        gaussianBlur.setRadius(60);
         Lighting lighting=new Lighting();
         lighting.setDiffuseConstant(0.45);
         gaussianBlur.setInput(lighting);
+            bgPane.setEffect(gaussianBlur);*/
 
 
-        bgPane.setEffect(gaussianBlur);
         
 
         disorderBtn.setTooltip(new Tooltip("乱序"));
@@ -256,7 +294,13 @@ public class PlayerUI {
      
         backBtn.setOnAction(actionEvent -> {
             currentTimeProperty.unbind();
-            EventBusUtil.getDefault().post(new MainPaneEvent(null,false));
+
+            Timeline timeline=new Timeline(new KeyFrame(Duration.millis(240),new KeyValue(root.translateYProperty(),App.mainStage.getHeight())));
+            timeline.setOnFinished(event -> {
+                EventBusUtil.getDefault().post(new MainPaneEvent(null,false));
+            });
+            timeline.play();
+
         });
 
 

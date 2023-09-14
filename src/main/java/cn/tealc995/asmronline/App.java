@@ -1,28 +1,41 @@
 package cn.tealc995.asmronline;
 
 import atlantafx.base.theme.PrimerDark;
+import cn.tealc995.asmronline.player.MediaPlayerUtil;
 import cn.tealc995.asmronline.ui.MainUI;
 import cn.tealc995.asmronline.util.CssLoader;
-import cn.tealc995.teaFX.controls.SceneBar;
+
 import cn.tealc995.teaFX.controls.TitleBar;
 import cn.tealc995.teaFX.enums.TitleBarStyle;
+import cn.tealc995.teaFX.stage.RoundStage;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.greenrobot.eventbus.Logger;
 
 import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class App extends Application {
-    public static Stage mainStage;
+    public static RoundStage mainStage;
     @Override
     public void start(Stage stage) throws IOException {
-
-        mainStage=stage;
+        Timer timer=new Timer(true);
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                System.gc();
+            }
+        },60000,60000);
+        stage.close();
+        mainStage=new RoundStage();
 
         if (Config.proxyModel.get()){
             System.setProperty("https.proxyHost", Config.proxyHost.get());
@@ -33,20 +46,33 @@ public class App extends Application {
         Application.setUserAgentStylesheet(new PrimerDark().getUserAgentStylesheet());
         MainUI mainUI=new MainUI();
 
-        //TitleBar titleBar=new TitleBar(stage,TitleBarStyle.ALL,true);
-        Scene scene = new Scene(mainUI.getRoot());
-        scene.getStylesheets().addAll(CssLoader.getCss(CssLoader.baseUI),CssLoader.getCss(CssLoader.main));
-        scene.setFill(Color.TRANSPARENT);
 
-        stage.setWidth(Config.stageWidth.get());
-        stage.setHeight(Config.stageHeight.get());
-        stage.setFullScreenExitHint("");
-        stage.initStyle(StageStyle.TRANSPARENT);
 
-        stage.setTitle("KK Maid");
-        stage.getIcons().add(new Image(getClass().getResource("/cn/tealc995/asmronline/image/icon.png").toExternalForm()));
-        stage.setScene(scene);
-        stage.show();
+
+        mainStage.setOnHidden(windowEvent -> {
+            System.out.println("退出程序");
+            Platform.exit();
+        });
+
+        mainStage.setContent(mainUI.getRoot());
+        mainStage.getScene().getStylesheets().addAll(CssLoader.getCss(CssLoader.baseUI),CssLoader.getCss(CssLoader.main));
+        mainStage.getScene().setFill(Color.TRANSPARENT);
+        mainStage.setWidth(Config.stageWidth.get());
+        mainStage.setHeight(Config.stageHeight.get());
+        mainStage.setFullScreenExitHint("");
+        mainStage.initStyle(StageStyle.TRANSPARENT);
+
+        mainStage.setTitle("KK Maid");
+        mainStage.getIcons().add(new Image(getClass().getResource("/cn/tealc995/asmronline/image/icon.png").toExternalForm()));
+        mainStage.show();
+    }
+
+
+    @Override
+    public void stop() throws Exception {
+        super.stop();
+        MediaPlayerUtil.mediaPlayer().dispose();
+        Config.saveProperties();
     }
 
     public static void main(String[] args) {

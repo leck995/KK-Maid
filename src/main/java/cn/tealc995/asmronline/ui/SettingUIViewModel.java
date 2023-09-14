@@ -5,9 +5,14 @@ import cn.tealc995.asmronline.api.UserApi;
 import cn.tealc995.asmronline.api.model.SortType;
 import cn.tealc995.asmronline.event.EventBusUtil;
 import cn.tealc995.asmronline.event.MainCenterEvent;
+import cn.tealc995.asmronline.model.StringKeyIntValue;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+
+import java.util.Arrays;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @program: Asmr-Online
@@ -27,6 +32,20 @@ public class SettingUIViewModel {
     private SimpleObjectProperty<SortType> gridOrder;
     private SimpleBooleanProperty gridSubtitle;
     private SimpleBooleanProperty gridDesc;
+
+
+    /*=================播放界面======================*/
+    private SimpleIntegerProperty gaussianSize;//高斯模糊
+
+    private SimpleDoubleProperty darkerSize;;//暗角
+    private SimpleBooleanProperty detailAlbumEffectModel;//设置播放界面封面阴影，默认开启
+    private  SimpleDoubleProperty detailAlbumEffectSize;//播放界面封面圆角大小
+    private SimpleBooleanProperty detailAlbumRadiusModel;//播放界面封面圆角
+    private SimpleDoubleProperty detailAlbumRadiusSize;//播放界面封面圆角大小
+    private  SimpleBooleanProperty detailLrcAlignment;//设置播放界面歌词对其方式，默认左对齐false,true为居中
+
+
+
     /*=================服务器======================*/
     private SimpleStringProperty host;
     private SimpleStringProperty token;
@@ -49,8 +68,18 @@ public class SettingUIViewModel {
 
     private SimpleStringProperty lrcZipFolder;
     private SimpleStringProperty lrcFileFolder;
+    private SimpleStringProperty workBlackList;
+
+    private SimpleIntegerProperty selectPlayerIndex;
+    private ObservableList<String> players;
+    private SimpleBooleanProperty stopPlayOnEnd;
 
 
+    /*===============下载=================*/
+    private SimpleStringProperty downloadDir;//下载目录
+    private SimpleStringProperty aria2Host;//aria2
+    private SimpleStringProperty ariaRPCKey;//aria2授权密钥
+    private SimpleStringProperty saveNameTemplate;//命名模板
 
 
     public SettingUIViewModel() {
@@ -72,6 +101,27 @@ public class SettingUIViewModel {
         gridSubtitle=new SimpleBooleanProperty();
         gridSubtitle.bindBidirectional(Config.gridSubtitleModel);
         gridDesc.bindBidirectional(Config.gridSortDescModel);
+        /*=================播放界面======================*/
+
+        gaussianSize=new SimpleIntegerProperty();
+        gaussianSize.bindBidirectional(Config.detailGaussianSize);
+
+        darkerSize=new SimpleDoubleProperty();
+        darkerSize.bindBidirectional(Config.detailDarkerSize);
+
+        detailAlbumEffectSize=new SimpleDoubleProperty();
+        detailAlbumEffectSize.bindBidirectional(Config.detailAlbumEffectSize);
+
+        detailAlbumEffectModel=new SimpleBooleanProperty();
+        detailAlbumEffectModel.bindBidirectional(Config.detailAlbumEffectModel);
+
+        detailAlbumRadiusModel=new SimpleBooleanProperty();
+        detailAlbumRadiusModel.bindBidirectional(Config.detailAlbumRadiusModel);
+
+        detailAlbumRadiusSize=new SimpleDoubleProperty();
+        detailAlbumRadiusSize.bindBidirectional(Config.detailAlbumRadiusSize);
+
+
         /*=================服务器======================*/
         host=new SimpleStringProperty();
         token=new SimpleStringProperty();
@@ -113,6 +163,36 @@ public class SettingUIViewModel {
         lrcZipFolder.bindBidirectional(Config.lrcZipFolder);
 
 
+        /*===============黑名单=================*/
+        workBlackList=new SimpleStringProperty();
+        StringBuilder workBuilder=new StringBuilder();
+        for (String s : Config.workBlackList) {
+            workBuilder.append("RJ").append(s).append(" ");
+        }
+        workBlackList.set(workBuilder.toString());
+
+        /*===============播放=================*/
+        selectPlayerIndex=new SimpleIntegerProperty();
+        if (Config.useVlcPlayer.get()){
+            selectPlayerIndex.set(1);
+        }else {
+            selectPlayerIndex.set(0);
+        }
+        players=FXCollections.observableArrayList("默认","VLC播放器");
+        stopPlayOnEnd=new SimpleBooleanProperty();
+        stopPlayOnEnd.bindBidirectional(Config.stopPlayOnEnd);
+
+
+
+        downloadDir=new SimpleStringProperty();//下载目录
+        downloadDir.bindBidirectional(Config.downloadDir);
+        aria2Host=new SimpleStringProperty();//aria2
+        aria2Host.bindBidirectional(Config.aria2Host);
+        ariaRPCKey=new SimpleStringProperty();//aria2授权密钥
+        ariaRPCKey.bindBidirectional(Config.ariaRPCKey);
+        saveNameTemplate=new SimpleStringProperty("{RJ}");//命名模板
+        saveNameTemplate.bindBidirectional(Config.saveNameTemplate);
+
     }
 
 
@@ -120,12 +200,21 @@ public class SettingUIViewModel {
 
 
     public void save(){
+        updateBlackList();
+        updateSelectPlayer();
+
         Config.saveProperties();
-        EventBusUtil.getDefault().post(new MainCenterEvent(null,false));
+        EventBusUtil.getDefault().post(new MainCenterEvent(null,false,false));
     }
 
+
+
+
+
+
+
     public void cancel(){
-        EventBusUtil.getDefault().post(new MainCenterEvent(null,false));
+        EventBusUtil.getDefault().post(new MainCenterEvent(null,false,false));
     }
 
     public String login(String username,String password){
@@ -135,6 +224,28 @@ public class SettingUIViewModel {
         }
         return login;
     }
+
+
+
+    private void updateBlackList(){
+        String rj = workBlackList.get().toUpperCase().replaceAll("RJ", "");
+        String[] s = rj.split(" ");
+        Config.workBlackList.clear();
+        Config.workBlackList.addAll(Arrays.stream(s).toList());
+    }
+
+    /**
+     * @description: 设置播放器内核
+     * @name: updateSelectPlayer
+     * @author: Leck
+     * @param:	index
+     * @return  void
+     * @date:   2023/8/13
+     */
+    private void updateSelectPlayer(){
+        Config.useVlcPlayer.set(selectPlayerIndex.get() == 1);
+    }
+
 
     public void setLrcZipFolder(String lrcZipFolder) {
         this.lrcZipFolder.set(lrcZipFolder);
@@ -338,5 +449,125 @@ public class SettingUIViewModel {
 
     public void setStageHeight(double stageHeight) {
         this.stageHeight.set(stageHeight);
+    }
+
+    public String getWorkBlackList() {
+        return workBlackList.get();
+    }
+
+    public SimpleStringProperty workBlackListProperty() {
+        return workBlackList;
+    }
+
+    public ObservableList<String> getPlayers() {
+        return players;
+    }
+
+    public int getSelectPlayerIndex() {
+        return selectPlayerIndex.get();
+    }
+
+    public SimpleIntegerProperty selectPlayerIndexProperty() {
+        return selectPlayerIndex;
+    }
+
+    public void setSelectPlayerIndex(int selectPlayerIndex) {
+        this.selectPlayerIndex.set(selectPlayerIndex);
+    }
+
+    public boolean isStopPlayOnEnd() {
+        return stopPlayOnEnd.get();
+    }
+
+    public SimpleBooleanProperty stopPlayOnEndProperty() {
+        return stopPlayOnEnd;
+    }
+
+    public double getDarkerSize() {
+        return darkerSize.get();
+    }
+
+    public SimpleDoubleProperty darkerSizeProperty() {
+        return darkerSize;
+    }
+
+    public int getGaussianSize() {
+        return gaussianSize.get();
+    }
+
+    public SimpleIntegerProperty gaussianSizeProperty() {
+        return gaussianSize;
+    }
+
+    public boolean isDetailAlbumEffectModel() {
+        return detailAlbumEffectModel.get();
+    }
+
+    public SimpleBooleanProperty detailAlbumEffectModelProperty() {
+        return detailAlbumEffectModel;
+    }
+
+    public double getDetailAlbumEffectSize() {
+        return detailAlbumEffectSize.get();
+    }
+
+    public SimpleDoubleProperty detailAlbumEffectSizeProperty() {
+        return detailAlbumEffectSize;
+    }
+
+    public boolean isDetailAlbumRadiusModel() {
+        return detailAlbumRadiusModel.get();
+    }
+
+    public SimpleBooleanProperty detailAlbumRadiusModelProperty() {
+        return detailAlbumRadiusModel;
+    }
+
+    public double getDetailAlbumRadiusSize() {
+        return detailAlbumRadiusSize.get();
+    }
+
+    public SimpleDoubleProperty detailAlbumRadiusSizeProperty() {
+        return detailAlbumRadiusSize;
+    }
+
+    public boolean isDetailLrcAlignment() {
+        return detailLrcAlignment.get();
+    }
+
+    public SimpleBooleanProperty detailLrcAlignmentProperty() {
+        return detailLrcAlignment;
+    }
+
+    public String getDownloadDir() {
+        return downloadDir.get();
+    }
+
+    public SimpleStringProperty downloadDirProperty() {
+        return downloadDir;
+    }
+
+    public String getAria2Host() {
+        return aria2Host.get();
+    }
+
+    public SimpleStringProperty aria2HostProperty() {
+        return aria2Host;
+    }
+
+    public String getAriaRPCKey() {
+        return ariaRPCKey.get();
+    }
+
+    public SimpleStringProperty ariaRPCKeyProperty() {
+        return ariaRPCKey;
+    }
+
+    public String getSaveNameTemplate() {
+        return saveNameTemplate.get();
+    }
+
+    public SimpleStringProperty saveNameTemplateProperty() {
+        return saveNameTemplate;
     }
 }

@@ -11,11 +11,14 @@ import javafx.scene.layout.Pane;
 public class MainCenterEvent {
     private Pane pane;
     private boolean add;
+    private boolean toBase;//返回到最底层的root,当为添加时不生效
 
-    public MainCenterEvent(Pane pane, boolean add) {
+    public MainCenterEvent(Pane pane, boolean add,boolean toBase) {
         this.pane = pane;
         this.add = add;
+        this.toBase=toBase;
     }
+
 
     public Pane getPane() {
         return pane;
@@ -31,5 +34,13 @@ public class MainCenterEvent {
 
     public void setAdd(boolean add) {
         this.add = add;
+    }
+
+    public boolean isToBase() {
+        return toBase;
+    }
+
+    public void setToBase(boolean toBase) {
+        this.toBase = toBase;
     }
 }

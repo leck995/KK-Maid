@@ -5,6 +5,7 @@ import cn.tealc995.asmronline.event.MainDialogEvent;
 import cn.tealc995.asmronline.model.lrc.LrcFile;
 import cn.tealc995.asmronline.model.lrc.LrcType;
 import cn.tealc995.asmronline.player.LcMediaPlayer;
+import cn.tealc995.asmronline.player.MediaPlayerUtil;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -49,7 +50,7 @@ public class LrcFolderDialogViewModel {
         for (File file1 : files) {
             lrcFiles.add(new LrcFile(file1.getName(),file1.getPath(), LrcType.FOLDER));
         }
-        LcMediaPlayer.getInstance().updateLrcFile(lrcFiles,index);
+        MediaPlayerUtil.mediaPlayer().updateLrcFile(lrcFiles,index);
         cancel();
     }
 

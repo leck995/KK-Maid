@@ -7,6 +7,7 @@ import cn.tealc995.asmronline.api.WorksApi;
 import cn.tealc995.asmronline.api.model.MainWorks;
 import cn.tealc995.asmronline.api.model.SortType;
 import cn.tealc995.asmronline.api.model.Work;
+import cn.tealc995.asmronline.event.BlackWorkEvent;
 import cn.tealc995.asmronline.event.EventBusUtil;
 import cn.tealc995.asmronline.event.GridItemRemoveEvent;
 import cn.tealc995.asmronline.event.SearchEvent;
@@ -19,6 +20,7 @@ import javafx.concurrent.Worker;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
@@ -49,8 +51,6 @@ public class MainGridViewModel {
     private SimpleObjectProperty<SortType> selectSortType;
     private SimpleStringProperty searchKey;
 
-    private SimpleIntegerProperty removeIndex;//用来让界面上的work移除
-
     private SimpleBooleanProperty loading;
     private SimpleStringProperty message;
 
@@ -74,7 +74,6 @@ public class MainGridViewModel {
         descOrder=new SimpleBooleanProperty(Config.gridSortDescModel.get());
         selectSortType=new SimpleObjectProperty<>(SortType.valueOf(Config.gridOrder.get()));
         searchKey=new SimpleStringProperty();
-        removeIndex=new SimpleIntegerProperty(-1);
         loading=new SimpleBooleanProperty(false);
         message=new SimpleStringProperty();
         playListId=new SimpleStringProperty();
@@ -92,6 +91,7 @@ public class MainGridViewModel {
         subtext.addListener((observableValue, sortType, t1) -> update());
         descOrder.addListener((observableValue, sortType, t1) -> update());
         currentPage.addListener((observableValue, number, t1) -> update());
+
     }
 
     public void update(){
@@ -140,6 +140,9 @@ public class MainGridViewModel {
 
     @Subscribe
     public void setSearchKey(SearchEvent event) {
+        if (event.getType()==CategoryType.SEARCH){
+            subtext.set(false);
+        }
         title.set(event.getType());
         this.searchKey.set(event.getKey());
         this.playListId.set(event.getInfo());
@@ -168,16 +171,22 @@ public class MainGridViewModel {
      */
     @Subscribe
     public void removeWork(GridItemRemoveEvent event){
-        removeIndex.set(-1);
         if (title.get() == CategoryType.STAR){
-            for (int i = 0; i < workItems.size(); i++) {
-                if (event.getWork().getId().equals(workItems.get(i).getId())){
-                    removeIndex.set(i);
-                    break;
-                }
-            }
+            workItems.remove(event.getWork());
         }
+    }
 
+    /**
+     * @description: 在加入黑名单的时候调用此方法，用于在当前列表中移除
+     * @name: removeWork
+     * @author: Leck
+     * @param:	event
+     * @return  void
+     * @date:   2023/8/8
+     */
+    @Subscribe
+    public void removeWork(BlackWorkEvent event){
+        workItems.remove(event.getWork());
     }
 
     public boolean isLoading() {
@@ -268,11 +277,5 @@ public class MainGridViewModel {
         return workItems;
     }
 
-    public int getRemoveIndex() {
-        return removeIndex.get();
-    }
 
-    public SimpleIntegerProperty removeIndexProperty() {
-        return removeIndex;
-    }
 }

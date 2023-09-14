@@ -3,6 +3,7 @@ package cn.tealc995.asmronline.ui.component;
 
 import cn.tealc995.asmronline.Config;
 import cn.tealc995.asmronline.player.LcMediaPlayer;
+import cn.tealc995.asmronline.player.MediaPlayerUtil;
 import cn.tealc995.asmronline.util.CssLoader;
 import cn.tealc995.teaFX.handler.DragWindowHandler;
 import javafx.application.Platform;
@@ -73,7 +74,7 @@ public class DesktopLrcDialog extends Stage {
         text.setTextAlignment(TextAlignment.CENTER);
         text.setWrappingWidth(1800);
         text.setFontSmoothingType(FontSmoothingType.GRAY);
-        text.textProperty().bind(LcMediaPlayer.getInstance().lrcSelectedTextProperty());
+        text.textProperty().bind(MediaPlayerUtil.mediaPlayer().lrcSelectedTextProperty());
 
         hasBold.bind(Config.desktopLRCBoldModel);
         hasBold.addListener((observableValue, aBoolean, t1) -> {
@@ -255,11 +256,6 @@ public class DesktopLrcDialog extends Stage {
                 this.close();
             }
         });
-
-
-
-
-
     }
 
 

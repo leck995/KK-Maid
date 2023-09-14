@@ -5,6 +5,7 @@ import cn.tealc995.asmronline.api.model.MainWorks;
 import cn.tealc995.asmronline.api.model.playList.PlayList;
 import cn.tealc995.asmronline.api.model.Work;
 import cn.tealc995.asmronline.api.model.playList.PlayListRemoveWork;
+import cn.tealc995.asmronline.event.BlackWorkEvent;
 import cn.tealc995.asmronline.event.EventBusUtil;
 import cn.tealc995.asmronline.event.MainNotificationEvent;
 import cn.tealc995.asmronline.event.MainPlayListRemoveWorkEvent;
@@ -35,6 +36,7 @@ public class MainPlayListViewModel {
     private SimpleIntegerProperty pageSize;
     private SimpleLongProperty totalCount;
     private SimpleStringProperty title;
+    private SimpleStringProperty description;
     private SimpleStringProperty playListId;
     private SimpleIntegerProperty removeIndex;//用来让界面上的work移除
     private SimpleBooleanProperty loading;
@@ -51,6 +53,7 @@ public class MainPlayListViewModel {
 
     private void init(PlayList playList){
         title=new SimpleStringProperty(playList.getName());
+        description=new SimpleStringProperty(playList.getDescription());
         playListId=new SimpleStringProperty(playList.getId());
 
         mainWorks=new SimpleObjectProperty<>();
@@ -134,26 +137,17 @@ public class MainPlayListViewModel {
     }
 
     /**
-     * @description: 当前功能不知为何没生效，在ui中虽然绑定了removeIndex,但值变化时不会监听到，很奇怪。请注意
+     * @description: 在加入黑名单的时候调用此方法，用于在当前列表中移除
      * @name: removeWork
      * @author: Leck
      * @param:	event
      * @return  void
-     * @date:   2023/7/15
+     * @date:   2023/8/8
      */
-/*    @Subscribe
-    public void removeWork(GridItemRemoveEvent event){
-        removeIndex.set(-1);
-        if (title.get() == CategoryType.STAR){
-            for (int i = 0; i < workItems.size(); i++) {
-                if (event.getWork().getId().equals(workItems.get(i).getId())){
-                    removeIndex.set(i);
-                    break;
-                }
-            }
-        }
-
-    }*/
+    @Subscribe
+    public void removeWork(BlackWorkEvent event){
+        workItems.remove(event.getWork());
+    }
 
 
     public boolean isLoading() {
@@ -222,5 +216,13 @@ public class MainPlayListViewModel {
 
     public ObservableList<Integer> getPageSizeItems() {
         return pageSizeItems;
+    }
+
+    public String getDescription() {
+        return description.get();
+    }
+
+    public SimpleStringProperty descriptionProperty() {
+        return description;
     }
 }

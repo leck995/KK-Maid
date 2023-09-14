@@ -22,4 +22,5 @@ public class PlayListRemoveEvent {
     public void setPlayList(PlayList playList) {
         this.playList = playList;
     }
+
 }

@@ -7,10 +7,15 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.ObservableSet;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 
 /**
  * @program: Asmr-Online
@@ -58,14 +63,26 @@ public class Config {
     public static SimpleBooleanProperty detailAlbumRadiusModel=new SimpleBooleanProperty(true);//播放界面封面圆角
     public static SimpleDoubleProperty detailAlbumRadiusSize=new SimpleDoubleProperty(30);//播放界面封面圆角大小
     public static SimpleBooleanProperty detailLrcAlignment=new SimpleBooleanProperty(false);//设置播放界面歌词对其方式，默认左对齐false,true为居中
-
-
+    public static SimpleIntegerProperty detailGaussianSize=new SimpleIntegerProperty(25);//高斯模糊大小
+    public static SimpleDoubleProperty detailDarkerSize=new SimpleDoubleProperty(0.5f);//暗角
     /*==============字幕=================*/
     public static SimpleStringProperty lrcFileFolder=new SimpleStringProperty();
     public static SimpleStringProperty lrcZipFolder=new SimpleStringProperty();
 
     public static SimpleBooleanProperty lrcPriority=new SimpleBooleanProperty(false);
 
+    /*==============黑名单=================*/
+    public static ObservableSet<String> workBlackList= FXCollections.observableSet();
+
+    /*==============播放设置=================*/
+    public static SimpleBooleanProperty useVlcPlayer=new SimpleBooleanProperty(false);
+    public static SimpleBooleanProperty stopPlayOnEnd=new SimpleBooleanProperty(true);//作品播放到最后自动停止播放
+
+    /*==============下载设置=================*/
+    public static SimpleStringProperty downloadDir=new SimpleStringProperty();//下载目录
+    public static SimpleStringProperty aria2Host=new SimpleStringProperty();//aria2
+    public static SimpleStringProperty ariaRPCKey=new SimpleStringProperty();//aria2授权密钥
+    public static SimpleStringProperty saveNameTemplate=new SimpleStringProperty("{RJ}");//命名模板
 
 
     public static Properties properties;
@@ -224,6 +241,19 @@ public class Config {
                     }
                 }
 
+                if (properties.containsKey("DETAIL_GAUSSIAN_SIZE")){
+                    String pathRow=properties.getProperty("DETAIL_GAUSSIAN_SIZE");
+                    if (pathRow.length() > 0){
+                        detailGaussianSize.set(Integer.parseInt(pathRow));
+                    }
+                }
+
+                if (properties.containsKey("DETAIL_DARKER_SIZE")){
+                    String pathRow=properties.getProperty("DETAIL_DARKER_SIZE");
+                    if (pathRow.length() > 0){
+                        detailDarkerSize.set(Double.parseDouble(pathRow));
+                    }
+                }
 
                 /*=====================桌面歌词========================*/
                 if (properties.containsKey("DESKTOP_LRC_FONT_SIZE")){
@@ -293,9 +323,67 @@ public class Config {
 
             }
 
+
+            /*=====================黑名单========================*/
+            File workBlacklistFile = new File("data/blacklist/works.json");
+            if (workBlacklistFile.exists()){
+                workBlackList.addAll(objectMapper.readValue(workBlacklistFile,new TypeReference<Set<String>>(){}));
+            }
+
+
+            /*=====================播放设置========================*/
+            if (properties.containsKey("USE_VLC_PLAYER")){
+                String pathRow=properties.getProperty("USE_VLC_PLAYER");
+                if (pathRow.length() > 0){
+                    useVlcPlayer.set(Boolean.parseBoolean(pathRow));
+                }
+            }
+
+            if (properties.containsKey("STOP_PLAY_ON_END")){
+                String pathRow=properties.getProperty("STOP_PLAY_ON_END");
+                if (pathRow.length() > 0){
+                    stopPlayOnEnd.set(Boolean.parseBoolean(pathRow));
+                }
+            }
+
+
+            /*=====================下载设置========================*/
+            if (properties.containsKey("DOWNLOAD_DIR")){
+                String pathRow=properties.getProperty("DOWNLOAD_DIR");
+                if (pathRow.length() > 0){
+                    downloadDir.set(pathRow);
+                }
+            }
+
+            if (properties.containsKey("ARIA2_HOST")){
+                String pathRow=properties.getProperty("ARIA2_HOST");
+                if (pathRow.length() > 0){
+                    aria2Host.set(pathRow);
+                }
+            }
+
+            if (properties.containsKey("ARIA2_RPC_KEY")){
+                String pathRow=properties.getProperty("ARIA2_RPC_KEY");
+                if (pathRow.length() > 0){
+                    ariaRPCKey.set(pathRow);
+                }
+            }
+
+            if (properties.containsKey("SAVE_NAME_TEMPLATE")){
+                String pathRow=properties.getProperty("SAVE_NAME_TEMPLATE");
+                if (pathRow.length() > 0){
+                    saveNameTemplate.set(pathRow);
+                }
+            }
+
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+
+
+
     }
 
 
@@ -344,6 +432,10 @@ public class Config {
             properties.setProperty("DETAIL_ALBUM_EFFECT_MODEL", String.valueOf(detailAlbumEffectModel.get()));
             properties.setProperty("DETAIL_ALBUM_EFFECT_SIZE", String.valueOf(detailAlbumEffectSize.get()));
             properties.setProperty("DETAIL_LRC_ALIGNMENT", String.valueOf(detailLrcAlignment.get()));
+            properties.setProperty("DETAIL_GAUSSIAN_SIZE", String.valueOf(detailGaussianSize.get()));
+            properties.setProperty("DETAIL_DARKER_SIZE", String.valueOf(detailDarkerSize.get()));
+
+
 
             properties.setProperty("DESKTOP_LRC_FONT_SIZE", String.valueOf(desktopLRCFontSize.get()));
             properties.setProperty("DESKTOP_LRC_FONT_COLOR", String.valueOf(desktopLRCFontColor.get()));
@@ -361,6 +453,43 @@ public class Config {
                 properties.setProperty("LRC_FILE_FOLDER", lrcFileFolder.get());
             }
             properties.setProperty("LRC_PRIORITY", String.valueOf(lrcPriority.get()));
+
+
+            if (downloadDir.get() != null){
+                properties.setProperty("DOWNLOAD_DIR", String.valueOf(downloadDir.get()));
+            }
+
+            if (aria2Host.get() != null){
+                properties.setProperty("ARIA2_HOST", String.valueOf(aria2Host.get()));
+            }
+            if (ariaRPCKey.get() != null){
+                properties.setProperty("ARIA2_RPC_KEY", String.valueOf(ariaRPCKey.get()));
+            }
+            if (saveNameTemplate.get() != null){
+                properties.setProperty("SAVE_NAME_TEMPLATE", String.valueOf(saveNameTemplate.get()));
+            }
+
+
+
+
+
+
+
+
+            /*=====================黑名单========================*/
+            ObjectMapper mapper=new ObjectMapper();
+            File file = new File("data/blacklist/works.json");
+            if (!file.exists()){
+                if (!file.getParentFile().exists()) {
+                    file.getParentFile().mkdirs();
+                }
+                file.createNewFile();
+            }
+            mapper.writeValue(file,workBlackList);
+
+            /*=====================播放========================*/
+            properties.setProperty("USE_VLC_PLAYER", String.valueOf(useVlcPlayer.get()));
+            properties.setProperty("STOP_PLAY_ON_END", String.valueOf(stopPlayOnEnd.get()));
 
             properties.store(outputStream,null);
         } catch (IOException e) {

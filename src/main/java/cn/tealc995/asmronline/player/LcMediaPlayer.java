@@ -41,9 +41,8 @@ import java.util.List;
  * @author: Leck
  * @create: 2023-02-06 22:25
  */
-public class LcMediaPlayer {
+public class LcMediaPlayer implements TeaMediaPlayer{
     private static final Logger logger = LoggerFactory.getLogger(LcMediaPlayer.class);
-    private static LcMediaPlayer lcMediaPlayer;
     private MediaPlayer mediaPlayer;
     private SimpleObjectProperty<Music> music;
     private BooleanProperty playing,disorder,loop,isStar,mute,desktopLrcShow;
@@ -61,15 +60,7 @@ public class LcMediaPlayer {
     private SeekLrcFileService seekLrcFileService;
 
 
-    public static LcMediaPlayer getInstance(){
-        if (lcMediaPlayer==null){
-            lcMediaPlayer=new LcMediaPlayer();
-        }
-        return lcMediaPlayer;
-    }
-
-
-    private LcMediaPlayer(){
+    public LcMediaPlayer(){
         music=new SimpleObjectProperty<>();
         playingAudio=new SimpleObjectProperty<>();
 
@@ -135,7 +126,6 @@ public class LcMediaPlayer {
                 init(index,true);
             }
         });
-
 
         playingAudio.addListener((observableValue, media1, t1) -> {
             if (t1 != null){
@@ -210,7 +200,7 @@ public class LcMediaPlayer {
 
 
 
-
+    @Override
     public void init(int index, boolean autoPlay){
         this.index=index;
         load(songs.get(index),autoPlay);
@@ -255,12 +245,7 @@ public class LcMediaPlayer {
                 if (tempArtist != null) artist.set(tempArtist);
                 else artist.set(null);
 
-         /*       if (media.getMetadata().get("image") != null) {
-                    album.set((Image) media.getMetadata().get("image"));//专辑图片
-                }else {
-                    //album.set(new Image(this.getClass().getResource("/cn/tealc995/asmronline/image/album.jpg").toExternalForm(),400,400,true,true));
 
-                } */
                 album.set(new Image(music.get().getWork().getThumbnailCoverUrl(),60,60,true,true,true));
 
                 mediaPlayer.currentTimeProperty().addListener((observableValue, duration, t1) -> {
@@ -281,23 +266,18 @@ public class LcMediaPlayer {
                     mediaPlayer.play();
                 } else {
                     //播放下一曲
-                    next();
+                    if (Config.stopPlayOnEnd.get() && index==songs.size()-1){
+                        playing.set(false);
+                    }else {
+                        next();
+                    }
+
                 }
             }
         });
     }
 
-
-    public void play(){
-        if (mediaPlayer!=null){
-            playing.set(!playing.get());
-        }
-    }
-    public void pause(){
-        if (mediaPlayer!=null){
-            playing.set(false);
-        }
-    }
+    @Override
     public void next(){
         if (songs.size() == 0) return;
         if (index==songs.size()-1){
@@ -309,6 +289,7 @@ public class LcMediaPlayer {
         }
     }
 
+    @Override
     public void pre(){
         if (songs.size() == 0) return;
         if (index==0){
@@ -320,40 +301,12 @@ public class LcMediaPlayer {
         }
     }
 
-
-
-
-    public void controlVolume(double num){
-        if (volume.get()+num >= 1){
-            volume.set(1);
-            return;
-        }
-        if (volume.get()+num <=0){
-            volume.set(0);
-            return;
-        }
-        volume.set(volume.get()+num);
-    }
-
-    public void mute(boolean b){
-        if (mediaPlayer!=null){
-           mute.set(b);
-        }
-    }
-
+    @Override
     public void seek(double time){
         if (mediaPlayer!=null){
             mediaPlayer.seek(Duration.seconds(time));
         }
     }
-    public void setloop(boolean b){
-        loop.set(b);
-    }
-
-    public void setdisorder(boolean b){
-        disorder.set(b);
-    }
-
     private List<LrcBean> lrcFileToBeans(LrcFile lrcFile){
         if (lrcFile.getType() == LrcType.NET){
             return LrcImportUtil.getLrcFromNet(lrcFile.getPath());
@@ -366,6 +319,8 @@ public class LcMediaPlayer {
         }
     }
 
+
+    @Override
     public ObservableList<LrcFile> getLrcFiles() {
         return lrcFiles;
     }
@@ -379,153 +334,146 @@ public class LcMediaPlayer {
      * @return  void
      * @date:   2023/7/18
      */
+    @Override
     public void updateLrcFile(List<LrcFile> list,int index){
         lrcFiles.setAll(list);
         lrcBeans.set(FXCollections.observableArrayList(lrcFileToBeans(list.get(index))));
     }
-
+    @Override
     public void updateLrcFile(List<LrcFile> list){
         lrcFiles.setAll(list);
         lrcBeans.set(FXCollections.observableArrayList(lrcFileToBeans(list.get(index))));
     }
 
 
-
+    @Override
     public String getTitle() {
         return title.get();
     }
-
+    @Override
     public StringProperty titleProperty() {
         return title;
     }
-
+    @Override
     public ObservableList<LrcBean> getLrcBeans() {
         return lrcBeans.get();
     }
-
+    @Override
     public ObjectProperty<ObservableList<LrcBean>> lrcBeansProperty() {
         return lrcBeans;
     }
-
+    @Override
     public String getArtist() {
         return artist.get();
     }
-
+    @Override
     public StringProperty artistProperty() {
         return artist;
     }
-
+    @Override
     public Double getCurrentTime() {
         return currentTime.get();
     }
-
+    @Override
     public SimpleDoubleProperty currentTimeProperty() {
         return currentTime;
     }
-
+    @Override
     public double getTotalTime() {
         return totalTime.get();
     }
-
+    @Override
     public DoubleProperty totalTimeProperty() {
         return totalTime;
     }
 
-
+    @Override
     public boolean isPlaying() {
         return playing.get();
     }
-
+    @Override
     public BooleanProperty playingProperty() {
         return playing;
     }
-
+    @Override
     public boolean isDisorder() {
         return disorder.get();
     }
-
+    @Override
     public BooleanProperty disorderProperty() {
         return disorder;
     }
-
+    @Override
     public boolean isLoop() {
         return loop.get();
     }
-
+    @Override
     public BooleanProperty loopProperty() {
         return loop;
     }
-
-    public boolean isIsStar() {
-        return isStar.get();
-    }
-
-    public BooleanProperty isStarProperty() {
-        return isStar;
-    }
-
+    @Override
     public boolean isMute() {
         return mute.get();
     }
-
+    @Override
     public BooleanProperty muteProperty() {
         return mute;
     }
-
+    @Override
     public double getVolume() {
         return volume.get();
     }
-
+    @Override
     public DoubleProperty volumeProperty() {
         return volume;
     }
-
+    @Override
     public Image getAlbum() {
         return album.get();
     }
-
+    @Override
     public ObjectProperty<Image> albumProperty() {
         return album;
     }
-
+    @Override
     public int getLrcSelectedIndex() {
         return lrcSelectedIndex.get();
     }
-
+    @Override
     public SimpleIntegerProperty lrcSelectedIndexProperty() {
         return lrcSelectedIndex;
     }
-
+    @Override
     public String getLrcSelectedText() {
         return lrcSelectedText.get();
     }
-
+    @Override
     public SimpleStringProperty lrcSelectedTextProperty() {
         return lrcSelectedText;
     }
-
+    @Override
     public boolean isDesktopLrcShow() {
         return desktopLrcShow.get();
     }
-
+    @Override
     public BooleanProperty desktopLrcShowProperty() {
         return desktopLrcShow;
     }
-
+    @Override
     public ObservableList<Audio> getSongs() {
         return songs;
     }
-
+    @Override
     public Audio getPlayingAudio() {
         return playingAudio.get();
     }
-
+    @Override
     public SimpleObjectProperty<Audio> playingAudioProperty() {
         return playingAudio;
     }
 
 
-
+    @Override
     public Work getWork(){
         if (music.get() != null){
             return music.get().getWork();
@@ -533,17 +481,17 @@ public class LcMediaPlayer {
             return null;
         }
     }
-
+    @Override
     public boolean ready(){
         if (mediaPlayer != null && mediaPlayer.getMedia() != null)
             return true;
         else
             return false;
     }
+    @Override
     public void setMusic(Music music,int index) {
         this.index=index;
         this.music.set(music);
-
         if (music.getLrcFiles() == null || Config.lrcPriority.get()){
             if (music.getWork().hasLanguages()){
                 seekLrcFileService.setIds(music.getWork().getAllId());
@@ -552,9 +500,6 @@ public class LcMediaPlayer {
             }
             seekLrcFileService.restart();
         }
-
-
-
     }
 
 
@@ -632,23 +577,59 @@ public class LcMediaPlayer {
      * @return  void
      * @date:   2023/2/24
      */
-    public void setDispose(){
+    @Override
+    public void dispose(){
         if (mediaPlayer!=null){
             mediaPlayer.dispose();
             mediaPlayer=null;
         }
 
         playing.set(false);
+        currentTime.set(0.0);
         album.set(new Image(this.getClass().getResource("/cn/tealc995/asmronline/image/album.jpg").toExternalForm()));
         title.set("音乐随心");
         artist.set("Pure");
         totalTime.set(0);
-        playingAudio=null;
+        playingAudio.set(null);
         //currentTime.set(new Duration(0.0));
     }
 
+    @Override
+    public void clearPlayingList() {
+        dispose();
+        songs.clear();
+        lrcBeans.get().clear();
+        lrcFiles.clear();
+        music.set(null);
+    }
+
+    @Override
+    public int getPlayingIndexInList() {
+        return songs.indexOf(getPlayingAudio());
+    }
 
 
+    @Override
+    public void removeAudio(Audio audio) {
+
+    }
+
+    @Override
+    public void removeAudio(int index) {
+        if (songs.size() == 1){
+            clearPlayingList();
+        }else {
+            if (index == this.index){
+                next();
+                this.index--;
+            }else if (index < this.index){
+                this.index--;
+            }
+
+            songs.remove(index);
+            lrcFiles.remove(index);
+        }
+    }
 
     public String mainCover(){
         if (ready()){

@@ -152,11 +152,11 @@ public class HttpUtils {
             conn.setDoInput(true);
             //conn.connect();
             System.out.println(json);
-            byte[] bytes = json.getBytes();
+            byte[] bytes = json.getBytes(StandardCharsets.UTF_8);
             conn.setRequestProperty("Content-Type", "application/json; charset=utf-8");// 设定
             conn.setRequestProperty("Content-Length", String.valueOf(bytes.length));
             OutputStream outwritestream = conn.getOutputStream();
-            outwritestream.write(json.getBytes());
+            outwritestream.write(bytes);
             outwritestream.flush();
             outwritestream.close();
             if (conn.getResponseCode() == 200) {
@@ -289,11 +289,11 @@ public class HttpUtils {
                 conn.setRequestProperty("Authorization", "Bearer "+TOKEN); //  TOKEN 如果没有token可以删除
             }
 
-            byte[] bytes = json.getBytes();
+            byte[] bytes = json.getBytes(StandardCharsets.UTF_8);
             conn.setRequestProperty("Content-Type", "application/json; charset=utf-8");// 设定
             conn.setRequestProperty("Content-Length", String.valueOf(bytes.length));
             OutputStream outwritestream = conn.getOutputStream();
-            outwritestream.write(json.getBytes());
+            outwritestream.write(bytes);
             outwritestream.flush();
             outwritestream.close();
             if (conn.getResponseCode() == 200) {

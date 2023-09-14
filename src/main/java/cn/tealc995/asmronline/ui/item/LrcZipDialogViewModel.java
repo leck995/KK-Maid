@@ -6,6 +6,7 @@ import cn.tealc995.asmronline.model.lrc.LrcBean;
 import cn.tealc995.asmronline.model.lrc.LrcFile;
 import cn.tealc995.asmronline.model.lrc.LrcType;
 import cn.tealc995.asmronline.player.LcMediaPlayer;
+import cn.tealc995.asmronline.player.MediaPlayerUtil;
 import cn.tealc995.asmronline.util.LrcFormatUtil;
 import cn.tealc995.asmronline.zip.ZipEntityFile;
 import cn.tealc995.asmronline.zip.ZipUtil;
@@ -68,7 +69,7 @@ public class LrcZipDialogViewModel {
                 lrcFiles.add(new LrcFile(item.getName(), item.getPath(), LrcType.ZIP,lrcFile.get().getPath()));
             }
         }
-        LcMediaPlayer.getInstance().updateLrcFile(lrcFiles,index);
+        MediaPlayerUtil.mediaPlayer().updateLrcFile(lrcFiles,index);
         cancel();
 
 

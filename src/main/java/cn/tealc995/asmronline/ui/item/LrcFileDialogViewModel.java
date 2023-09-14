@@ -6,6 +6,7 @@ import cn.tealc995.asmronline.model.Audio;
 import cn.tealc995.asmronline.model.lrc.LrcFile;
 import cn.tealc995.asmronline.model.lrc.LrcType;
 import cn.tealc995.asmronline.player.LcMediaPlayer;
+import cn.tealc995.asmronline.player.MediaPlayerUtil;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -22,19 +23,23 @@ public class LrcFileDialogViewModel {
     private ObservableList<Audio> songs;
     private ObservableList<LrcFile> lrcFiles;
     public LrcFileDialogViewModel() {
-        songs = FXCollections.observableArrayList(LcMediaPlayer.getInstance().getSongs());
-        lrcFiles = FXCollections.observableArrayList(LcMediaPlayer.getInstance().getLrcFiles());
+        songs = FXCollections.observableArrayList(MediaPlayerUtil.mediaPlayer().getSongs());
+        lrcFiles = FXCollections.observableArrayList(MediaPlayerUtil.mediaPlayer().getLrcFiles());
     }
 
 
     public int up(int index){
         int i;
         if (index == 0){
-          i=lrcFiles.size()-1;
+            i=lrcFiles.size()-1;
+            LrcFile lrcFile = lrcFiles.get(0);
+            lrcFiles.remove(0);
+            lrcFiles.add(lrcFile);
         }else{
-          i=index-1;
+            i=index-1;
+            Collections.swap(lrcFiles,index,i);
         }
-        Collections.swap(lrcFiles,index,i);
+
         return i;
     }
 
@@ -42,10 +47,13 @@ public class LrcFileDialogViewModel {
         int i;
         if (index == lrcFiles.size()-1){
             i=0;
+            LrcFile lrcFile = lrcFiles.get(index);
+            lrcFiles.remove(index);
+            lrcFiles.add(0,lrcFile);
         }else{
             i=index+1;
+            Collections.swap(lrcFiles,index,i);
         }
-        Collections.swap(lrcFiles,index,i);
         return i;
     }
     public void delete(List<LrcFile> list){
@@ -58,7 +66,7 @@ public class LrcFileDialogViewModel {
     }
 
     public void update(){
-        LcMediaPlayer.getInstance().updateLrcFile(lrcFiles);
+        MediaPlayerUtil.mediaPlayer().updateLrcFile(lrcFiles);
         cancel();
     }
 

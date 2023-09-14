@@ -37,14 +37,16 @@ public class PosterUI {
         root=new StackPane();
 
 
+
         imageView = new ImageView();
         imageView.setManaged(false);
         imageView.setPreserveRatio(true);
         imageView.setSmooth(true);
 
 
-        imageView.imageProperty().bind(viewModel.imageProperty());
 
+        imageView.fitWidthProperty().bind(root.widthProperty());
+        imageView.fitHeightProperty().bind(root.heightProperty());
 
         StackPane centerPane=new StackPane(imageView);
         centerPane.prefWidthProperty().bind(imageView.fitWidthProperty());
@@ -65,18 +67,9 @@ public class PosterUI {
             }
 
         });
-        imageView.imageProperty().addListener((observableValue, image, t1) -> {
-            if (t1 != null){
-                imageView.setScaleX(1.0);
-                imageView.setScaleY(1.0);
-                imageView.setTranslateX(0.0);
-                imageView.setTranslateY(0.0);
 
-                resize();
 
-            }
-        });
-
+        imageView.imageProperty().bind(viewModel.imageProperty());
         // 图片位置绑定
         imageView.layoutXProperty().bind(Bindings
                 .createDoubleBinding(() -> {
@@ -96,11 +89,17 @@ public class PosterUI {
 
 
         Button preBtn=new Button("上一个");
-        preBtn.setOnAction(event -> viewModel.pre());
+        preBtn.setOnAction(event -> {
+            reset();
+            viewModel.pre();
+        });
         StackPane leftPane=new StackPane(preBtn);
 
         Button nextBtn=new Button("下一个");
-        nextBtn.setOnAction(event -> viewModel.next());
+        nextBtn.setOnAction(event -> {
+            reset();
+            viewModel.next();
+        });
         StackPane rightPane=new StackPane(nextBtn);
 
 
@@ -139,24 +138,25 @@ public class PosterUI {
         });
 
         root.getChildren().addAll(anchorPane);
-
     }
 
 
-    private void resize(){
-        Image image=imageView.getImage();
-        // 自适应窗口
-        double height = root.getHeight();
-        double width = root.getWidth();
 
-        if (image.getWidth() < width && image.getHeight() < height) {
-            imageView.setFitWidth(image.getWidth());
-            imageView.setFitHeight(image.getHeight());
-        } else {
-            imageView.setFitWidth(width);
-            imageView.setFitHeight(height);
-        }
+    /**
+     * @description: 重置imageview的默认缩放和偏移
+     * @name: reset
+     * @author: Leck
+     * @param:
+     * @return  void
+     * @date:   2023/9/12
+     */
+    public void reset(){
+        imageView.setScaleX(1.0);
+        imageView.setScaleY(1.0);
+        imageView.setTranslateX(0.0);
+        imageView.setTranslateY(0.0);
     }
+
 
 
     public void update(List<Track> filePaths, int index){
@@ -166,5 +166,9 @@ public class PosterUI {
 
     public StackPane getRoot() {
         return root;
+    }
+
+    public void dispose(){
+        viewModel.imageProperty().set(null);
     }
 }

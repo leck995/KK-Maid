@@ -79,14 +79,15 @@ public class MainGridUI {
         sortChoiceBox.getSelectionModel().select(viewModel.getSelectSortType());
         sortChoiceBox.getSelectionModel().selectedItemProperty().addListener((observableValue, sortType, t1) -> viewModel.setSelectSortType(t1));
 
-
         CheckBox subtextCheckBox=new CheckBox("字幕");
         subtextCheckBox.selectedProperty().bindBidirectional(viewModel.subtextProperty());
         CheckBox descCheckBox=new CheckBox("倒序");
         descCheckBox.selectedProperty().bindBidirectional(viewModel.descOrderProperty());
-
+        subtextCheckBox.setTranslateX(-150.0);
+        descCheckBox.setTranslateX(-150.0);
         HBox centerPane=new HBox(subtextCheckBox,descCheckBox);
         centerPane.setSpacing(20);
+
         centerPane.setAlignment(Pos.CENTER);
         BorderPane topPane=new BorderPane();
         topPane.setTop(allCountTitle);
@@ -95,7 +96,6 @@ public class MainGridUI {
         topPane.setCenter(centerPane);
         topPane.setPadding(new Insets(5));
 
-        SimpleListProperty<Work> works=new SimpleListProperty<>();
 
         ObservableList<Work> workItems = viewModel.getWorkItems();
         FlowPane flowPane=new FlowPane();
@@ -117,18 +117,19 @@ public class MainGridUI {
         }
 
         workItems.addListener((ListChangeListener<? super Work>) change -> {
-            flowPane.getChildren().clear();
-            for (Work work : change.getList()) {
-                flowPane.getChildren().add(new WorkCell(work));
+            while (change.next()){
+                if (change.wasRemoved()){ //此处remove必须放在add前面，这是因为setAll()时会同时产生remove和add事件(其实还会参数replace事件)，一旦顺序颠倒，则第一个work会消失。
+                    flowPane.getChildren().remove(change.getFrom());
+                }
+
+                if (change.wasAdded()){
+                    flowPane.getChildren().clear();
+                    for (Work work : workItems) {
+                        flowPane.getChildren().add(new WorkCell(work));
+                    }
+                    scrollPane.setVvalue(0);
+                }
             }
-            scrollPane.setVvalue(0);
-        });
-
-        SimpleIntegerProperty removeIndex=new SimpleIntegerProperty();
-        removeIndex.bind(viewModel.removeIndexProperty());
-        removeIndex.addListener((observableValue, number, t1) -> {
-
-            flowPane.getChildren().remove(t1.intValue());
         });
 
 
@@ -161,6 +162,8 @@ public class MainGridUI {
         });
         pageField.setOnAction(actionEvent -> {
             commit(pageField.getText());
+            pageField.setText("");
+            root.requestFocus();
         });
 
 

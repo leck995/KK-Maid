@@ -20,6 +20,7 @@ public class Track {
     private String mediaStreamUrl;
     private String streamLowQualityUrl;
     private List<Track> children;
+    private String path;
 
     public String getTitle() {
         return title;
@@ -91,5 +92,17 @@ public class Track {
 
     public void setChildren(List<Track> children) {
         this.children = children;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public boolean isFolder(){
+        return type.equals("folder");
     }
 }

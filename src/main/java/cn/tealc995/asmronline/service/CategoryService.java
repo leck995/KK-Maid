@@ -8,9 +8,7 @@ import cn.tealc995.asmronline.ui.CategoryType;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @program: Asmr-Online
@@ -40,6 +38,13 @@ public class CategoryService extends Service<List<RoleEx>> {
                     updateTitle("All VAS");
                 }
                 updateMessage("false");
+
+                Collections.sort(list, new Comparator<RoleEx>() {
+                    @Override
+                    public int compare(RoleEx o1, RoleEx o2) {
+                        return o2.getCount().compareTo(o1.getCount());
+                    }
+                });
                 return list;
             }
         };

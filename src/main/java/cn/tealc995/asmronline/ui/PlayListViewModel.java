@@ -1,15 +1,17 @@
 package cn.tealc995.asmronline.ui;
 
 import cn.tealc995.asmronline.Config;
-import cn.tealc995.asmronline.api.model.playList.PlayList;
-import cn.tealc995.asmronline.api.model.playList.PlayListCreate;
+import cn.tealc995.asmronline.api.model.playList.*;
 import cn.tealc995.asmronline.event.EventBusUtil;
 import cn.tealc995.asmronline.event.MainNotificationEvent;
+import cn.tealc995.asmronline.event.PlayListAlterEvent;
 import cn.tealc995.asmronline.event.PlayListRemoveEvent;
+import cn.tealc995.asmronline.service.PlayListAlterService;
 import cn.tealc995.asmronline.service.PlayListCreateService;
 import cn.tealc995.asmronline.service.PlayListDeleteService;
 import cn.tealc995.asmronline.service.PlayListService;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.greenrobot.eventbus.Subscribe;
@@ -31,7 +33,8 @@ public class PlayListViewModel {
     private SimpleIntegerProperty currentPage;
     private SimpleIntegerProperty pageSize;
     private SimpleIntegerProperty pageCount;
-
+    private SimpleObjectProperty<PlayList> alterPlayList;
+    private SimpleObjectProperty<PlayList> deletePlayList;
 
     public PlayListViewModel() {
         EventBusUtil.getDefault().register(this);
@@ -39,6 +42,8 @@ public class PlayListViewModel {
         currentPage=new SimpleIntegerProperty(0);
         pageSize=new SimpleIntegerProperty(12);
         pageCount=new SimpleIntegerProperty(0);
+        alterPlayList=new SimpleObjectProperty<>();
+        deletePlayList=new SimpleObjectProperty<>();
         service = new PlayListService();
         service.valueProperty().addListener((observableValue, mainPlayList, t1) -> {
             if (t1 != null){
@@ -71,7 +76,6 @@ public class PlayListViewModel {
         });
         service.setUrl(Config.HOST.get());
 
-
         if (subtext){
             Set<String> list = getAllLocalSubtext();
             PlayListCreate playListCreate=new PlayListCreate(name,privacy,description,list.stream().toList()); //这里实现是有问题的，因为目前没做高级选项，所以暂时可以这么写
@@ -85,6 +89,37 @@ public class PlayListViewModel {
     }
 
 
+    public void alterPlayList(String name,Integer privacy,String description,String worksRow,boolean subtext){
+        PlayListAlterService alterService=new PlayListAlterService();
+        alterService.valueProperty().addListener((observableValue, aBoolean, t1) -> {
+            if (t1!=null){
+                EventBusUtil.getDefault().post(new MainNotificationEvent(String.format("修改歌单%s",t1 ? "成功" : "失败")));
+                if (t1)
+                    update();
+            }
+        });
+        alterService.setUrl(Config.HOST.get());
+        if (subtext){
+            Set<String> list = getAllLocalSubtext();
+            PlayListRemoveWork playListRemoveWork=new PlayListRemoveWork(alterPlayList.get().getId(),list.stream().toList(),false); //这里实现是有问题的，因为目前没做高级选项，所以暂时可以这么写
+            alterService.setWorks(playListRemoveWork);
+        }
+        alterService.setPlayList(new PlayListAlter(alterPlayList.get().getId(),new PlayListBase(name,privacy,description)));
+        alterService.start();
+    }
+
+    public void deletePlayList(){
+        PlayListDeleteService service1=new PlayListDeleteService();
+        service1.valueProperty().addListener((observableValue, aBoolean, t1) -> {
+            if (t1 != null && t1){
+                EventBusUtil.getDefault().post(new MainNotificationEvent("删除成功"));
+                items.remove(deletePlayList.get());
+            }
+        });
+        service1.setUrl(Config.HOST.get());
+        service1.setId(deletePlayList.get().getId());
+        service1.start();
+    }
 
 
     /**
@@ -97,7 +132,6 @@ public class PlayListViewModel {
      */
     public  Set<String> getAllLocalSubtext(){
         Set<String> list=new HashSet<>();
-
         Pattern pattern=Pattern.compile("(?<=RJ)\\d+");
         Matcher matcher;
         if (Config.lrcFileFolder.get() != null && Config.lrcFileFolder.get().length() > 0){
@@ -124,31 +158,44 @@ public class PlayListViewModel {
                 }
             }
         }
-
-
+        list.removeAll(Config.workBlackList);
         return list;
-
     }
 
 
 
     @Subscribe
     public void delete(PlayListRemoveEvent event){
-        PlayListDeleteService service1=new PlayListDeleteService();
+        if (deletePlayList.get() == event.getPlayList()){
+            deletePlayList.set(null);
+        }
+        deletePlayList.set(event.getPlayList());
+    }
 
-        service1.valueProperty().addListener((observableValue, aBoolean, t1) -> {
-            if (t1 != null && t1){
-                EventBusUtil.getDefault().post(new MainNotificationEvent("删除成功"));
-                items.remove(event.getPlayList());
-            }
-        });
-        service1.setUrl(Config.HOST.get());
-        service1.setId(event.getPlayList().getId());
-        service1.start();
-
+    @Subscribe
+    public void alter(PlayListAlterEvent event){
+        if (alterPlayList.get() == event.getPlayList()){
+            alterPlayList.set(null);
+        }
+        alterPlayList.set(event.getPlayList());
     }
 
 
+    public PlayList getDeletePlayList() {
+        return deletePlayList.get();
+    }
+
+    public SimpleObjectProperty<PlayList> deletePlayListProperty() {
+        return deletePlayList;
+    }
+
+    public PlayList getAlterPlayList() {
+        return alterPlayList.get();
+    }
+
+    public SimpleObjectProperty<PlayList> alterPlayListProperty() {
+        return alterPlayList;
+    }
 
     public ObservableList<PlayList> getItems() {
         return items;

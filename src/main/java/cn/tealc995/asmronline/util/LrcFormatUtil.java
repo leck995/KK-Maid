@@ -4,8 +4,11 @@ package cn.tealc995.asmronline.util;
 
 import cn.tealc995.asmronline.model.lrc.LrcBean;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -40,9 +43,6 @@ public class LrcFormatUtil {
                 (lyrBean.getLongTime() - t1.getLongTime()));
         return  lrcBeans;
     }
-
-
-
     //解析每一行的歌词
     private static List<LrcBean> parseLine(String s) {
         if (s.isEmpty()) {
@@ -84,6 +84,47 @@ public class LrcFormatUtil {
         return entryList;
     }
 
+
+
+    public static List<LrcBean> getLrcListFromVttText(String lrc){
+        if (lrc==null){
+            return null;
+        }
+
+        List<LrcBean> lrcBeans = new ArrayList<>();//存放歌词
+        lrc=lrc.replaceAll("\\\\n","\n");
+        String[] lines = lrc.split("\n\n");
+
+        for (int i = 1; i < lines.length; i++) {
+            String[] split = lines[i].split("\n");
+            String time = split[1].split(" --> ")[0];
+            String text=lines[i].split(split[1])[1].substring(1); //去掉自带的换行符\n
+            lrcBeans.add(new LrcBean(vttTimeParse(time),time,text));
+        }
+
+        return lrcBeans;
+    }
+
+
+    /**
+     * @description: vtt格式时间转换
+     * @name: vttTimeParse
+     * @author: Leck
+     * @param:	time
+     * @return  long
+     * @date:   2023/9/10
+     */
+
+    public static long vttTimeParse(String time){
+        String[] split = time.split(":");
+        if (split.length==3){
+            long millisecond= Long.parseLong(split[0]) * 3600000 + Long.parseLong(split[1]) * 60000;
+            String[] split1 = split[2].split("\\.");
+            millisecond+=Long.parseLong(split1[0]) * 1000 + Long.parseLong(split1[1]);
+            return millisecond;
+        }
+        return 0;
+    }
 
 }
 

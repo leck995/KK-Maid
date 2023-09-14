@@ -17,6 +17,7 @@ public class CssLoader {
     public static final String mainGrid="/main-grid.css";
     public static final String category="/category.css";
     public static final String detail="/detail.css";
+    public static final String download="/download.css";
 
     public static final String simple_player="/simple-player.css";
 

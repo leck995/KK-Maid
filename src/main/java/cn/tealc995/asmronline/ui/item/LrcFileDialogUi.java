@@ -1,9 +1,13 @@
 package cn.tealc995.asmronline.ui.item;
 
 import cn.tealc995.asmronline.App;
+import cn.tealc995.asmronline.api.HttpUtils;
 import cn.tealc995.asmronline.model.Audio;
 import cn.tealc995.asmronline.model.lrc.LrcFile;
+import cn.tealc995.asmronline.model.lrc.LrcType;
+import cn.tealc995.asmronline.ui.stage.SubtitleStage;
 import cn.tealc995.asmronline.util.CssLoader;
+import cn.tealc995.asmronline.util.LrcImportUtil;
 import cn.tealc995.teaFX.controls.notification.MessageType;
 import cn.tealc995.teaFX.controls.notification.Notification;
 import javafx.collections.ObservableList;
@@ -76,6 +80,26 @@ public class LrcFileDialogUi {
         });
 
 
+        Button readBtn=new Button("查看");
+        readBtn.setOnAction(event -> {
+            ObservableList<Integer> selectedIndices = lrcFileListView.getSelectionModel().getSelectedIndices();
+            if (selectedIndices.size() > 0){
+                String row = null;
+                LrcType type = lrcFileListView.getSelectionModel().getSelectedItems().get(0).getType();
+                if (type == LrcType.NET){
+                    row = LrcImportUtil.getLrcRowFromNet(lrcFileListView.getSelectionModel().getSelectedItems().get(0).getPath());
+                }else if (type == LrcType.ZIP){
+                    row = LrcImportUtil.getLrcRowFromZip(lrcFileListView.getSelectionModel().getSelectedItems().get(0));
+                }else if (type == LrcType.FOLDER){
+                    row = LrcImportUtil.getLrcRowFromFolder(lrcFileListView.getSelectionModel().getSelectedItems().get(0).getPath());
+                }
+                SubtitleStage stage=new SubtitleStage(row);
+                stage.show();
+            }else {
+                Notification.show("请先选择要操作的歌词", MessageType.WARNING,Pos.TOP_CENTER,App.mainStage);
+            }
+        });
+
         Button addBtn=new Button("添加空项");
         addBtn.setOnAction(event -> {
             ObservableList<Integer> selectedIndices = lrcFileListView.getSelectionModel().getSelectedIndices();
@@ -126,7 +150,7 @@ public class LrcFileDialogUi {
                 viewModel.delete(selectedItems);
             }
         });
-        VBox controlPane=new VBox(addBtn,deleteBtn,upBtn,downBtn);
+        VBox controlPane=new VBox(readBtn,addBtn,deleteBtn,upBtn,downBtn);
         controlPane.setSpacing(10.0);
 
 
