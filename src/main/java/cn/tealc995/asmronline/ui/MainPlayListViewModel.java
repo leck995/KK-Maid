@@ -2,6 +2,7 @@ package cn.tealc995.asmronline.ui;
 
 import cn.tealc995.asmronline.Config;
 import cn.tealc995.asmronline.api.model.MainWorks;
+import cn.tealc995.asmronline.api.model.Role;
 import cn.tealc995.asmronline.api.model.playList.PlayList;
 import cn.tealc995.asmronline.api.model.Work;
 import cn.tealc995.asmronline.api.model.playList.PlayListRemoveWork;
@@ -69,6 +70,7 @@ public class MainPlayListViewModel {
 
         mainWorks.addListener((observableValue, mainWorks1, mainWorks2) -> {
             if (mainWorks2 != null){
+
                 workItems.setAll(mainWorks2.getWorks());
                 countPage.set((int) Math.ceil((double) mainWorks2.getPagination().getTotalCount() /mainWorks2.getPagination().getPageSize()));
                 totalCount.set(mainWorks2.getPagination().getTotalCount());

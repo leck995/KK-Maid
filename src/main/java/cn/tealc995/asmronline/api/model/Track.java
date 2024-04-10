@@ -1,5 +1,8 @@
 package cn.tealc995.asmronline.api.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.util.List;
 
 /**
@@ -8,6 +11,8 @@ import java.util.List;
  * @author: Leck
  * @create: 2023-07-13 21:07
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Track {
     private String title;
     private String type;

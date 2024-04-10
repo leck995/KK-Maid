@@ -7,6 +7,7 @@ import cn.tealc995.asmronline.api.StarApi;
 import cn.tealc995.asmronline.api.WorksApi;
 import cn.tealc995.asmronline.api.model.LanguageEdition;
 import cn.tealc995.asmronline.api.model.MainWorks;
+import cn.tealc995.asmronline.api.model.Role;
 import cn.tealc995.asmronline.api.model.Work;
 import cn.tealc995.asmronline.ui.CategoryType;
 import javafx.collections.ObservableSet;
@@ -16,10 +17,7 @@ import javafx.concurrent.Task;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @program: Asmr-Online
@@ -90,6 +88,18 @@ public class MainGridService extends Service<MainWorks> {
                     }
                 }
 
+                List<Work> list = works.getWorks().stream().filter(work -> {
+                    for (Role tag : work.getTags()) {
+                        for (String s : Config.tagBlackList) {
+                            if (tag.getName().equals(s)) {
+                                return false;
+                            }
+                        }
+                    }
+                    return true;
+                }).toList();
+                works.setWorks(list);
+
 
                 updateMessage("false");
                 return works;
@@ -100,22 +110,28 @@ public class MainGridService extends Service<MainWorks> {
 
 
 
-    private void updateList(){
+    private void
+    updateList(){
         if (Config.lrcFileFolder.get() != null && Config.lrcFileFolder.get().length() > 0){
             folderList=new HashSet<>();
             File dir=new File(Config.lrcFileFolder.get());
             File[] files = dir.listFiles((dir1, name) -> dir1.isDirectory());
-            for (File file : files) {
-                folderList.add(file.getName().toLowerCase());
+            if (files != null){
+                for (File file : files) {
+                    folderList.add(file.getName().toLowerCase());
+                }
             }
+
         }
 
         if (Config.lrcZipFolder.get() != null && Config.lrcZipFolder.get().length() > 0){
             zipList=new HashSet<>();
             File dir=new File(Config.lrcZipFolder.get());
             File[] files = dir.listFiles(pathname -> pathname.isFile() && pathname.getName().toLowerCase().endsWith(".zip"));
-            for (File file : files) {
-                zipList.add(file.getName().toLowerCase());
+            if (files != null){
+                for (File file : files) {
+                    zipList.add(file.getName().toLowerCase());
+                }
             }
         }
     }

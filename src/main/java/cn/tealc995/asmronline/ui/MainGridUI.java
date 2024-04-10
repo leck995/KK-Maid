@@ -192,6 +192,7 @@ public class MainGridUI {
         borderPane.setBottom(bottomPane);
 
         LoadingDot loadingDot=new LoadingDot();
+       // loadingDot.setVisible(true);
         loadingDot.visibleProperty().bind(viewModel.loadingProperty());
 
 
@@ -204,6 +205,7 @@ public class MainGridUI {
         root.getChildren().addAll(borderPane,loadingDot);
         root.getStyleClass().add("background");
         root.getStylesheets().add(CssLoader.getCss(CssLoader.mainGrid));
+
     }
 
     /**

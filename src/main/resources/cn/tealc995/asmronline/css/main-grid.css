@@ -209,12 +209,17 @@
     -fx-background-radius: 2;
 }
 
-
 .list-item-pane .tag-label{
     -fx-background-color: #1a1a21;
     -fx-padding: 6 14 6 14;
     -fx-background-radius: 15;
     -fx-text-fill: #CCEDEA;
+}
+.list-item-pane .tag-ai-label{
+    -fx-background-color: #1a1a21;
+    -fx-padding: 6 14 6 14;
+    -fx-background-radius: 15;
+    -fx-text-fill: #f8ce21;
 }
 .list-item-pane .tag-label:hover{
     -fx-background-color: #595959;

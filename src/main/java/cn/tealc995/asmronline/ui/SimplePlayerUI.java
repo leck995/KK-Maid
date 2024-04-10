@@ -124,6 +124,21 @@ public class SimplePlayerUI {
             player.seek(currentTime );
         });
 
+
+        ProgressBar bufferedTimeSlider=new ProgressBar();
+/*        bufferedTimeSlider.getStyleClass().add("simple-song-buffer-slider");
+        bufferedTimeSlider.setMin(0);
+        bufferedTimeSlider.setValue(0);
+        bufferedTimeSlider.setMax(100);
+        bufferedTimeSlider.valueProperty().bind(player.bufferedTimeProperty());*/
+
+        bufferedTimeSlider.progressProperty().bind(player.bufferedTimeProperty());
+        bufferedTimeSlider.getStyleClass().add("small");
+        bufferedTimeSlider.prefWidthProperty().bind(timeSlider.widthProperty());
+        StackPane timeSliderPane=new StackPane(bufferedTimeSlider,timeSlider);
+
+
+
         Label currentTime=new Label();
         currentTime.getStyleClass().add("simple-time-label");
         Label totalTime=new Label();
@@ -230,7 +245,7 @@ public class SimplePlayerUI {
         BorderPane timePane=new BorderPane();
         timePane.setLeft(currentTime);
         timePane.setRight(timeLabelPane);
-        VBox vBox=new VBox(headPane,timeSlider,timePane);
+        VBox vBox=new VBox(headPane,timeSliderPane,timePane);
         vBox.setPadding(new Insets(0,0,20,0));
 
         BorderPane borderPane=new BorderPane();

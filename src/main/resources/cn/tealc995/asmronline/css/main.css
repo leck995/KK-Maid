@@ -16,12 +16,12 @@
 
 .scene-bar{
     -fx-background-color: #1a1a21;
-    -fx-background-radius: 10;
+    -fx-background-radius: 0;
 }
 
 .scene-bar-title{
     -fx-background-color: #1a1a21;
-    -fx-background-radius: 10 10 0 0;
+    -fx-background-radius: 0 10 0 0;
 }
 
 .scene-bar-title > .split-pane-divider {
@@ -31,7 +31,7 @@
 
 .scene-bar-title-left{
     -fx-background-color: #24282e;
-    -fx-background-radius: 10 15 0 0;
+    -fx-background-radius: 0 15 0 0;
     -fx-pref-width: 170;
 }
 .scene-bar-title-left .icon{
@@ -116,7 +116,7 @@
 
 .scene-bar-content{
     -fx-background-color: transparent;
-    -fx-background-radius: 0 0 10 10;
+    -fx-background-radius: 0 0 0 0;
 
 }
 

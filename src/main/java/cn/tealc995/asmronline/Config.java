@@ -73,6 +73,7 @@ public class Config {
 
     /*==============黑名单=================*/
     public static ObservableSet<String> workBlackList= FXCollections.observableSet();
+    public static ObservableSet<String> tagBlackList= FXCollections.observableSet("乙女向","女性向");
 
     /*==============播放设置=================*/
     public static SimpleBooleanProperty useVlcPlayer=new SimpleBooleanProperty(false);

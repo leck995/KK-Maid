@@ -220,10 +220,12 @@ public class HttpUtils {
 
 
     public static String download(String path){
+        System.out.println("download:"+path);
         try {
             URL url=new URL(path);
             URLConnection urlConnection = url.openConnection();
             urlConnection.connect();
+
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(), StandardCharsets.UTF_8));
             StringBuilder sb=new StringBuilder();
             String line;

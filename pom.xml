@@ -30,26 +30,23 @@
             <artifactId>javafx-media</artifactId>
             <version>17.0.6</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-swing</artifactId>
+            <version>17.0.1</version>
+        </dependency>
+
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>2.14.2</version>
         </dependency>
-        <dependency>
-            <groupId>org.controlsfx</groupId>
-            <artifactId>controlsfx</artifactId>
-            <version>11.1.2</version>
-        </dependency>
+
         <dependency>
             <groupId>io.github.mkpaz</groupId>
             <artifactId>atlantafx-base</artifactId>
             <version>2.0.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.greenrobot</groupId>
-            <artifactId>eventbus-java</artifactId>
-            <version>3.3.1</version>
         </dependency>
         <dependency>
             <groupId>com.jfoenix</groupId>
@@ -58,10 +55,17 @@
         </dependency>
 
         <dependency>
-            <groupId>net.lingala.zip4j</groupId>
-            <artifactId>zip4j</artifactId>
-            <version>2.11.5</version>
+            <groupId>org.kordamp.ikonli</groupId>
+            <artifactId>ikonli-javafx</artifactId>
+            <version>12.3.1</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.kordamp.ikonli</groupId>
+            <artifactId>ikonli-material2-pack</artifactId>
+            <version>12.3.1</version>
+        </dependency>
+
 
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -69,13 +73,13 @@
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
-
 
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -89,16 +93,7 @@
             <version>2.0.7</version>
         </dependency>
 
-            <dependency>
-                <groupId>org.kordamp.ikonli</groupId>
-                <artifactId>ikonli-javafx</artifactId>
-                <version>12.3.1</version>
-            </dependency>
-        <dependency>
-            <groupId>org.kordamp.ikonli</groupId>
-            <artifactId>ikonli-material2-pack</artifactId>
-            <version>12.3.1</version>
-        </dependency>
+
 
         <dependency>
             <groupId>uk.co.caprica</groupId>
@@ -116,17 +111,24 @@
             <groupId>net.jthink</groupId>
             <artifactId>jaudiotagger</artifactId>
             <version>3.0.2</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/libs/jaudiotagger-3.0.2.jar</systemPath>
         </dependency>
 
         <dependency>
             <groupId>com.jianggujin</groupId>
             <artifactId>JRegistry</artifactId>
             <version>1.1.0</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/libs/JRegistry-1.1.0.jar</systemPath>
         </dependency>
+
         <dependency>
             <groupId>net.coobird</groupId>
             <artifactId>thumbnailator</artifactId>
             <version>0.4.20</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/libs/thumbnailator-0.4.20.jar</systemPath>
         </dependency>
 
         <dependency>
@@ -135,16 +137,28 @@
             <version>2.0.235-1</version>
         </dependency>
 
+
+
         <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-swing</artifactId>
-            <version>17.0.1</version>
+            <groupId>org.greenrobot</groupId>
+            <artifactId>eventbus-java</artifactId>
+            <version>3.3.1</version>
+   <!--         <scope>system</scope>
+            <systemPath>${basedir}/libs/eventbus-java-3.3.1.jar</systemPath>-->
         </dependency>
-   <!--     <dependency>
-            <groupId>com.nomalab</groupId>
-            <artifactId>subtitle</artifactId>
-            <version>1.2.3</version>
-        </dependency>-->
+
+        <dependency>
+            <groupId>net.lingala.zip4j</groupId>
+            <artifactId>zip4j</artifactId>
+            <version>2.11.5</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/libs/zip4j-2.11.5.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>org.controlsfx</groupId>
+            <artifactId>controlsfx</artifactId>
+            <version>11.2.1</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -160,30 +174,25 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>3.3.0</version>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <!-- <mainClass>入口类，main 方法所在位置</mainClass> -->
-                            <mainClass>cn.tealc995.asmronline.AppStart</mainClass>
-                        </manifest>
-                        <manifestEntries><SplashScreen-Image></SplashScreen-Image></manifestEntries></archive>
-                    <descriptorRefs>
-                        <!-- jar 携带依赖 -->
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                </configuration>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.5.1</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
                         <goals>
-                            <goal>single</goal>
+                            <goal>shade</goal>
                         </goals>
+                        <configuration>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>cn.tealc995.asmronline.AppStart</mainClass>
+                                </transformer>
+                            </transformers>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
-
 
 
 
@@ -208,27 +217,27 @@
             </plugin>
 
 
-            <plugin>
+         <!--   <plugin>
                 <groupId>com.gluonhq</groupId>
                 <artifactId>gluonfx-maven-plugin</artifactId>
                 <version>1.0.18</version>
                 <configuration>
                     <mainClass>cn.tealc995.asmronline.App</mainClass>
-                    <!--
+                    &lt;!&ndash;
                     <javaStaticSdkVersion>11-ea+10</javaStaticSdkVersion>
-                    -->
+                    &ndash;&gt;
                     <javafxStaticSdkVersion>17</javafxStaticSdkVersion>
-                    <!-- JavaFx 中使用 ResourceBundle.getBundle("xxxxxx") 的路径，如果没有则不需要配置 -->
-                    <!--<bundlesList>
+                    &lt;!&ndash; JavaFx 中使用 ResourceBundle.getBundle("xxxxxx") 的路径，如果没有则不需要配置 &ndash;&gt;
+                    &lt;!&ndash;<bundlesList>
                         <list>com.mueeee.desktopjavafx</list>
-                    </bundlesList>-->
-                    <!-- 允许的资源文件后缀 -->
+                    </bundlesList>&ndash;&gt;
+                    &lt;!&ndash; 允许的资源文件后缀 &ndash;&gt;
                     <resourcesList>
                         <list>.*\\.properties$</list>
                     </resourcesList>
-                    <!-- 涉及反射的类 -->
+                    &lt;!&ndash; 涉及反射的类 &ndash;&gt;
                     <reflectionList>
-          <!--              <list>cn.tealc995.asmronline.api.model.CountDetail</list>
+          &lt;!&ndash;              <list>cn.tealc995.asmronline.api.model.CountDetail</list>
                         <list>cn.tealc995.asmronline.api.model.LanguageEdition</list>
                         <list>cn.tealc995.asmronline.api.model.MainWorks</list>
                         <list>cn.tealc995.asmronline.api.model.Pagination</list>
@@ -246,7 +255,7 @@
                         <list>cn.tealc995.asmronline.event.MainDialogEvent</list>
                         <list>cn.tealc995.asmronline.event.MainNotificationEvent</list>
                         <list>cn.tealc995.asmronline.event.MainPaneEvent</list>
-                        <list>cn.tealc995.asmronline.event.SearchEvent</list>-->
+                        <list>cn.tealc995.asmronline.event.SearchEvent</list>&ndash;&gt;
 
                         <list>cn.tealc995.asmronline.ui.PlayerUI</list>
                         <list>cn.tealc995.asmronline.ui.MainGridViewModel</list>
@@ -255,27 +264,27 @@
 
                     </reflectionList>
                     <nativeImageArgs>
-                        <!-- “快速构建”模式，以减少在开发过程中生成本机可执行文件所需的时间。请注意，此模式可能会对峰值性能和生成的可执行文件的大小产生负面影响，因此建议仅用于开发目的。 -->
-                        <!--<arg>-Ob</arg>-->
-                        <!-- 现在默认启用并已弃用，因为不再需要它。 -->
-                        <!--<arg>&#45;&#45;allow-incomplete-classpath</arg>-->
-                        <!--
+                        &lt;!&ndash; “快速构建”模式，以减少在开发过程中生成本机可执行文件所需的时间。请注意，此模式可能会对峰值性能和生成的可执行文件的大小产生负面影响，因此建议仅用于开发目的。 &ndash;&gt;
+                        &lt;!&ndash;<arg>-Ob</arg>&ndash;&gt;
+                        &lt;!&ndash; 现在默认启用并已弃用，因为不再需要它。 &ndash;&gt;
+                        &lt;!&ndash;<arg>&#45;&#45;allow-incomplete-classpath</arg>&ndash;&gt;
+                        &lt;!&ndash;
                         2023-05-04，GraalVM-22.3.0
                         修复在Linux上编译报错：Fatal error: java.lang.IllegalAccessError: class com.gluonhq.substrate.feature.GluonFeature (in unnamed module @0x6c1832aa) cannot access class com.oracle.svm.core.jdk.NativeLibrarySupport (in module org.graalvm.nativeimage.builder) because module org.graalvm.nativeimage.builder does not export com.oracle.svm.core.jdk to unnamed module @0x6c1832aa
                         https://github.com/oracle/graal/issues/5265
-                        -->
-                        <arg>--add-exports=org.graalvm.nativeimage.builder/com.oracle.svm.core.jdk=ALL-UNNAMED</arg>
+                        &ndash;&gt;
+                        <arg>&#45;&#45;add-exports=org.graalvm.nativeimage.builder/com.oracle.svm.core.jdk=ALL-UNNAMED</arg>
                     </nativeImageArgs>
                     <releaseConfiguration>
-                        <!-- all targets -->
-                        <!--<packageType></packageType>-->
+                        &lt;!&ndash; all targets &ndash;&gt;
+                        &lt;!&ndash;<packageType></packageType>&ndash;&gt;
                         <description>desktop-javafx</description>
                         <vendor>muetech</vendor>
                         <version>${version}</version>
-                        <!-- macOS -->
+                        &lt;!&ndash; macOS &ndash;&gt;
                         <macAppStore>false</macAppStore>
                         <macSigningUserName>muetech</macSigningUserName>
-                        <!--<macAppCategory>public.app-category.utilities</macAppCategory>-->
+                        &lt;!&ndash;<macAppCategory>public.app-category.utilities</macAppCategory>&ndash;&gt;
                     </releaseConfiguration>
                 </configuration>
                 <executions>
@@ -287,7 +296,7 @@
                     </execution>
                 </executions>
             </plugin>
-
+-->
 
 
         </plugins>

@@ -46,7 +46,7 @@ public class LcMediaPlayer implements TeaMediaPlayer{
     private MediaPlayer mediaPlayer;
     private SimpleObjectProperty<Music> music;
     private BooleanProperty playing,disorder,loop,isStar,mute,desktopLrcShow;
-    private SimpleDoubleProperty currentTime,totalTime;
+    private SimpleDoubleProperty currentTime,totalTime,bufferedTime;
     private ObjectProperty<Image> album;
     private DoubleProperty volume;
     private StringProperty title,artist;
@@ -75,6 +75,7 @@ public class LcMediaPlayer implements TeaMediaPlayer{
 
         totalTime=new SimpleDoubleProperty(0.0);
         currentTime=new SimpleDoubleProperty(0.0);
+        bufferedTime=new SimpleDoubleProperty(0.0);
         volume=new SimpleDoubleProperty(100.0);
         songs= FXCollections.observableArrayList();
         lrcFiles= FXCollections.observableArrayList();
@@ -253,6 +254,9 @@ public class LcMediaPlayer implements TeaMediaPlayer{
 
                 });
 
+                mediaPlayer.bufferProgressTimeProperty().addListener((observableValue, duration, t1) -> {
+                    bufferedTime.set(t1.toSeconds() / totalTime.get() * 100);
+                });
 
             }
         });
@@ -629,6 +633,16 @@ public class LcMediaPlayer implements TeaMediaPlayer{
             songs.remove(index);
             lrcFiles.remove(index);
         }
+    }
+
+    @Override
+    public Double getBufferedTime() {
+        return bufferedTime.get();
+    }
+
+    @Override
+    public SimpleDoubleProperty bufferedTimeProperty() {
+        return bufferedTime;
     }
 
     public String mainCover(){

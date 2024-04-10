@@ -104,7 +104,7 @@
 /*移动的点*/
 .simple-song-slider .thumb,
 .simple-song-slider:focused .thumb {
-    -fx-background-color:transparent;
+    -fx-background-color:#388bfd;
     -fx-background-radius: 10;
     -fx-background-insets: 0;
     -fx-pref-width: 10;
@@ -112,11 +112,11 @@
 }
 
 .simple-song-slider:hover .thumb {
-    -fx-background-color:#5c626a;
+    -fx-background-color:#388bfd;
 }
 /*已抵达轨迹*/
 .simple-song-slider .colored-track {
-    -fx-background-color:#5c626a;
+    -fx-background-color:#388bfd;
     -fx-background-radius: 10;
     -fx-background-insets: 0;
 }
@@ -148,3 +148,71 @@
     -fx-background-insets: 0;
 }
 
+/*================================*/
+.simple-song-buffer-slider {
+    -jfx-default-thumb:transparent;
+    -fx-pref-height: 15px;
+}
+/*未到达轨迹*/
+.simple-song-buffer-slider .track,
+.simple-song-buffer-slider:horizontal .track {
+    -fx-background-color: transparent;
+    -fx-background-radius: 5;
+    -fx-background-insets: 0;
+    -fx-pref-height: 4px;
+}
+
+/*移动的点*/
+.simple-song-buffer-slider .thumb,
+.simple-song-buffer-slider:focused .thumb {
+    -fx-background-color:#4a4d54;
+    -fx-background-radius: 10;
+    -fx-background-insets: 0;
+    -fx-pref-width: 10;
+    -fx-pref-height: 10;
+}
+
+.simple-song-buffer-slider:hover .thumb {
+    -fx-background-color:#5c626a;
+}
+/*已抵达轨迹*/
+.simple-song-buffer-slider .colored-track {
+    -fx-background-color: #4a4d54;
+    -fx-background-radius: 10;
+    -fx-background-insets: 0;
+}
+
+/*弹出的提示字体*/
+.simple-song-buffer-slider .slider-value {
+    -fx-stroke: WHITE;
+    -fx-font-size: 10;
+}
+/*弹出的提示字体背景*/
+.simple-song-buffer-slider .animated-thumb {
+    -fx-pref-width: 30px;
+    -fx-pref-height: 30px;
+    -fx-background-color: -jfx-default-thumb;
+    -fx-background-radius: 50% 50% 50% 0%;
+    -fx-background-insets: 0;
+}
+/*最小值时移动点的颜色*/
+.simple-song-buffer-slider:min .thumb,
+.simple-song-buffer-slider:min:focused .thumb {
+    -fx-background-color: -jfx-default-track;
+    -fx-background-radius: 20;
+    -fx-background-insets: 0;
+}
+/*最小值时弹出的背景颜色*/
+.simple-song-buffer-slider:min .animated-thumb {
+    -fx-background-color: -jfx-default-track;
+    -fx-background-radius: 50% 50% 50% 0%;
+    -fx-background-insets: 0;
+}
+
+.simple-song-buffer-slider:max .thumb,
+.simple-song-buffer-slider:max:focused .thumb {
+    -fx-background-color: red;
+    -fx-background-radius: 20;
+    -fx-background-insets: 0;
+    -fx-shape: "";
+}

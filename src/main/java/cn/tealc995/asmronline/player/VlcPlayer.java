@@ -60,7 +60,7 @@ public class VlcPlayer implements TeaMediaPlayer {
     private MediaPlayer mediaPlayer;
     private SimpleObjectProperty<Music> music;
     private BooleanProperty playing,disorder,loop,isStar,mute,desktopLrcShow;
-    private SimpleDoubleProperty currentTime,totalTime;
+    private SimpleDoubleProperty currentTime,totalTime,bufferedTime;
     private ObjectProperty<Image> album;
     private DoubleProperty volume;
     private StringProperty title,artist;
@@ -113,6 +113,7 @@ public class VlcPlayer implements TeaMediaPlayer {
 
         totalTime=new SimpleDoubleProperty(0.0);
         currentTime=new SimpleDoubleProperty(0.0);
+        bufferedTime=new SimpleDoubleProperty(0.0);
         volume=new SimpleDoubleProperty(100.0);
         songs= FXCollections.observableArrayList();
         lrcFiles= FXCollections.observableArrayList();
@@ -247,6 +248,7 @@ public class VlcPlayer implements TeaMediaPlayer {
             public void timeChanged(MediaPlayer mediaPlayer, long newTime) {
                 super.timeChanged(mediaPlayer, newTime);
                 Platform.runLater(() -> currentTime.set(newTime / 1000));
+
             }
 
             @Override
@@ -289,9 +291,18 @@ public class VlcPlayer implements TeaMediaPlayer {
             @Override
             public void error(MediaPlayer mediaPlayer) {
                 super.error(mediaPlayer);
+
                 logger.error("无法播放歌曲:"+mediaPlayer.media().info().mrl());
             }
+
+            @Override
+            public void buffering(MediaPlayer mediaPlayer, float newCache) {
+                super.buffering(mediaPlayer, newCache);
+                Platform.runLater(() -> bufferedTime.set(newCache));
+                System.out.println("缓存："+newCache);
+            }
         });
+
 
     }
 
@@ -594,6 +605,16 @@ public class VlcPlayer implements TeaMediaPlayer {
             lrcFiles.remove(index);
         }
 
+    }
+
+    @Override
+    public Double getBufferedTime() {
+        return bufferedTime.get();
+    }
+
+    @Override
+    public SimpleDoubleProperty bufferedTimeProperty() {
+        return bufferedTime;
     }
 
     private List<LrcBean> lrcFileToBeans(LrcFile lrcFile){

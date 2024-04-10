@@ -20,8 +20,6 @@ import java.util.Map;
  */
 public class TrackApi {
     public static List<Track> track(String url, String key){
-
-        //"order=create_date&sort=desc&page=1&subtitle=0&withPlaylistStatus[]=c939f5c9-04ff-49fb-99e7-09872c6b639a"
         Response response = HttpUtils.get(url + "/api/tracks/" + key);
         if (response.isSuccess()){
             ObjectMapper mapper=new ObjectMapper();

@@ -81,6 +81,7 @@ public class MainGridViewModel {
 
         mainWorks.addListener((observableValue, mainWorks1, mainWorks2) -> {
             if (mainWorks2 != null){
+
                 workItems.setAll(mainWorks2.getWorks());
                 countPage.set((int) Math.ceil((double) mainWorks2.getPagination().getTotalCount() /mainWorks2.getPagination().getPageSize()));
                 totalCount.set(mainWorks2.getPagination().getTotalCount());

@@ -233,7 +233,12 @@ public class WorkCell extends VBox {
                 label = new Label(category.getName());
                 label.setAccessibleText("category");
                 label.setOnMouseClicked(labelHandler);
-                label.getStyleClass().add("tag-label");
+                if (category.getName().equals("AI")){
+                    label.getStyleClass().add("tag-ai-label");
+                }else {
+                    label.getStyleClass().add("tag-label");
+                }
+
                 categoriesPane.getChildren().add(label);
             }
         }

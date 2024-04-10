@@ -62,4 +62,6 @@ public interface TeaMediaPlayer {
 
     void removeAudio(Audio audio);
     void removeAudio(int index);
+    Double getBufferedTime();
+    SimpleDoubleProperty bufferedTimeProperty();
 }
