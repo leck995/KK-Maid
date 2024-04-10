@@ -91,8 +91,10 @@ public class MainPlayListService extends Service<MainWorks> {
             folderList=new HashSet<>();
             File dir=new File(Config.lrcFileFolder.get());
             File[] files = dir.listFiles((dir1, name) -> dir1.isDirectory());
-            for (File file : files) {
-                folderList.add(file.getName().toLowerCase());
+            if (files != null){
+                for (File file : files) {
+                    folderList.add(file.getName().toLowerCase());
+                }
             }
         }
 
@@ -100,8 +102,10 @@ public class MainPlayListService extends Service<MainWorks> {
             zipList=new HashSet<>();
             File dir=new File(Config.lrcZipFolder.get());
             File[] files = dir.listFiles(pathname -> pathname.isFile() && pathname.getName().toLowerCase().endsWith(".zip"));
-            for (File file : files) {
-                zipList.add(file.getName().toLowerCase());
+            if (files != null){
+                for (File file : files) {
+                    zipList.add(file.getName().toLowerCase());
+                }
             }
         }
     }
