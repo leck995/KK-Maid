@@ -1,40 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>cn.tealc995</groupId>
     <artifactId>KK-Maid</artifactId>
-    <version>1.1</version>
-    <name>Asmr-Online</name>
+    <version>1.2</version>
+    <name>kk-maid</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <junit.version>5.9.2</junit.version>
+        <javafx.version>21.0.5</javafx.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
-            <version>17.0.6</version>
+            <version>${javafx.version}</version>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
-            <version>17.0.6</version>
+            <version>${javafx.version}</version>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-media</artifactId>
-            <version>17.0.6</version>
+            <version>${javafx.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-swing</artifactId>
-            <version>17.0.1</version>
+            <version>${javafx.version}</version>
         </dependency>
 
         <dependency>
@@ -94,7 +95,6 @@
         </dependency>
 
 
-
         <dependency>
             <groupId>uk.co.caprica</groupId>
             <artifactId>vlcj</artifactId>
@@ -138,13 +138,12 @@
         </dependency>
 
 
-
         <dependency>
             <groupId>org.greenrobot</groupId>
             <artifactId>eventbus-java</artifactId>
             <version>3.3.1</version>
-   <!--         <scope>system</scope>
-            <systemPath>${basedir}/libs/eventbus-java-3.3.1.jar</systemPath>-->
+            <!--         <scope>system</scope>
+                     <systemPath>${basedir}/libs/eventbus-java-3.3.1.jar</systemPath>-->
         </dependency>
 
         <dependency>
@@ -184,8 +183,10 @@
                         </goals>
                         <configuration>
                             <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <mainClass>cn.tealc995.asmronline.AppStart</mainClass>
                                 </transformer>
                             </transformers>
@@ -193,7 +194,6 @@
                     </execution>
                 </executions>
             </plugin>
-
 
 
             <plugin>
@@ -217,86 +217,86 @@
             </plugin>
 
 
-         <!--   <plugin>
-                <groupId>com.gluonhq</groupId>
-                <artifactId>gluonfx-maven-plugin</artifactId>
-                <version>1.0.18</version>
-                <configuration>
-                    <mainClass>cn.tealc995.asmronline.App</mainClass>
-                    &lt;!&ndash;
-                    <javaStaticSdkVersion>11-ea+10</javaStaticSdkVersion>
-                    &ndash;&gt;
-                    <javafxStaticSdkVersion>17</javafxStaticSdkVersion>
-                    &lt;!&ndash; JavaFx 中使用 ResourceBundle.getBundle("xxxxxx") 的路径，如果没有则不需要配置 &ndash;&gt;
-                    &lt;!&ndash;<bundlesList>
-                        <list>com.mueeee.desktopjavafx</list>
-                    </bundlesList>&ndash;&gt;
-                    &lt;!&ndash; 允许的资源文件后缀 &ndash;&gt;
-                    <resourcesList>
-                        <list>.*\\.properties$</list>
-                    </resourcesList>
-                    &lt;!&ndash; 涉及反射的类 &ndash;&gt;
-                    <reflectionList>
-          &lt;!&ndash;              <list>cn.tealc995.asmronline.api.model.CountDetail</list>
-                        <list>cn.tealc995.asmronline.api.model.LanguageEdition</list>
-                        <list>cn.tealc995.asmronline.api.model.MainWorks</list>
-                        <list>cn.tealc995.asmronline.api.model.Pagination</list>
-                        <list>cn.tealc995.asmronline.api.model.Rank</list>
-                        <list>cn.tealc995.asmronline.api.model.Role</list>
-                        <list>cn.tealc995.asmronline.api.model.RoleEx</list>
-                        <list>cn.tealc995.asmronline.api.model.SearchKey</list>
-                        <list>cn.tealc995.asmronline.api.model.SortType</list>
-                        <list>cn.tealc995.asmronline.api.model.Track</list>
-                        <list>cn.tealc995.asmronline.api.model.User</list>
-                        <list>cn.tealc995.asmronline.api.model.Work</list>
+            <!--   <plugin>
+                   <groupId>com.gluonhq</groupId>
+                   <artifactId>gluonfx-maven-plugin</artifactId>
+                   <version>1.0.18</version>
+                   <configuration>
+                       <mainClass>cn.tealc995.asmronline.App</mainClass>
+                       &lt;!&ndash;
+                       <javaStaticSdkVersion>11-ea+10</javaStaticSdkVersion>
+                       &ndash;&gt;
+                       <javafxStaticSdkVersion>17</javafxStaticSdkVersion>
+                       &lt;!&ndash; JavaFx 中使用 ResourceBundle.getBundle("xxxxxx") 的路径，如果没有则不需要配置 &ndash;&gt;
+                       &lt;!&ndash;<bundlesList>
+                           <list>com.mueeee.desktopjavafx</list>
+                       </bundlesList>&ndash;&gt;
+                       &lt;!&ndash; 允许的资源文件后缀 &ndash;&gt;
+                       <resourcesList>
+                           <list>.*\\.properties$</list>
+                       </resourcesList>
+                       &lt;!&ndash; 涉及反射的类 &ndash;&gt;
+                       <reflectionList>
+             &lt;!&ndash;              <list>cn.tealc995.asmronline.api.model.CountDetail</list>
+                           <list>cn.tealc995.asmronline.api.model.LanguageEdition</list>
+                           <list>cn.tealc995.asmronline.api.model.MainWorks</list>
+                           <list>cn.tealc995.asmronline.api.model.Pagination</list>
+                           <list>cn.tealc995.asmronline.api.model.Rank</list>
+                           <list>cn.tealc995.asmronline.api.model.Role</list>
+                           <list>cn.tealc995.asmronline.api.model.RoleEx</list>
+                           <list>cn.tealc995.asmronline.api.model.SearchKey</list>
+                           <list>cn.tealc995.asmronline.api.model.SortType</list>
+                           <list>cn.tealc995.asmronline.api.model.Track</list>
+                           <list>cn.tealc995.asmronline.api.model.User</list>
+                           <list>cn.tealc995.asmronline.api.model.Work</list>
 
-                        <list>cn.tealc995.asmronline.event.GridItemRemoveEvent</list>
-                        <list>cn.tealc995.asmronline.event.MainCenterEvent</list>
-                        <list>cn.tealc995.asmronline.event.MainDialogEvent</list>
-                        <list>cn.tealc995.asmronline.event.MainNotificationEvent</list>
-                        <list>cn.tealc995.asmronline.event.MainPaneEvent</list>
-                        <list>cn.tealc995.asmronline.event.SearchEvent</list>&ndash;&gt;
+                           <list>cn.tealc995.asmronline.event.GridItemRemoveEvent</list>
+                           <list>cn.tealc995.asmronline.event.MainCenterEvent</list>
+                           <list>cn.tealc995.asmronline.event.MainDialogEvent</list>
+                           <list>cn.tealc995.asmronline.event.MainNotificationEvent</list>
+                           <list>cn.tealc995.asmronline.event.MainPaneEvent</list>
+                           <list>cn.tealc995.asmronline.event.SearchEvent</list>&ndash;&gt;
 
-                        <list>cn.tealc995.asmronline.ui.PlayerUI</list>
-                        <list>cn.tealc995.asmronline.ui.MainGridViewModel</list>
-                        <list>cn.tealc995.asmronline.ui.MainUI</list>
+                           <list>cn.tealc995.asmronline.ui.PlayerUI</list>
+                           <list>cn.tealc995.asmronline.ui.MainGridViewModel</list>
+                           <list>cn.tealc995.asmronline.ui.MainUI</list>
 
 
-                    </reflectionList>
-                    <nativeImageArgs>
-                        &lt;!&ndash; “快速构建”模式，以减少在开发过程中生成本机可执行文件所需的时间。请注意，此模式可能会对峰值性能和生成的可执行文件的大小产生负面影响，因此建议仅用于开发目的。 &ndash;&gt;
-                        &lt;!&ndash;<arg>-Ob</arg>&ndash;&gt;
-                        &lt;!&ndash; 现在默认启用并已弃用，因为不再需要它。 &ndash;&gt;
-                        &lt;!&ndash;<arg>&#45;&#45;allow-incomplete-classpath</arg>&ndash;&gt;
-                        &lt;!&ndash;
-                        2023-05-04，GraalVM-22.3.0
-                        修复在Linux上编译报错：Fatal error: java.lang.IllegalAccessError: class com.gluonhq.substrate.feature.GluonFeature (in unnamed module @0x6c1832aa) cannot access class com.oracle.svm.core.jdk.NativeLibrarySupport (in module org.graalvm.nativeimage.builder) because module org.graalvm.nativeimage.builder does not export com.oracle.svm.core.jdk to unnamed module @0x6c1832aa
-                        https://github.com/oracle/graal/issues/5265
-                        &ndash;&gt;
-                        <arg>&#45;&#45;add-exports=org.graalvm.nativeimage.builder/com.oracle.svm.core.jdk=ALL-UNNAMED</arg>
-                    </nativeImageArgs>
-                    <releaseConfiguration>
-                        &lt;!&ndash; all targets &ndash;&gt;
-                        &lt;!&ndash;<packageType></packageType>&ndash;&gt;
-                        <description>desktop-javafx</description>
-                        <vendor>muetech</vendor>
-                        <version>${version}</version>
-                        &lt;!&ndash; macOS &ndash;&gt;
-                        <macAppStore>false</macAppStore>
-                        <macSigningUserName>muetech</macSigningUserName>
-                        &lt;!&ndash;<macAppCategory>public.app-category.utilities</macAppCategory>&ndash;&gt;
-                    </releaseConfiguration>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>build</goal>
-                        </goals>
-                        <phase>package</phase>
-                    </execution>
-                </executions>
-            </plugin>
--->
+                       </reflectionList>
+                       <nativeImageArgs>
+                           &lt;!&ndash; “快速构建”模式，以减少在开发过程中生成本机可执行文件所需的时间。请注意，此模式可能会对峰值性能和生成的可执行文件的大小产生负面影响，因此建议仅用于开发目的。 &ndash;&gt;
+                           &lt;!&ndash;<arg>-Ob</arg>&ndash;&gt;
+                           &lt;!&ndash; 现在默认启用并已弃用，因为不再需要它。 &ndash;&gt;
+                           &lt;!&ndash;<arg>&#45;&#45;allow-incomplete-classpath</arg>&ndash;&gt;
+                           &lt;!&ndash;
+                           2023-05-04，GraalVM-22.3.0
+                           修复在Linux上编译报错：Fatal error: java.lang.IllegalAccessError: class com.gluonhq.substrate.feature.GluonFeature (in unnamed module @0x6c1832aa) cannot access class com.oracle.svm.core.jdk.NativeLibrarySupport (in module org.graalvm.nativeimage.builder) because module org.graalvm.nativeimage.builder does not export com.oracle.svm.core.jdk to unnamed module @0x6c1832aa
+                           https://github.com/oracle/graal/issues/5265
+                           &ndash;&gt;
+                           <arg>&#45;&#45;add-exports=org.graalvm.nativeimage.builder/com.oracle.svm.core.jdk=ALL-UNNAMED</arg>
+                       </nativeImageArgs>
+                       <releaseConfiguration>
+                           &lt;!&ndash; all targets &ndash;&gt;
+                           &lt;!&ndash;<packageType></packageType>&ndash;&gt;
+                           <description>desktop-javafx</description>
+                           <vendor>muetech</vendor>
+                           <version>${version}</version>
+                           &lt;!&ndash; macOS &ndash;&gt;
+                           <macAppStore>false</macAppStore>
+                           <macSigningUserName>muetech</macSigningUserName>
+                           &lt;!&ndash;<macAppCategory>public.app-category.utilities</macAppCategory>&ndash;&gt;
+                       </releaseConfiguration>
+                   </configuration>
+                   <executions>
+                       <execution>
+                           <goals>
+                               <goal>build</goal>
+                           </goals>
+                           <phase>package</phase>
+                       </execution>
+                   </executions>
+               </plugin>
+   -->
 
 
         </plugins>
