@@ -1,4 +1,4 @@
-module cn.tealc995.asmronline {
+module cn.tealc.kkmaid {
     requires javafx.controls;
     requires javafx.fxml;
     requires com.fasterxml.jackson.core;
