@@ -138,6 +138,9 @@ public class MainPlayListViewModel {
         this.pageSize.set(pageSize);
     }
 
+
+
+
     /**
      * @description: 在加入黑名单的时候调用此方法，用于在当前列表中移除
      * @name: removeWork
@@ -151,6 +154,19 @@ public class MainPlayListViewModel {
         workItems.remove(event.getWork());
     }
 
+
+    public void nextPage(){
+        int next = getCurrentPage() + 1;
+        if (next < getCountPage()){
+            setCurrentPage(next);
+        }
+    }
+    public void prePage(){
+        int pre = getCurrentPage() - 1;
+        if (pre >= 0){
+            setCurrentPage(pre);
+        }
+    }
 
     public boolean isLoading() {
         return loading.get();

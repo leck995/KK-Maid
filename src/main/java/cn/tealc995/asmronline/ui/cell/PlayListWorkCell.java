@@ -217,36 +217,65 @@ public class PlayListWorkCell extends VBox {
         getChildren().addAll(headPane, itemTitle, borderPane1, circleLabel);
         setSpacing(10);
         EventHandler<MouseEvent> labelHandler = mouseEvent -> {
-            Label source = (Label) mouseEvent.getSource();
-            if (source.getAccessibleText().equals("category")) {
-                EventBusUtil.getDefault().post(new SearchEvent(CategoryType.TAG,source.getText()));
-                EventBusUtil.getDefault().post(new MainCenterEvent(null,false,true));
-                mouseEvent.consume();
-            }
-            if (source.getAccessibleText().equals("va")) {
 
-                EventBusUtil.getDefault().post(new SearchEvent(CategoryType.VA,source.getText()));
-                EventBusUtil.getDefault().post(new MainCenterEvent(null,false,true));
-                mouseEvent.consume();
+            if (mouseEvent.getButton() == MouseButton.PRIMARY){
+                Label source = (Label) mouseEvent.getSource();
+                if (source.getAccessibleText().equals("category")) {
+                    EventBusUtil.getDefault().post(new SearchEvent(CategoryType.TAG,source.getText()));
+                    EventBusUtil.getDefault().post(new MainCenterEvent(null,false,true));
+                    mouseEvent.consume();
+                }
+                if (source.getAccessibleText().equals("va")) {
+                    EventBusUtil.getDefault().post(new SearchEvent(CategoryType.VA,source.getText()));
+                    EventBusUtil.getDefault().post(new MainCenterEvent(null,false,true));
+                    mouseEvent.consume();
+                }
             }
-            mouseEvent.consume();
         };
+
+
         FlowPane categoriesPane = new FlowPane();
         categoriesPane.setId("grid-item-categories");
+        boolean isAI = false;
         if (work.getTags() != null) {
             categoriesPane.setVgap(5);
             categoriesPane.setHgap(5);
 
             Label label;
             for (Role category : work.getTags()) {
+
                 label = new Label(category.getName());
                 label.setAccessibleText("category");
                 label.setOnMouseClicked(labelHandler);
-                label.getStyleClass().add("tag-label");
+                if (category.getName().equalsIgnoreCase("AI")){
+                    isAI = true;
+                    label.getStyleClass().add("tag-ai-label");
+                }else {
+                    label.getStyleClass().add("tag-label");
+                }
+
+                MenuItem blackBtn = new MenuItem("加入黑名单");
+                blackBtn.setOnAction(event -> {
+                    Config.tagBlackList.add(category.getName());
+                    EventBusUtil.getDefault().post(new BlackWorkEvent(work));
+                });
+                ContextMenu contextMenu = new ContextMenu(blackBtn);
+                label.setContextMenu(contextMenu);
                 categoriesPane.getChildren().add(label);
+
             }
         }
         getChildren().add(categoriesPane);
+
+        if (isAI){
+            Label label= new Label("AI");
+            label.getStyleClass().add("list-item-tag-ai");
+            label.setId("grid-item-ai");
+            tagPane.getChildren().add(0, label);
+        }
+
+
+
         FlowPane vaPane = new FlowPane();
         vaPane.setId("grid-item-vas");
         vaPane.setMaxHeight(90);

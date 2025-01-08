@@ -73,7 +73,7 @@ public class Config {
 
     /*==============黑名单=================*/
     public static ObservableSet<String> workBlackList= FXCollections.observableSet();
-    public static ObservableSet<String> tagBlackList= FXCollections.observableSet("乙女向","女性向");
+    public static ObservableSet<String> tagBlackList= FXCollections.observableSet();
 
     /*==============播放设置=================*/
     public static SimpleBooleanProperty useVlcPlayer=new SimpleBooleanProperty(false);
@@ -330,7 +330,10 @@ public class Config {
             if (workBlacklistFile.exists()){
                 workBlackList.addAll(objectMapper.readValue(workBlacklistFile,new TypeReference<Set<String>>(){}));
             }
-
+            File tagBlacklistFile = new File("data/blacklist/tags.json");
+            if (tagBlacklistFile.exists()){
+                tagBlackList.addAll(objectMapper.readValue(tagBlacklistFile,new TypeReference<Set<String>>(){}));
+            }
 
             /*=====================播放设置========================*/
             if (properties.containsKey("USE_VLC_PLAYER")){
@@ -487,6 +490,10 @@ public class Config {
                 file.createNewFile();
             }
             mapper.writeValue(file,workBlackList);
+
+            File tagBlacklistFile = new File("data/blacklist/tags.json");
+            mapper.writeValue(tagBlacklistFile,tagBlackList);
+
 
             /*=====================播放========================*/
             properties.setProperty("USE_VLC_PLAYER", String.valueOf(useVlcPlayer.get()));

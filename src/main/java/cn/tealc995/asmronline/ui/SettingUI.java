@@ -549,11 +549,23 @@ public class SettingUI {
     private Pane initBlackListTab(){
         Label workLabel=new Label("作品黑名单(空格分隔)");
         workLabel.getStyleClass().add("title-2");
+
+     /*   ListView<String> listView=new ListView<>();
+        listView.*/
+
         TextArea workArea=new TextArea();
         workArea.setPromptText("这里输入作品，以空格分隔");
-
+        workArea.setWrapText(true);
         workArea.textProperty().bindBidirectional(viewModel.workBlackListProperty());
-        VBox vBox=new VBox(workLabel,workArea);
+
+        Label tagLabel=new Label("标签黑名单(空格分隔)");
+        tagLabel.getStyleClass().add("title-2");
+        TextArea tagArea=new TextArea();
+        tagArea.setWrapText(true);
+        tagArea.setPromptText("这里输入标签，以空格分隔");
+        tagArea.textProperty().bindBidirectional(viewModel.tagBlackListProperty());
+
+        VBox vBox=new VBox(workLabel,workArea,tagLabel,tagArea);
         vBox.setPadding(new Insets(10,20,10,20));
         return vBox;
     }

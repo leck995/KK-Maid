@@ -190,6 +190,20 @@ public class MainGridViewModel {
         workItems.remove(event.getWork());
     }
 
+
+    public void nextPage(){
+        int next = getCurrentPage() + 1;
+        if (next < getCountPage()){
+            setCurrentPage(next);
+        }
+    }
+    public void prePage(){
+        int pre = getCurrentPage() - 1;
+        if (pre >= 0){
+            setCurrentPage(pre);
+        }
+    }
+
     public boolean isLoading() {
         return loading.get();
     }

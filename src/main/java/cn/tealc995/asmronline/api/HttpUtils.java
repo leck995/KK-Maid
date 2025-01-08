@@ -26,7 +26,7 @@ public class HttpUtils {
             URL url = new URL(path + "?" +formatter(params));
             System.out.println(path + "?" +formatter(params));
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setConnectTimeout(5000);
+            conn.setConnectTimeout(2000);
             conn.setRequestMethod("GET");
             if (TOKEN != null){
                 conn.setRequestProperty("Authorization", "Bearer "+TOKEN); //  TOKEN 如果没有token可以删除

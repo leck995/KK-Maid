@@ -179,7 +179,7 @@ public class WorkCell extends VBox {
 
 
         rating.addEventFilter(MouseEvent.MOUSE_CLICKED,event -> {
-            if (Config.TOKEN.get() == null || Config.TOKEN.get().length() == 0){
+            if (Config.TOKEN.get() == null || Config.TOKEN.get().isEmpty()){
                 Notification.show("使用收藏功能需要在设置中填写Token", MessageType.WARNING,2000,Pos.TOP_CENTER,App.mainStage);
                 event.consume();
             }
@@ -213,17 +213,22 @@ public class WorkCell extends VBox {
         getChildren().addAll(headPane, itemTitle, borderPane1, circleLabel);
         setSpacing(10);
         EventHandler<MouseEvent> labelHandler = mouseEvent -> {
-            Label source = (Label) mouseEvent.getSource();
-            if (source.getAccessibleText().equals("category")) {
-                EventBusUtil.getDefault().post(new SearchEvent(CategoryType.TAG,source.getText()));
+            if (mouseEvent.getButton() == MouseButton.PRIMARY){
+                Label source = (Label) mouseEvent.getSource();
+                if (source.getAccessibleText().equals("category")) {
+                    EventBusUtil.getDefault().post(new SearchEvent(CategoryType.TAG,source.getText()));
+                }
+                if (source.getAccessibleText().equals("va")) {
+                    EventBusUtil.getDefault().post(new SearchEvent(CategoryType.VA,source.getText()));
+                }
+                mouseEvent.consume();
             }
-            if (source.getAccessibleText().equals("va")) {
-                EventBusUtil.getDefault().post(new SearchEvent(CategoryType.VA,source.getText()));
-            }
-            mouseEvent.consume();
+
         };
         FlowPane categoriesPane = new FlowPane();
         categoriesPane.setId("grid-item-categories");
+
+        boolean isAI = false;
         if (work.getTags() != null) {
             categoriesPane.setVgap(5);
             categoriesPane.setHgap(5);
@@ -234,15 +239,35 @@ public class WorkCell extends VBox {
                 label.setAccessibleText("category");
                 label.setOnMouseClicked(labelHandler);
                 if (category.getName().equals("AI")){
+                    isAI = true;
                     label.getStyleClass().add("tag-ai-label");
                 }else {
                     label.getStyleClass().add("tag-label");
                 }
 
+
+
+                MenuItem blackBtn = new MenuItem("加入黑名单");
+                blackBtn.setOnAction(event -> {
+                    Config.tagBlackList.add(category.getName());
+                    EventBusUtil.getDefault().post(new BlackWorkEvent(work));
+                });
+                ContextMenu contextMenu = new ContextMenu(blackBtn);
+                label.setContextMenu(contextMenu);
                 categoriesPane.getChildren().add(label);
             }
         }
         getChildren().add(categoriesPane);
+
+        if (isAI){
+            Label label= new Label("AI");
+            label.getStyleClass().add("list-item-tag-ai");
+            label.setId("grid-item-ai");
+            tagPane.getChildren().add(0, label);
+        }
+
+
+
         FlowPane vaPane = new FlowPane();
         vaPane.setId("grid-item-vas");
         vaPane.setMaxHeight(90);

@@ -69,7 +69,7 @@ public class SettingUIViewModel {
     private SimpleStringProperty lrcZipFolder;
     private SimpleStringProperty lrcFileFolder;
     private SimpleStringProperty workBlackList;
-
+    private SimpleStringProperty tagBlackList;
     private SimpleIntegerProperty selectPlayerIndex;
     private ObservableList<String> players;
     private SimpleBooleanProperty stopPlayOnEnd;
@@ -171,6 +171,13 @@ public class SettingUIViewModel {
         }
         workBlackList.set(workBuilder.toString());
 
+        tagBlackList=new SimpleStringProperty();
+        StringBuilder tagBuilder=new StringBuilder();
+        for (String s : Config.tagBlackList) {
+            tagBuilder.append(s).append(" ");
+        }
+        tagBlackList.set(tagBuilder.toString());
+
         /*===============播放=================*/
         selectPlayerIndex=new SimpleIntegerProperty();
         if (Config.useVlcPlayer.get()){
@@ -232,7 +239,13 @@ public class SettingUIViewModel {
         String[] s = rj.split(" ");
         Config.workBlackList.clear();
         Config.workBlackList.addAll(Arrays.stream(s).toList());
+        String tag = tagBlackList.get().toUpperCase().replaceAll("RJ", "");
+        String[] tags = tag.split(" ");
+        Config.tagBlackList.clear();
+        Config.tagBlackList.addAll(Arrays.stream(tags).toList());
     }
+
+
 
     /**
      * @description: 设置播放器内核
@@ -459,6 +472,7 @@ public class SettingUIViewModel {
         return workBlackList;
     }
 
+
     public ObservableList<String> getPlayers() {
         return players;
     }
@@ -569,5 +583,13 @@ public class SettingUIViewModel {
 
     public SimpleStringProperty saveNameTemplateProperty() {
         return saveNameTemplate;
+    }
+
+    public String getTagBlackList() {
+        return tagBlackList.get();
+    }
+
+    public SimpleStringProperty tagBlackListProperty() {
+        return tagBlackList;
     }
 }

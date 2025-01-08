@@ -7,6 +7,7 @@ import cn.tealc995.asmronline.api.StarApi;
 import cn.tealc995.asmronline.api.WorksApi;
 import cn.tealc995.asmronline.api.model.LanguageEdition;
 import cn.tealc995.asmronline.api.model.MainWorks;
+import cn.tealc995.asmronline.api.model.Role;
 import cn.tealc995.asmronline.api.model.Work;
 import cn.tealc995.asmronline.ui.CategoryType;
 import javafx.collections.ObservableSet;
@@ -14,14 +15,11 @@ import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 
 import java.io.File;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @program: Asmr-Online
- * @description:
+ * @description: 获取歌单的作品列表
  * @author: Leck
  * @create: 2023-07-15 23:16
  */
@@ -44,39 +42,51 @@ public class MainPlayListService extends Service<MainWorks> {
 
                 MainWorks works= PlayListApi.works(host,params);
 
+
                 ObservableSet<String> workBlackList = Config.workBlackList;
-                if (works != null){
-                    Iterator<Work> iterator = works.getWorks().iterator();
-                    while (iterator.hasNext()){
-                        Work work = iterator.next();
-                        if (workBlackList.contains(work.getFullId())){
-                            iterator.remove();
-                            continue;
-                        }else {
-                            work.setBlack(false);
-                        }
-                        if (!work.isHas_subtitle() && folderList != null){
-                            for (String s : folderList) {
-                                boolean exist = exist(work, s);
-                                if (exist){
-                                    work.setHas_subtitle(true);//存在字幕文件夹
-                                    work.setHasLocalSubtitle(true);
-                                    break;
-                                }
+                ObservableSet<String> tagBlackList = Config.tagBlackList;
+                if (works != null) {
+                    for (Work work : works.getWorks()) {
+                        //筛选RJ黑名单
+                        work.setBlack(workBlackList.contains(work.getFullId()));
+                        //筛选标签黑名单
+                        for (Role tag : work.getTags()) {
+                            if (tagBlackList.contains(tag.getName())) {
+                                work.setBlack(true);
+                                break;
                             }
                         }
-                        if (!work.isHas_subtitle() && zipList != null){
-                            for (String s : zipList) {
-                                boolean exist = exist(work, s);
-                                if (exist){
-                                    work.setHas_subtitle(true);//存在字幕zip包
-                                    work.setHasLocalSubtitle(true);
-                                    break;
+
+                        //不是黑名单作品，匹配本地字幕
+                        if (!work.isBlack()) {
+                            if (!work.isHas_subtitle() && folderList != null) {
+                                for (String s : folderList) {
+                                    boolean exist = exist(work, s);
+                                    if (exist) {
+                                        work.setHas_subtitle(true);//存在字幕文件夹
+                                        work.setHasLocalSubtitle(true);
+                                        break;
+                                    }
+                                }
+                            }
+                            if (!work.isHas_subtitle() && zipList != null) {
+                                for (String s : zipList) {
+                                    boolean exist = exist(work, s);
+                                    if (exist) {
+                                        work.setHas_subtitle(true);//存在字幕zip包
+                                        work.setHasLocalSubtitle(true);
+                                        break;
+                                    }
                                 }
                             }
                         }
                     }
+
+                    //过滤所有黑名单作品
+                    List<Work> list = works.getWorks().stream().filter(work -> !work.isBlack()).toList();
+                    works.setWorks(list);
                 }
+
                 updateMessage("false");
                 return works;
             }

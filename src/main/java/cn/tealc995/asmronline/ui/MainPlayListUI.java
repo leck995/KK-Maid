@@ -15,6 +15,7 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.*;
 import javafx.util.StringConverter;
 
@@ -60,7 +61,7 @@ public class MainPlayListUI {
 
 
         flowPane.setOnScroll(scrollEvent -> {
-            double deltaY= scrollEvent.getDeltaY()*7;
+            double deltaY= scrollEvent.getDeltaY()*4;
             double height = scrollPane.getContent().getBoundsInLocal().getHeight();
             double vvalue = scrollPane.getVvalue();
             scrollPane.setVvalue(vvalue + -deltaY/height);
@@ -177,6 +178,14 @@ public class MainPlayListUI {
 
 
 
+        root.setOnMouseClicked(event -> {
+            if (event.getButton() == MouseButton.FORWARD){
+                viewModel.prePage();
+            }
+            if (event.getButton() == MouseButton.BACK){
+                viewModel.nextPage();
+            }
+        });
 
 
 

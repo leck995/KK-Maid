@@ -60,11 +60,11 @@ public class SimplePlayerUI {
         album.setFitWidth(40);
         album.setSmooth(true);
         Circle circle=new Circle(20,20,20);
-
-    /*    DropShadow dropShadow=new DropShadow(BlurType.THREE_PASS_BOX, Color.BLACK,10,20,0,0);
-        circle.setEffect(dropShadow);*/
         album.setClip(circle);
-        album.setOnMouseClicked(mouseEvent -> {
+
+        StackPane albumPane=new StackPane(album);
+
+        albumPane.setOnMouseClicked(mouseEvent -> {
             FXMLLoader fl=new FXMLLoader(FXResourcesLoader.loadURL("/cn/tealc995/asmronline/fxml/player.fxml"));
             try {
                 Pane parent = fl.load();
@@ -250,7 +250,7 @@ public class SimplePlayerUI {
 
         BorderPane borderPane=new BorderPane();
         borderPane.setTop(vBox);
-        borderPane.setLeft(album);
+        borderPane.setLeft(albumPane);
         borderPane.setCenter(hBox);
 
         root.getChildren().add(borderPane);

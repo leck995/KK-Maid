@@ -21,85 +21,82 @@ import java.util.*;
 
 /**
  * @program: Asmr-Online
- * @description:
+ * @description: 获取作品列表
  * @author: Leck
  * @create: 2023-07-15 23:16
  */
 public class MainGridService extends Service<MainWorks> {
-    private Map<String,String> params;
+    private Map<String, String> params;
     private String searchKey;
     private CategoryType type;
     private String host;
 
     private Set<String> folderList;//保存所有字幕
     private Set<String> zipList;//保存所有字幕
+
     @Override
     protected Task<MainWorks> createTask() {
-
-        Task<MainWorks> task=new Task<MainWorks>() {
+        Task<MainWorks> task = new Task<MainWorks>() {
             @Override
             protected MainWorks call() throws Exception {
                 updateMessage("true");
-                if (folderList == null && zipList ==null){ //此处有待优化，比如更新了目录地址，无法实时更新
+                if (folderList == null && zipList == null) { //此处有待优化，比如更新了目录地址，无法实时更新
                     updateList();
                 }
 
                 MainWorks works;
-                if (type==CategoryType.ALL){
+                if (type == CategoryType.ALL) {
                     works = WorksApi.works(host, params);
-                }else if (type==CategoryType.STAR){
-                    works= StarApi.star(host,params);
-                } else if (type==CategoryType.PLAY_LIST){
-                    works= PlayListApi.works(host,params);
-                }else {
-                    works = SearchApi.search(host,String.format(type.getFormat(),searchKey), params);
+                } else if (type == CategoryType.STAR) {
+                    works = StarApi.star(host, params);
+                } else if (type == CategoryType.PLAY_LIST) {
+                    works = PlayListApi.works(host, params);
+                } else {
+                    works = SearchApi.search(host, String.format(type.getFormat(), searchKey), params);
                 }
 
 
                 ObservableSet<String> workBlackList = Config.workBlackList;
-                if (works != null){
-                    Iterator<Work> iterator = works.getWorks().iterator();
-                    while (iterator.hasNext()){
-                        Work work = iterator.next();
-                        if (workBlackList.contains(work.getFullId())){
-                            iterator.remove();
-                            continue;
-                        }else {
-                            work.setBlack(false);
-                        }
-                        if (!work.isHas_subtitle() && folderList != null){
-                            for (String s : folderList) {
-                                boolean exist = exist(work, s);
-                                if (exist){
-                                    work.setHas_subtitle(true);//存在字幕文件夹
-                                    break;
-                                }
+                ObservableSet<String> tagBlackList = Config.tagBlackList;
+                if (works != null) {
+                    for (Work work : works.getWorks()) {
+                        //筛选RJ黑名单
+                        work.setBlack(workBlackList.contains(work.getFullId()));
+                        //筛选标签黑名单
+                        for (Role tag : work.getTags()) {
+                            if (tagBlackList.contains(tag.getName())) {
+                                work.setBlack(true);
+                                break;
                             }
                         }
-                        if (!work.isHas_subtitle() && zipList != null){
-                            for (String s : zipList) {
-                                boolean exist = exist(work, s);
-                                if (exist){
-                                    work.setHas_subtitle(true);//存在字幕zip包
-                                    break;
+
+                        //不是黑名单作品，匹配本地字幕
+                        if (!work.isBlack()) {
+                            if (!work.isHas_subtitle() && folderList != null) {
+                                for (String s : folderList) {
+                                    boolean exist = exist(work, s);
+                                    if (exist) {
+                                        work.setHas_subtitle(true);//存在字幕文件夹
+                                        break;
+                                    }
+                                }
+                            }
+                            if (!work.isHas_subtitle() && zipList != null) {
+                                for (String s : zipList) {
+                                    boolean exist = exist(work, s);
+                                    if (exist) {
+                                        work.setHas_subtitle(true);//存在字幕zip包
+                                        break;
+                                    }
                                 }
                             }
                         }
                     }
+
+                    //过滤所有黑名单作品
+                    List<Work> list = works.getWorks().stream().filter(work -> !work.isBlack()).toList();
+                    works.setWorks(list);
                 }
-
-                List<Work> list = works.getWorks().stream().filter(work -> {
-                    for (Role tag : work.getTags()) {
-                        for (String s : Config.tagBlackList) {
-                            if (tag.getName().equals(s)) {
-                                return false;
-                            }
-                        }
-                    }
-                    return true;
-                }).toList();
-                works.setWorks(list);
-
 
                 updateMessage("false");
                 return works;
@@ -109,14 +106,12 @@ public class MainGridService extends Service<MainWorks> {
     }
 
 
-
-    private void
-    updateList(){
-        if (Config.lrcFileFolder.get() != null && Config.lrcFileFolder.get().length() > 0){
-            folderList=new HashSet<>();
-            File dir=new File(Config.lrcFileFolder.get());
+    private void updateList() {
+        if (Config.lrcFileFolder.get() != null && Config.lrcFileFolder.get().length() > 0) {
+            folderList = new HashSet<>();
+            File dir = new File(Config.lrcFileFolder.get());
             File[] files = dir.listFiles((dir1, name) -> dir1.isDirectory());
-            if (files != null){
+            if (files != null) {
                 for (File file : files) {
                     folderList.add(file.getName().toLowerCase());
                 }
@@ -124,11 +119,11 @@ public class MainGridService extends Service<MainWorks> {
 
         }
 
-        if (Config.lrcZipFolder.get() != null && Config.lrcZipFolder.get().length() > 0){
-            zipList=new HashSet<>();
-            File dir=new File(Config.lrcZipFolder.get());
+        if (Config.lrcZipFolder.get() != null && Config.lrcZipFolder.get().length() > 0) {
+            zipList = new HashSet<>();
+            File dir = new File(Config.lrcZipFolder.get());
             File[] files = dir.listFiles(pathname -> pathname.isFile() && pathname.getName().toLowerCase().endsWith(".zip"));
-            if (files != null){
+            if (files != null) {
                 for (File file : files) {
                     zipList.add(file.getName().toLowerCase());
                 }
@@ -137,17 +132,15 @@ public class MainGridService extends Service<MainWorks> {
     }
 
 
-
-
-    private boolean exist(Work work,String name){
-        String id= getId(work.getFullId());
-        if (name.contains(id)){
+    private boolean exist(Work work, String name) {
+        String id = getId(work.getFullId());
+        if (name.contains(id)) {
             return true;
-        }else {
-            if (work.hasLanguages()){
+        } else {
+            if (work.hasLanguages()) {
                 for (LanguageEdition languageEdition : work.getLanguage_editions()) {
-                    id=getId(languageEdition.getWorkno());
-                    if (name.contains(id)){
+                    id = getId(languageEdition.getWorkno());
+                    if (name.contains(id)) {
                         return true;
                     }
                 }
@@ -157,16 +150,16 @@ public class MainGridService extends Service<MainWorks> {
     }
 
 
-
-    private String getId(String id){
+    private String getId(String id) {
         String temp;
-        if (id.toLowerCase().contains("rj")){
-            temp=id.toLowerCase();
-        }else {
+        if (id.toLowerCase().contains("rj")) {
+            temp = id.toLowerCase();
+        } else {
             temp = "rj" + id;
         }
         return temp;
     }
+
     public void setHost(String host) {
         this.host = host;
     }
