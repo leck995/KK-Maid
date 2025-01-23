@@ -625,7 +625,7 @@ public class SettingUI {
     }
     private Pane initAboutTab(){
 
-        Label label=new Label("未来道具11号(KK Maid) 1.1");
+        Label label=new Label("未来道具11号(KK Maid) " + Config.version.get());
         label.getStyleClass().add("title-2");
 
 

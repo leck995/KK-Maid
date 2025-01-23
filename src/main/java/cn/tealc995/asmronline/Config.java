@@ -25,7 +25,7 @@ import java.util.Set;
  */
 public class Config {
     /*========================基本========================*/
-    public static SimpleStringProperty version=new SimpleStringProperty("1.0.0");//当前版本
+    public static SimpleStringProperty version=new SimpleStringProperty("1.2.1");//当前版本
     public static SimpleStringProperty configVersion=new SimpleStringProperty();//配置文件中的版本
     public static SimpleStringProperty ignoreVersion=new SimpleStringProperty();
     public static SimpleBooleanProperty autoCheckVersion=new SimpleBooleanProperty(false);//检查更新
