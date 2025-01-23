@@ -13,6 +13,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.util.Callback;
+import org.kordamp.ikonli.javafx.FontIcon;
 
 /**
  * @program: Asmr-Online
@@ -22,15 +23,16 @@ import javafx.util.Callback;
  */
 public class PlayingListUI {
 
+    private final TeaMediaPlayer player;
     private JFXDialogLayout root;
     public PlayingListUI() {
-        TeaMediaPlayer player= MediaPlayerUtil.mediaPlayer();
+        player = MediaPlayerUtil.mediaPlayer();
         root = new JFXDialogLayout();
         root.getStylesheets().add(CssLoader.getCss(CssLoader.playing_list));
 
         VBox headPane=new VBox();
         headPane.setSpacing(5);
-        Label songSizeLabel=new Label(String.format("共%d首",player.getSongs().size()));
+        Label songSizeLabel=new Label(String.format("共%d首", player.getSongs().size()));
         songSizeLabel.getStyleClass().add("songs-size");
         Label title=new Label("歌曲列表");
         title.getStyleClass().add("songs-title");
@@ -65,7 +67,7 @@ public class PlayingListUI {
                             deleteItem.setOnAction(event -> {
                                 player.removeAudio(listView.getItems().indexOf(songInformation));
                                 listView.getSelectionModel().select(player.getPlayingIndexInList());
-                                songSizeLabel.setText(String.format("共%d首",player.getSongs().size()));
+                                songSizeLabel.setText(String.format("共%d首", player.getSongs().size()));
                             });
                             ContextMenu contextMenu=new ContextMenu(playItem,deleteItem);
                             setContextMenu(contextMenu);
@@ -102,6 +104,19 @@ public class PlayingListUI {
 
         root.setBody(anchorPane);
 
+        Button filterMp3Btn=new Button("过滤Mp3");
+        filterMp3Btn.getStyleClass().add("filter-btn");
+        filterMp3Btn.setTooltip(new Tooltip("移除Mp3格式的待播放文件"));
+        filterMp3Btn.setOnAction(actionEvent -> {
+           filter(".mp3");
+        });
+        Button filterWavBtn=new Button("过滤Wav");
+        filterWavBtn.getStyleClass().add("filter-btn");
+        filterWavBtn.setTooltip(new Tooltip("移除Wav格式的待播放文件"));
+        filterWavBtn.setOnAction(actionEvent -> {
+            filter(".wav");
+        });
+
         Button toFolderBtn=new Button("打开目录");
         toFolderBtn.setGraphic(new Region());
         toFolderBtn.setTooltip(new Tooltip("打开ASMR目录"));
@@ -121,8 +136,23 @@ public class PlayingListUI {
             player.clearPlayingList();
             songSizeLabel.setText(String.format("共%d首",0));
         });
-        root.setActions(toFolderBtn,clearBtn);
+
+        root.setActions(filterMp3Btn,filterWavBtn,toFolderBtn,clearBtn);
     }
+
+
+    /**
+     * 过滤播放列表中指定文件类型的子项，通常用于处理Mp3与Wav
+     * @param suffix
+     */
+    private void filter(String suffix){
+        player.getSongs().removeIf(song -> song.getTitle().toLowerCase().endsWith(suffix.toLowerCase()));
+        //当类别为空，暂替播放；对于格式不同的正在播放媒体，暂时不错处理
+        if (player.getSongs().isEmpty()){
+            player.dispose();
+        }
+    }
+
 
     public JFXDialogLayout getRoot() {
         return root;

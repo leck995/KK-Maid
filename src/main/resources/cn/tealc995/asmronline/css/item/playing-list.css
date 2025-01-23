@@ -39,9 +39,19 @@
 }
 
 
+.filter-btn{
+    -fx-background-color: transparent;
+    -fx-text-fill: #bcbaba;
+}
+
+.filter-btn:hover{
+    -fx-text-fill: #ffffff;
+    -fx-cursor: hand;
+}
+
 .clear-songs-btn{
     -fx-background-color: transparent;
-    -fx-text-fill: white;
+    -fx-text-fill: #bcbaba;
 }
 .clear-songs-btn Region{
     -fx-pref-width: 16;
@@ -51,7 +61,7 @@
 }
 .to-folder-btn{
     -fx-background-color: transparent;
-    -fx-text-fill: white;
+    -fx-text-fill: #bcbaba;
 }
 .to-folder-btn Region{
     -fx-pref-width: 16;
@@ -60,9 +70,15 @@
     -fx-background-color: #767676;
 }
 
+.clear-songs-btn:hover,
+.to-folder-btn:hover{
+    -fx-text-fill: #ffffff;
+    -fx-cursor: hand;
+}
 .clear-songs-btn:hover Region,
 .to-folder-btn:hover Region{
-    -fx-background-color: white;
+    -fx-background-color: #ffffff;
+    -fx-cursor: hand;
 }
 
 
