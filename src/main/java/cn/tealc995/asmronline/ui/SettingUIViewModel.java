@@ -70,6 +70,7 @@ public class SettingUIViewModel {
     private SimpleStringProperty lrcFileFolder;
     private SimpleStringProperty workBlackList;
     private SimpleStringProperty tagBlackList;
+    private SimpleStringProperty textBlackList;
     private SimpleIntegerProperty selectPlayerIndex;
     private ObservableList<String> players;
     private SimpleBooleanProperty stopPlayOnEnd;
@@ -178,6 +179,13 @@ public class SettingUIViewModel {
         }
         tagBlackList.set(tagBuilder.toString());
 
+        textBlackList=new SimpleStringProperty();
+        StringBuilder textBuilder=new StringBuilder();
+        for (String s : Config.textBlackList) {
+            textBuilder.append(s).append(System.lineSeparator());
+        }
+        textBlackList.set(textBuilder.toString());
+
         /*===============播放=================*/
         selectPlayerIndex=new SimpleIntegerProperty();
         if (Config.useVlcPlayer.get()){
@@ -243,6 +251,10 @@ public class SettingUIViewModel {
         String[] tags = tag.split(" ");
         Config.tagBlackList.clear();
         Config.tagBlackList.addAll(Arrays.stream(tags).toList());
+
+        String[] texts = textBlackList.get().split(System.lineSeparator());
+        Config.textBlackList.clear();
+        Config.textBlackList.addAll(Arrays.stream(texts).toList());
     }
 
 
@@ -591,5 +603,13 @@ public class SettingUIViewModel {
 
     public SimpleStringProperty tagBlackListProperty() {
         return tagBlackList;
+    }
+
+    public String getTextBlackList() {
+        return textBlackList.get();
+    }
+
+    public SimpleStringProperty textBlackListProperty() {
+        return textBlackList;
     }
 }

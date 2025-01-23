@@ -74,7 +74,7 @@ public class Config {
     /*==============黑名单=================*/
     public static ObservableSet<String> workBlackList= FXCollections.observableSet();
     public static ObservableSet<String> tagBlackList= FXCollections.observableSet();
-
+    public static ObservableSet<String> textBlackList= FXCollections.observableSet();
     /*==============播放设置=================*/
     public static SimpleBooleanProperty useVlcPlayer=new SimpleBooleanProperty(false);
     public static SimpleBooleanProperty stopPlayOnEnd=new SimpleBooleanProperty(true);//作品播放到最后自动停止播放
@@ -334,6 +334,10 @@ public class Config {
             if (tagBlacklistFile.exists()){
                 tagBlackList.addAll(objectMapper.readValue(tagBlacklistFile,new TypeReference<Set<String>>(){}));
             }
+            File textBlacklistFile = new File("data/blacklist/texts.json");
+            if (textBlacklistFile.exists()){
+                textBlackList.addAll(objectMapper.readValue(textBlacklistFile,new TypeReference<Set<String>>(){}));
+            }
 
             /*=====================播放设置========================*/
             if (properties.containsKey("USE_VLC_PLAYER")){
@@ -494,7 +498,8 @@ public class Config {
             File tagBlacklistFile = new File("data/blacklist/tags.json");
             mapper.writeValue(tagBlacklistFile,tagBlackList);
 
-
+            File textBlacklistFile = new File("data/blacklist/texts.json");
+            mapper.writeValue(textBlacklistFile,textBlackList);
             /*=====================播放========================*/
             properties.setProperty("USE_VLC_PLAYER", String.valueOf(useVlcPlayer.get()));
             properties.setProperty("STOP_PLAY_ON_END", String.valueOf(stopPlayOnEnd.get()));

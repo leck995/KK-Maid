@@ -565,7 +565,14 @@ public class SettingUI {
         tagArea.setPromptText("这里输入标签，以空格分隔");
         tagArea.textProperty().bindBidirectional(viewModel.tagBlackListProperty());
 
-        VBox vBox=new VBox(workLabel,workArea,tagLabel,tagArea);
+        Label textLabel=new Label("文本黑名单(换行分隔)");
+        textLabel.getStyleClass().add("title-2");
+        TextArea textArea=new TextArea();
+        textArea.setWrapText(true);
+        textArea.setPromptText("这里输入文本，以换行分隔");
+        textArea.textProperty().bindBidirectional(viewModel.textBlackListProperty());
+
+        VBox vBox=new VBox(workLabel,workArea,tagLabel,tagArea,textLabel,textArea);
         vBox.setPadding(new Insets(10,20,10,20));
         return vBox;
     }

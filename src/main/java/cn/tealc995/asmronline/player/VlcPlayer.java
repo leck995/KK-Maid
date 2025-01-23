@@ -617,16 +617,30 @@ public class VlcPlayer implements TeaMediaPlayer {
         return bufferedTime;
     }
 
-    private List<LrcBean> lrcFileToBeans(LrcFile lrcFile){
-        if (lrcFile.getType() == LrcType.NET){
-            return LrcImportUtil.getLrcFromNet(lrcFile.getPath());
-        }else if (lrcFile.getType() == LrcType.FOLDER){
-            return LrcImportUtil.getLrcFromFolder(lrcFile.getPath());
-        }else if (lrcFile.getType() == LrcType.ZIP){
-            return LrcImportUtil.getLrcFromZip(lrcFile);
-        }else {
+    private List<LrcBean> lrcFileToBeans(LrcFile lrcFile) {
+        List<LrcBean> lrcBeans = null;
+        if (lrcFile.getType() == LrcType.NET) {
+            lrcBeans = LrcImportUtil.getLrcFromNet(lrcFile.getPath());
+        } else if (lrcFile.getType() == LrcType.FOLDER) {
+            lrcBeans = LrcImportUtil.getLrcFromFolder(lrcFile.getPath());
+        } else if (lrcFile.getType() == LrcType.ZIP) {
+            lrcBeans = LrcImportUtil.getLrcFromZip(lrcFile);
+        }
+        if (lrcBeans != null) {
+            lrcBeans.removeIf(lrcBean -> {
+                String row = lrcBean.getRowText();
+                for (String s : Config.textBlackList) {
+                    if (row.contains(s)) {
+                        return true;
+                    }
+                }
+                return false;
+            });
+            return lrcBeans;
+        } else {
             return new ArrayList<>();
         }
     }
+
 
 }
