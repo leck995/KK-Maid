@@ -197,6 +197,8 @@ public class DesktopLrcDialog extends Stage {
         }
 
 
+        root.setPrefHeight(200);
+
         lockBtn.setVisible(false);
         lockBtn.setOnAction(actionEvent -> {
             if (lockBtn.isSelected()){
