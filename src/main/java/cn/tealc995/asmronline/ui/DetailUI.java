@@ -5,23 +5,37 @@ import cn.tealc995.asmronline.App;
 import cn.tealc995.asmronline.api.model.Role;
 import cn.tealc995.asmronline.api.model.Work;
 import cn.tealc995.asmronline.api.model.playList.PlayList;
+import cn.tealc995.asmronline.model.lrc.LrcFile;
+import cn.tealc995.asmronline.model.lrc.LrcType;
+import cn.tealc995.asmronline.service.SeekLrcFileService;
 import cn.tealc995.asmronline.ui.component.FolderTableView;
+import cn.tealc995.asmronline.ui.stage.SubtitleStage;
 import cn.tealc995.asmronline.util.CssLoader;
+import cn.tealc995.asmronline.util.LrcImportUtil;
 import cn.tealc995.teaFX.controls.notification.MessageType;
 import cn.tealc995.teaFX.controls.notification.Notification;
+import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.shape.Rectangle;
-import javafx.util.Callback;
 import javafx.util.StringConverter;
 import org.controlsfx.control.CheckComboBox;
-import org.controlsfx.control.IndexedCheckModel;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.material2.Material2AL;
+
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 /**
  * @program: Asmr-Online
@@ -29,14 +43,16 @@ import org.kordamp.ikonli.material2.Material2AL;
  * @author: Leck
  * @create: 2023-07-13 21:20
  */
-public class DetailUi {
+public class DetailUI {
+    private final BorderPane borderPane;
     private StackPane root;
     private DetailViewModel viewModel;
-
-    public DetailUi(Work work) {
+    private Work work;
+    public DetailUI(Work work) {
+        this.work = work;
         viewModel=new DetailViewModel(work);
         root=new StackPane();
-        BorderPane borderPane=new BorderPane();
+        borderPane = new BorderPane();
 
         ImageView imageView = new ImageView();
         imageView.imageProperty().bind(viewModel.posterProperty());
@@ -180,18 +196,134 @@ public class DetailUi {
 
         FolderTableView folderTableView = new FolderTableView(work,viewModel.getTracks());
 
-
         borderPane.setTop(titleLabel);
         borderPane.setLeft(leftScrollPane);
         borderPane.setCenter(folderTableView);
         borderPane.getStyleClass().add("detail-dialog");
+
+        if (work.isHasLocalSubtitle()){
+            createLrcView();
+            //borderPane.setPrefSize(1300,600);
+        }else {
+            //borderPane.setPrefSize(1000,600);
+        }
+
+
+
+
         root.getChildren().add(borderPane);
         root.getStylesheets().add(CssLoader.getCss(CssLoader.detail));
 
     }
 
 
+
+    private void createLrcView(){
+        VBox lrcPane = new VBox();
+        ListView<LrcFile> lrcFileListView = new ListView<>();
+        lrcFileListView.setPrefWidth(300);
+        Button showLrcFileBtn = new Button("打开字幕");
+
+        ToggleButton gbkItem = new ToggleButton("GBK");
+        ToggleButton utfItem = new ToggleButton("UTF-8");
+        gbkItem.setSelected(true);
+        ToggleGroup charsetGroup = new ToggleGroup();
+        gbkItem.setToggleGroup(charsetGroup);
+        utfItem.setToggleGroup(charsetGroup);
+        gbkItem.getStyleClass().add(Styles.LEFT_PILL);
+        utfItem.getStyleClass().add(Styles.RIGHT_PILL);
+        HBox charsetPane = new HBox(gbkItem,utfItem);
+
+
+        SeekLrcFileService seekLrcFileService = new SeekLrcFileService();
+
+
+
+
+        seekLrcFileService.setIds(work.getAllId());
+        seekLrcFileService.setOnSucceeded(event -> {
+            List<LrcFile> items = seekLrcFileService.getValue();
+            if (items != null && !items.isEmpty()) {
+                lrcFileListView.setItems(FXCollections.observableList(items));
+            }else {
+                showLrcFileBtn.setDisable(true);
+            }
+        });
+
+        seekLrcFileService.start();
+        lrcFileListView.setCellFactory(lrcFileListView1 -> new LocalLrcCell());
+
+        lrcPane.getChildren().add(lrcFileListView);
+
+        showLrcFileBtn.setOnAction(event1 -> {
+            if (!lrcFileListView.getItems().isEmpty()) {
+                LrcFile first = lrcFileListView.getItems().getFirst();
+                File file = new File(first.getZipPath());
+                try {
+                    Desktop.getDesktop().open(file);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
+        HBox buttonsPane = new HBox(10.0,showLrcFileBtn,charsetPane);
+
+        lrcPane.getChildren().addFirst(buttonsPane);
+
+        gbkItem.setOnAction(event1 -> {
+            viewModel.setCharset(Charset.forName("GBK"));
+            seekLrcFileService.setCharset(Charset.forName("GBK"));
+            seekLrcFileService.restart();
+        });
+
+        utfItem.setOnAction(event1 -> {
+            viewModel.setCharset(StandardCharsets.UTF_8);
+            seekLrcFileService.setCharset(StandardCharsets.UTF_8);
+            seekLrcFileService.restart();
+        });
+        borderPane.setRight(lrcPane);
+    }
+
+
+
+
+
+
     public StackPane getRoot() {
         return root;
+    }
+
+
+   class LocalLrcCell extends ListCell<LrcFile> {
+        public LocalLrcCell() {
+            setPadding(new Insets(3,0,3,5));
+            setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2) {
+                    String row = null;
+                    LrcType type = getItem().getType();
+                    if (type == LrcType.NET){
+                        row = LrcImportUtil.getLrcRowFromNet(getItem().getPath());
+                    }else if (type == LrcType.ZIP){
+                        row = LrcImportUtil.getLrcRowFromZip(getItem(),viewModel.getCharset());
+                    }else if (type == LrcType.FOLDER){
+                        row = LrcImportUtil.getLrcRowFromFolder(getItem().getPath());
+                    }
+                    SubtitleStage stage=new SubtitleStage(row);
+                    stage.show();
+                }
+            });
+        }
+
+        @Override
+        protected void updateItem(LrcFile lrcFile, boolean b) {
+            super.updateItem(lrcFile, b);
+            if (!b) {
+                setText(lrcFile.getTitle());
+
+            }else {
+                setText(null);
+            }
+        }
     }
 }

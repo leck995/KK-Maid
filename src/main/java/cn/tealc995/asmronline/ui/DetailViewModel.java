@@ -20,6 +20,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.image.Image;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -43,6 +44,8 @@ public class DetailViewModel {
     private ObservableList<PlayList> playLists;
     private PlayListWorkExistService playListWorkExistService;
     private PlayListRemoveWorkService playListRemoveWorkService;
+
+    private SimpleObjectProperty<Charset> charset = new SimpleObjectProperty<>(Charset.forName("GBK"));
 
     public DetailViewModel(Work work) {
         this.work=new SimpleObjectProperty<>(work);
@@ -160,5 +163,17 @@ public class DetailViewModel {
 
     public SimpleStringProperty dataProperty() {
         return data;
+    }
+
+    public Charset getCharset() {
+        return charset.get();
+    }
+
+    public SimpleObjectProperty<Charset> charsetProperty() {
+        return charset;
+    }
+
+    public void setCharset(Charset charset) {
+        this.charset.set(charset);
     }
 }

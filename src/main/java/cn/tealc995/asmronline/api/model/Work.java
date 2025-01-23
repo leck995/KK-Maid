@@ -71,6 +71,9 @@ public class Work {
                 ids.add(languageEdition.getWorkno());
             }
         }
+        if (ids.isEmpty()){
+            ids.add(id);
+        }
         return ids;
     }
 

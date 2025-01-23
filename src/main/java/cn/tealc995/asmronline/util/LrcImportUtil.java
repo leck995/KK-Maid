@@ -94,6 +94,20 @@ public class LrcImportUtil {
             throw new RuntimeException(e);
         }
     }
+    public static String getLrcRowFromZip(LrcFile lrcFile,Charset charset){
+        try {
+            BufferedReader bufferedReader = ZipUtil.getLrcBufferedReader(lrcFile.getZipPath(), lrcFile.getPath(),charset);
+            StringBuilder sb=new StringBuilder();
+            String line;
+            while ((line = bufferedReader.readLine())!= null){
+                sb.append(line).append("\\n");
+            }
+            bufferedReader.close();
+            return sb.toString();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 
     public static List<LrcBean> getLrcFromNet(String path){

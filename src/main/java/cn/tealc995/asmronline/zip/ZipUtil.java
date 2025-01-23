@@ -115,6 +115,36 @@ public class ZipUtil {
         return list;
     }
 
+    public static List<ZipEntityFile> getAllLrcFile(File file,Charset charset){
+        ZipFile zipFile=new ZipFile(file);
+        if (charset == null){
+            if (isWindows()){
+                zipFile.setCharset(Charset.forName("GBK"));
+            }
+        }else {
+            zipFile.setCharset(charset);
+        }
+
+        //获取所有的文件
+        List<FileHeader> fileHeaders = null;
+        try {
+            fileHeaders = zipFile.getFileHeaders();
+        } catch (ZipException e) {
+            throw new RuntimeException(e);
+        }
+        if (fileHeaders == null) return null;
+
+        List<ZipEntityFile> zipEntityFiles=new ArrayList<>();
+        for (FileHeader fileHeader : fileHeaders) {
+            String fileName = fileHeader.getFileName();
+            zipEntityFiles.add(new ZipEntityFile(fileName));
+        }
+        List<ZipEntityFile> list =zipEntityFiles.stream().filter(zipEntityFile -> zipEntityFile.isLrc()).toList();
+        return list;
+    }
+
+
+
 
     public static BufferedReader getLrcBufferedReader(String zipPath,String lrcPath){
         ZipFile zipFile = new ZipFile(zipPath);
@@ -136,6 +166,27 @@ public class ZipUtil {
     }
 
 
+    public static BufferedReader getLrcBufferedReader(String zipPath,String lrcPath,Charset charset){
+        ZipFile zipFile = new ZipFile(zipPath);
+        if (charset == null){
+            if (isWindows()){
+                zipFile.setCharset(Charset.forName("GBK"));
+            }
+        }else {
+            zipFile.setCharset(charset);
+        }
+        FileHeader fileHeader = null;
+        try {
+            fileHeader = zipFile.getFileHeader(lrcPath);
+            InputStream inputStream = zipFile.getInputStream(fileHeader);
+            BufferedReader bufferedReader=new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+
+            return bufferedReader;
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     /**
      * @description: 判断操作系统从而获取编码，win默认gbk,而mac和linux默认utf-8

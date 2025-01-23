@@ -6,11 +6,10 @@ import cn.tealc995.asmronline.Config;
 import cn.tealc995.asmronline.api.StarApi;
 import cn.tealc995.asmronline.api.model.Role;
 import cn.tealc995.asmronline.api.model.Work;
-import cn.tealc995.asmronline.api.model.playList.PlayListRemoveWork;
 import cn.tealc995.asmronline.event.*;
 import cn.tealc995.asmronline.service.StarWorkRemoveService;
 import cn.tealc995.asmronline.ui.CategoryType;
-import cn.tealc995.asmronline.ui.DetailUi;
+import cn.tealc995.asmronline.ui.DetailUI;
 import cn.tealc995.asmronline.util.AnchorPaneUtil;
 import cn.tealc995.asmronline.util.FXResourcesLoader;
 import cn.tealc995.teaFX.controls.notification.MessageType;
@@ -297,7 +296,7 @@ public class PlayListWorkCell extends VBox {
 
         setOnMouseClicked(mouseEvent -> {
             if (mouseEvent.getButton() == MouseButton.PRIMARY){
-                DetailUi detailUi=new DetailUi(work);
+                DetailUI detailUi=new DetailUI(work);
                 EventBusUtil.getDefault().post(new MainDialogEvent(detailUi.getRoot()));
             }
 

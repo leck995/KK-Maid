@@ -4,7 +4,6 @@ import cn.tealc995.asmronline.api.model.Work;
 import cn.tealc995.asmronline.event.EventBusUtil;
 import cn.tealc995.asmronline.event.MainDialogEvent;
 import cn.tealc995.asmronline.model.Audio;
-import cn.tealc995.asmronline.player.LcMediaPlayer;
 import cn.tealc995.asmronline.player.MediaPlayerUtil;
 import cn.tealc995.asmronline.player.TeaMediaPlayer;
 import cn.tealc995.asmronline.util.CssLoader;
@@ -12,13 +11,12 @@ import com.jfoenix.controls.JFXDialogLayout;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.util.Callback;
 
 /**
  * @program: Asmr-Online
- * @description:
+ * @description: 弹出式播放列表界面
  * @author: Leck
  * @create: 2023-07-14 06:08
  */
@@ -111,7 +109,7 @@ public class PlayingListUI {
         toFolderBtn.setOnAction(actionEvent -> {
             Work work = player.getWork();
             if (work != null){
-                DetailUi detailUi=new DetailUi(work);
+                DetailUI detailUi=new DetailUI(work);
                 EventBusUtil.getDefault().post(new MainDialogEvent(detailUi.getRoot()));
             }
         });

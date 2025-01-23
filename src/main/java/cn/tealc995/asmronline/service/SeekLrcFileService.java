@@ -11,6 +11,7 @@ import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 
 import java.io.File;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +24,7 @@ import java.util.List;
 public class SeekLrcFileService extends Service<List<LrcFile>> {
     private String id;
     private List<String> ids;
+    private Charset charset = Charset.forName("GBK");
 
     @Override
     protected void succeeded() {
@@ -65,6 +67,11 @@ public class SeekLrcFileService extends Service<List<LrcFile>> {
         this.ids = ids;
     }
 
+    public void setCharset(Charset charset){
+        this.charset=charset;
+    }
+
+
 
     /**
      * @description:
@@ -77,7 +84,8 @@ public class SeekLrcFileService extends Service<List<LrcFile>> {
     private List<LrcFile> seekLrcFile(String id) {
         System.out.println("SeekLrcFileService搜寻的id:"+id);
         String folder = Config.lrcFileFolder.get();
-        if (folder != null && folder.length() > 0) {
+        if (folder != null && !folder.isEmpty()) {
+            System.out.println("在字幕文件夹中寻找");
             File file = new File(folder);
             if (file.exists() && file.isDirectory()) {
                 String finalId;
@@ -108,24 +116,25 @@ public class SeekLrcFileService extends Service<List<LrcFile>> {
 
         folder = Config.lrcZipFolder.get();
         if (folder != null && folder.length() > 0) {
+            System.out.println("在字幕包文件夹中寻找");
             File rootFolder = new File(folder);
             if (rootFolder.exists() && rootFolder.isDirectory()) {
-                String finalId;
-                if (id.toLowerCase().contains("rj")){
-                    finalId=id.toLowerCase();
-                }else {
-                    finalId = "rj" + id;
+                String finalId = id.toLowerCase().replace("rj","");
+                if (finalId.length() == 7){
+                    finalId = "0" + finalId;
                 }
-
-                System.out.println(finalId);
+                String searchId = finalId;
                 File[] files = rootFolder.listFiles(file -> {
-                    String name = file.getName().toLowerCase();
-                    return file.isFile() && name.contains(finalId) && name.endsWith(".zip");
+                    String name = file.getName().toLowerCase().replace("rj","");
+                    if (name.length() == 7){
+                        name = "0" + name;
+                    }
+                    return file.isFile() && name.contains(searchId) && name.endsWith(".zip");
                 });
                 if (files != null && files.length > 0) {
                     System.out.println("在字幕压缩包文件夹中找到相关字幕");
                     File file = files[0];
-                    List<ZipEntityFile> allLrcFile = ZipUtil.getAllLrcFile(file);
+                    List<ZipEntityFile> allLrcFile = ZipUtil.getAllLrcFile(file,charset);
                     List<LrcFile> list = new ArrayList<>();
                     for (ZipEntityFile zipEntityFile : allLrcFile) {
                         list.add(new LrcFile(zipEntityFile.getName(), zipEntityFile.getPath(), LrcType.ZIP, file.getPath()));

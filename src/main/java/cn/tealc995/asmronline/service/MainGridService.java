@@ -81,11 +81,14 @@ public class MainGridService extends Service<MainWorks> {
                                     }
                                 }
                             }
+
                             if (!work.isHas_subtitle() && zipList != null) {
                                 for (String s : zipList) {
                                     boolean exist = exist(work, s);
                                     if (exist) {
                                         work.setHas_subtitle(true);//存在字幕zip包
+                                        work.setHasLocalSubtitle(true);
+
                                         break;
                                     }
                                 }

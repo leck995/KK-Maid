@@ -8,15 +8,13 @@ import cn.tealc995.asmronline.api.model.Work;
 import cn.tealc995.asmronline.event.*;
 import cn.tealc995.asmronline.service.StarWorkRemoveService;
 import cn.tealc995.asmronline.ui.CategoryType;
-import cn.tealc995.asmronline.ui.DetailUi;
+import cn.tealc995.asmronline.ui.DetailUI;
 import cn.tealc995.asmronline.util.AnchorPaneUtil;
 import cn.tealc995.asmronline.util.FXResourcesLoader;
 import cn.tealc995.teaFX.controls.notification.MessageType;
 import cn.tealc995.teaFX.controls.notification.Notification;
-import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -27,8 +25,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.shape.Rectangle;
 import org.controlsfx.control.Rating;
-
-import java.io.File;
 
 /**
  * @program: Asmr-Online
@@ -137,7 +133,6 @@ public class WorkCell extends VBox {
             label.getStyleClass().add("list-item-tag");
             tagPane.getChildren().add(label);
         }
-
 
 
         Rating rating = new Rating();
@@ -289,7 +284,7 @@ public class WorkCell extends VBox {
 
         setOnMouseClicked(mouseEvent -> {
             if (mouseEvent.getButton() == MouseButton.PRIMARY){
-                DetailUi detailUi=new DetailUi(work);
+                DetailUI detailUi=new DetailUI(work);
                 EventBusUtil.getDefault().post(new MainDialogEvent(detailUi.getRoot()));
             }
 

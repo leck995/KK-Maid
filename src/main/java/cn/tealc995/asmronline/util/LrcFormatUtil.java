@@ -78,7 +78,7 @@ public class LrcFormatUtil {
                             sec * 1000 +
                             mil * scale_mil;
             // 最终解析得到一个list
-            if (text.contains("汉化")) break;
+            if (text.contains("汉化") || text.contains("盗卖") || text.contains("倒卖")) break;
             entryList.add(new LrcBean(time, times, text));
         }
         return entryList;
@@ -96,10 +96,14 @@ public class LrcFormatUtil {
         String[] lines = lrc.split("\n\n");
 
         for (int i = 1; i < lines.length; i++) {
-            String[] split = lines[i].split("\n");
-            String time = split[1].split(" --> ")[0];
-            String text=lines[i].split(split[1])[1].substring(1); //去掉自带的换行符\n
-            lrcBeans.add(new LrcBean(vttTimeParse(time),time,text));
+            String line = lines[i];
+            if(line.contains("-->")){
+                String[] split = lines[i].split("\n");
+                String time = split[1].split(" --> ")[0];
+                String text=lines[i].split(split[1])[1].substring(1); //去掉自带的换行符\n
+                lrcBeans.add(new LrcBean(vttTimeParse(time),time,text));
+            }
+
         }
 
         return lrcBeans;
@@ -120,6 +124,11 @@ public class LrcFormatUtil {
         if (split.length==3){
             long millisecond= Long.parseLong(split[0]) * 3600000 + Long.parseLong(split[1]) * 60000;
             String[] split1 = split[2].split("\\.");
+            millisecond+=Long.parseLong(split1[0]) * 1000 + Long.parseLong(split1[1]);
+            return millisecond;
+        }else if (split.length==2){
+            long millisecond= Long.parseLong(split[0]) * 60000;
+            String[] split1 = split[1].split("\\.");
             millisecond+=Long.parseLong(split1[0]) * 1000 + Long.parseLong(split1[1]);
             return millisecond;
         }

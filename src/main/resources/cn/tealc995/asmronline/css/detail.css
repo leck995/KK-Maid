@@ -3,8 +3,7 @@
     -fx-background-color:#24282e;
     -fx-background-radius: 20;
     -fx-padding: 20;
-    -fx-pref-width: 1000;
-    -fx-pref-height: 600;
+
 }
 .detail-dialog .scroll-pane .thumb{
     -fx-background-color: #696969;
