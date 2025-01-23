@@ -125,17 +125,17 @@ public class SimplePlayerUI {
         });
 
 
-        ProgressBar bufferedTimeSlider=new ProgressBar();
-/*        bufferedTimeSlider.getStyleClass().add("simple-song-buffer-slider");
+/*        ProgressBar bufferedTimeSlider=new ProgressBar();
+*//*        bufferedTimeSlider.getStyleClass().add("simple-song-buffer-slider");
         bufferedTimeSlider.setMin(0);
         bufferedTimeSlider.setValue(0);
         bufferedTimeSlider.setMax(100);
-        bufferedTimeSlider.valueProperty().bind(player.bufferedTimeProperty());*/
+        bufferedTimeSlider.valueProperty().bind(player.bufferedTimeProperty());*//*
 
         bufferedTimeSlider.progressProperty().bind(player.bufferedTimeProperty());
         bufferedTimeSlider.getStyleClass().add("small");
-        bufferedTimeSlider.prefWidthProperty().bind(timeSlider.widthProperty());
-        StackPane timeSliderPane=new StackPane(bufferedTimeSlider,timeSlider);
+        bufferedTimeSlider.prefWidthProperty().bind(timeSlider.widthProperty());*/
+        StackPane timeSliderPane=new StackPane(timeSlider);
 
 
 

@@ -92,6 +92,9 @@
     -jfx-default-thumb:#5c626a;
     -fx-pref-height: 15px;
 }
+.simple-song-slider:hover{
+    -fx-cursor: hand;
+}
 /*未到达轨迹*/
 .simple-song-slider .track,
 .simple-song-slider:horizontal .track {
