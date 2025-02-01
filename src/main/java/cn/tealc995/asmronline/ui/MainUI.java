@@ -11,6 +11,7 @@ import cn.tealc995.asmronline.event.*;
 import cn.tealc995.asmronline.service.CheckLoginTask;
 import cn.tealc995.asmronline.ui.item.LrcZipDialogUI;
 import cn.tealc995.asmronline.util.CssLoader;
+import cn.tealc995.asmronline.util.FXResourcesLoader;
 import cn.tealc995.teaFX.controls.TitleBar;
 import cn.tealc995.teaFX.controls.notification.MessageType;
 import cn.tealc995.teaFX.controls.notification.Notification;
@@ -61,7 +62,10 @@ public class MainUI {
         EventBusUtil.getDefault().register(this);
         viewModel=new MainViewModel();
         root=new TitleBar(App.mainStage, TitleBarStyle.ALL);
-        root.setTitle("    KK Maid");
+        ImageView iv=new ImageView(new Image(FXResourcesLoader.load("/cn/tealc995/asmronline/image/title.png"),100,100,true,true));
+        iv.setSmooth(true);
+        iv.setTranslateX(20);
+        root.setIcon(iv);
 
 
         parent=new BorderPane();
