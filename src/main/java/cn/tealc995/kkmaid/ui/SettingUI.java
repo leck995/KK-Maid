@@ -4,7 +4,7 @@ import atlantafx.base.controls.*;
 import atlantafx.base.theme.Styles;
 import cn.tealc995.kkmaid.App;
 import cn.tealc995.kkmaid.Config;
-import cn.tealc995.kkmaid.api.model.SortType;
+import cn.tealc995.api.model.SortType;
 import cn.tealc995.kkmaid.event.EventBusUtil;
 import cn.tealc995.kkmaid.event.MainNotificationEvent;
 import cn.tealc995.kkmaid.player.MediaPlayerUtil;

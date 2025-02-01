@@ -1,6 +1,6 @@
 package cn.tealc995.kkmaid.player;
 
-import cn.tealc995.kkmaid.api.model.Work;
+import cn.tealc995.api.model.Work;
 import cn.tealc995.kkmaid.model.Audio;
 import cn.tealc995.kkmaid.model.Music;
 import cn.tealc995.kkmaid.model.lrc.LrcBean;

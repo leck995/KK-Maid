@@ -1,6 +1,6 @@
 package cn.tealc995.kkmaid.event;
 
-import cn.tealc995.kkmaid.api.model.playList.PlayList;
+import cn.tealc995.api.model.playList.PlayList;
 
 /**
  * @program: Asmr-Online

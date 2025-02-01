@@ -1,6 +1,6 @@
 package cn.tealc995.kkmaid.ui;
 
-import cn.tealc995.kkmaid.api.model.Work;
+import cn.tealc995.api.model.Work;
 import cn.tealc995.kkmaid.event.EventBusUtil;
 import cn.tealc995.kkmaid.event.MainDialogEvent;
 import cn.tealc995.kkmaid.model.Audio;

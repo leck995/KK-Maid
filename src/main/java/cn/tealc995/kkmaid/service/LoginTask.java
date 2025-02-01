@@ -1,6 +1,6 @@
 package cn.tealc995.kkmaid.service;
 
-import cn.tealc995.kkmaid.api.UserApi;
+import cn.tealc995.api.UserApi;
 import javafx.concurrent.Task;
 
 /**

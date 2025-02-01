@@ -1,7 +1,7 @@
 package cn.tealc995.kkmaid.service;
 
-import cn.tealc995.kkmaid.api.PlayListApi;
-import cn.tealc995.kkmaid.api.model.playList.PlayListCreate;
+import cn.tealc995.api.PlayListApi;
+import cn.tealc995.api.model.playList.PlayListCreate;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 

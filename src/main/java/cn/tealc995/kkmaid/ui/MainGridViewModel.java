@@ -1,9 +1,9 @@
 package cn.tealc995.kkmaid.ui;
 
 import cn.tealc995.kkmaid.Config;
-import cn.tealc995.kkmaid.api.model.MainWorks;
-import cn.tealc995.kkmaid.api.model.SortType;
-import cn.tealc995.kkmaid.api.model.Work;
+import cn.tealc995.api.model.MainWorks;
+import cn.tealc995.api.model.SortType;
+import cn.tealc995.api.model.Work;
 import cn.tealc995.kkmaid.event.BlackWorkEvent;
 import cn.tealc995.kkmaid.event.EventBusUtil;
 import cn.tealc995.kkmaid.event.GridItemRemoveEvent;
@@ -75,7 +75,6 @@ public class MainGridViewModel {
 
         mainWorks.addListener((observableValue, mainWorks1, mainWorks2) -> {
             if (mainWorks2 != null){
-
                 workItems.setAll(mainWorks2.getWorks());
                 countPage.set((int) Math.ceil((double) mainWorks2.getPagination().getTotalCount() /mainWorks2.getPagination().getPageSize()));
                 totalCount.set(mainWorks2.getPagination().getTotalCount());

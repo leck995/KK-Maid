@@ -1,11 +1,11 @@
 package cn.tealc995.kkmaid.ui;
 
 import cn.tealc995.kkmaid.Config;
-import cn.tealc995.kkmaid.api.TrackApi;
-import cn.tealc995.kkmaid.api.model.Track;
-import cn.tealc995.kkmaid.api.model.Work;
-import cn.tealc995.kkmaid.api.model.playList.PlayList;
-import cn.tealc995.kkmaid.api.model.playList.PlayListRemoveWork;
+import cn.tealc995.api.TrackApi;
+import cn.tealc995.api.model.Track;
+import cn.tealc995.api.model.Work;
+import cn.tealc995.api.model.playList.PlayList;
+import cn.tealc995.api.model.playList.PlayListRemoveWork;
 import cn.tealc995.kkmaid.event.EventBusUtil;
 import cn.tealc995.kkmaid.event.MainNotificationEvent;
 import cn.tealc995.kkmaid.model.Audio;

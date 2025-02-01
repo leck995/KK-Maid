@@ -1,11 +1,11 @@
 package cn.tealc995.kkmaid.service;
 
 import cn.tealc995.kkmaid.Config;
-import cn.tealc995.kkmaid.api.PlayListApi;
-import cn.tealc995.kkmaid.api.model.LanguageEdition;
-import cn.tealc995.kkmaid.api.model.MainWorks;
-import cn.tealc995.kkmaid.api.model.Role;
-import cn.tealc995.kkmaid.api.model.Work;
+import cn.tealc995.api.PlayListApi;
+import cn.tealc995.api.model.LanguageEdition;
+import cn.tealc995.api.model.MainWorks;
+import cn.tealc995.api.model.Role;
+import cn.tealc995.api.model.Work;
 import javafx.collections.ObservableSet;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;

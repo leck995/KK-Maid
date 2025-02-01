@@ -1,7 +1,7 @@
 package cn.tealc995.kkmaid.service;
 
-import cn.tealc995.kkmaid.api.CategoryApi;
-import cn.tealc995.kkmaid.api.model.RoleEx;
+import cn.tealc995.api.CategoryApi;
+import cn.tealc995.api.model.RoleEx;
 import cn.tealc995.kkmaid.ui.CategoryType;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;

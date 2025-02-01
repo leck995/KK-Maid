@@ -1,14 +1,14 @@
 package cn.tealc995.kkmaid.service;
 
 import cn.tealc995.kkmaid.Config;
-import cn.tealc995.kkmaid.api.PlayListApi;
-import cn.tealc995.kkmaid.api.SearchApi;
-import cn.tealc995.kkmaid.api.StarApi;
-import cn.tealc995.kkmaid.api.WorksApi;
-import cn.tealc995.kkmaid.api.model.LanguageEdition;
-import cn.tealc995.kkmaid.api.model.MainWorks;
-import cn.tealc995.kkmaid.api.model.Role;
-import cn.tealc995.kkmaid.api.model.Work;
+import cn.tealc995.api.PlayListApi;
+import cn.tealc995.api.SearchApi;
+import cn.tealc995.api.StarApi;
+import cn.tealc995.api.WorksApi;
+import cn.tealc995.api.model.LanguageEdition;
+import cn.tealc995.api.model.MainWorks;
+import cn.tealc995.api.model.Role;
+import cn.tealc995.api.model.Work;
 import cn.tealc995.kkmaid.ui.CategoryType;
 import javafx.collections.ObservableSet;
 import javafx.concurrent.Service;
@@ -18,8 +18,7 @@ import java.io.File;
 import java.util.*;
 
 /**
- * @program: Asmr-Online
- * @description: 获取作品列表
+ * @description: 主界面中，获取作品列表
  * @author: Leck
  * @create: 2023-07-15 23:16
  */

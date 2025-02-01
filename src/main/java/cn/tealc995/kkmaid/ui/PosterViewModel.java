@@ -1,6 +1,6 @@
 package cn.tealc995.kkmaid.ui;
 
-import cn.tealc995.kkmaid.api.model.Track;
+import cn.tealc995.api.model.Track;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;

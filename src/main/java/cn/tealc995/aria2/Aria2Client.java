@@ -1,7 +1,7 @@
 package cn.tealc995.aria2;
 
 
-import cn.tealc995.kkmaid.api.model.Response;
+import cn.tealc995.api.model.Response;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

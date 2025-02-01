@@ -1,6 +1,6 @@
 package cn.tealc995.kkmaid.ui;
 
-import cn.tealc995.kkmaid.api.model.RoleEx;
+import cn.tealc995.api.model.RoleEx;
 import cn.tealc995.kkmaid.util.AnchorPaneUtil;
 import cn.tealc995.kkmaid.util.CssLoader;
 import cn.tealc995.teaFX.controls.LoadingDot;

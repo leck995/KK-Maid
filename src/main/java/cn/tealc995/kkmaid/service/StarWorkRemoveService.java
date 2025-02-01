@@ -1,7 +1,7 @@
 package cn.tealc995.kkmaid.service;
 
 import cn.tealc995.kkmaid.Config;
-import cn.tealc995.kkmaid.api.StarApi;
+import cn.tealc995.api.StarApi;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 

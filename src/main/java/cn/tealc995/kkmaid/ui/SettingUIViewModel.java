@@ -1,8 +1,8 @@
 package cn.tealc995.kkmaid.ui;
 
 import cn.tealc995.kkmaid.Config;
-import cn.tealc995.kkmaid.api.UserApi;
-import cn.tealc995.kkmaid.api.model.SortType;
+import cn.tealc995.api.UserApi;
+import cn.tealc995.api.model.SortType;
 import cn.tealc995.kkmaid.event.EventBusUtil;
 import cn.tealc995.kkmaid.event.MainCenterEvent;
 import javafx.beans.property.*;

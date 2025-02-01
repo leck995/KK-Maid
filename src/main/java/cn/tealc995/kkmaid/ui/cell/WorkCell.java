@@ -2,9 +2,9 @@ package cn.tealc995.kkmaid.ui.cell;
 
 import cn.tealc995.kkmaid.App;
 import cn.tealc995.kkmaid.Config;
-import cn.tealc995.kkmaid.api.StarApi;
-import cn.tealc995.kkmaid.api.model.Role;
-import cn.tealc995.kkmaid.api.model.Work;
+import cn.tealc995.api.StarApi;
+import cn.tealc995.api.model.Role;
+import cn.tealc995.api.model.Work;
 import cn.tealc995.kkmaid.event.*;
 import cn.tealc995.kkmaid.service.StarWorkRemoveService;
 import cn.tealc995.kkmaid.ui.CategoryType;

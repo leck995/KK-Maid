@@ -1,6 +1,6 @@
 package cn.tealc995.kkmaid.event;
 
-import cn.tealc995.kkmaid.api.model.Work;
+import cn.tealc995.api.model.Work;
 
 /**
  * @program: Asmr-Online

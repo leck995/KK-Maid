@@ -1,6 +1,6 @@
 package cn.tealc995.kkmaid.model;
 
-import cn.tealc995.kkmaid.api.model.Work;
+import cn.tealc995.api.model.Work;
 import cn.tealc995.kkmaid.model.lrc.LrcFile;
 
 import java.util.List;

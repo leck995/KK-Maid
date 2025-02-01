@@ -27,12 +27,12 @@ module cn.tealc.kkmaid {
     opens cn.tealc995.kkmaid to javafx.fxml;
     opens cn.tealc995.kkmaid.ui to javafx.fxml;
     exports cn.tealc995.kkmaid;
-    exports cn.tealc995.kkmaid.api;
-    exports cn.tealc995.kkmaid.api.model;
+    exports cn.tealc995.api;
+    exports cn.tealc995.api.model;
     exports cn.tealc995.kkmaid.ui;
     exports cn.tealc995.kkmaid.zip;
     exports cn.tealc995.kkmaid.event;
-    exports cn.tealc995.kkmaid.api.model.playList;
+    exports cn.tealc995.api.model.playList;
     exports cn.tealc995.aria2.model;
     exports cn.tealc995.aria2;
 }

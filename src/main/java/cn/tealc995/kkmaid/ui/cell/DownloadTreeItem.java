@@ -1,6 +1,6 @@
 package cn.tealc995.kkmaid.ui.cell;
 
-import cn.tealc995.kkmaid.api.model.Track;
+import cn.tealc995.api.model.Track;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.CheckBoxTreeItem;

@@ -1,7 +1,7 @@
 package cn.tealc995.kkmaid.ui;
 
 import cn.tealc995.kkmaid.Config;
-import cn.tealc995.kkmaid.api.model.RoleEx;
+import cn.tealc995.api.model.RoleEx;
 import cn.tealc995.kkmaid.event.EventBusUtil;
 import cn.tealc995.kkmaid.event.MainCenterEvent;
 import cn.tealc995.kkmaid.event.SearchEvent;

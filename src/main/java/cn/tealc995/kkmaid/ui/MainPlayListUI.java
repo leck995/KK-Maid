@@ -1,7 +1,7 @@
 package cn.tealc995.kkmaid.ui;
 
-import cn.tealc995.kkmaid.api.model.playList.PlayList;
-import cn.tealc995.kkmaid.api.model.Work;
+import cn.tealc995.api.model.playList.PlayList;
+import cn.tealc995.api.model.Work;
 import cn.tealc995.kkmaid.ui.cell.PlayListWorkCell;
 import cn.tealc995.kkmaid.util.AnchorPaneUtil;
 import cn.tealc995.kkmaid.util.CssLoader;
