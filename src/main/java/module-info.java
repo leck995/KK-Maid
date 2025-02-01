@@ -24,15 +24,15 @@ module cn.tealc.kkmaid {
     // add icon pack modules
     requires org.kordamp.ikonli.material2;
 
-    opens cn.tealc995.asmronline to javafx.fxml;
-    opens cn.tealc995.asmronline.ui to javafx.fxml;
-    exports cn.tealc995.asmronline;
-    exports cn.tealc995.asmronline.api;
-    exports cn.tealc995.asmronline.api.model;
-    exports cn.tealc995.asmronline.ui;
-    exports cn.tealc995.asmronline.zip;
-    exports cn.tealc995.asmronline.event;
-    exports cn.tealc995.asmronline.api.model.playList;
+    opens cn.tealc995.kkmaid to javafx.fxml;
+    opens cn.tealc995.kkmaid.ui to javafx.fxml;
+    exports cn.tealc995.kkmaid;
+    exports cn.tealc995.kkmaid.api;
+    exports cn.tealc995.kkmaid.api.model;
+    exports cn.tealc995.kkmaid.ui;
+    exports cn.tealc995.kkmaid.zip;
+    exports cn.tealc995.kkmaid.event;
+    exports cn.tealc995.kkmaid.api.model.playList;
     exports cn.tealc995.aria2.model;
     exports cn.tealc995.aria2;
 }

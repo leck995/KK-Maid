@@ -1,27 +1,20 @@
 package cn.tealc995.teaFX.controls;
 
-import cn.tealc995.asmronline.App;
-import cn.tealc995.teaFX.config.Config;
 import cn.tealc995.teaFX.enums.TitleBarStyle;
 import cn.tealc995.teaFX.stage.RoundStage;
 import cn.tealc995.teaFX.stage.handler.DragWindowHandler;
-import cn.tealc995.teaFX.stage.handler.ResizeWindowHandler;
-import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.SVGPath;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 /**
