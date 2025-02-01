@@ -1,13 +1,14 @@
 package cn.tealc995.kkmaid.ui.cell;
 
 import atlantafx.base.theme.Styles;
+import cn.tealc995.kikoreu.model.ResponseBody;
+import cn.tealc995.kikoreu.model.Role;
+import cn.tealc995.kikoreu.model.Work;
 import cn.tealc995.kkmaid.App;
 import cn.tealc995.kkmaid.Config;
-import cn.tealc995.api.StarApi;
-import cn.tealc995.api.model.Role;
-import cn.tealc995.api.model.Work;
 import cn.tealc995.kkmaid.event.*;
-import cn.tealc995.kkmaid.service.StarWorkRemoveService;
+import cn.tealc995.kkmaid.service.api.StarWorkRemoveTask;
+import cn.tealc995.kkmaid.service.api.StarWorkAddTask;
 import cn.tealc995.kkmaid.ui.CategoryType;
 import cn.tealc995.kkmaid.ui.DetailUI;
 import cn.tealc995.kkmaid.util.AnchorPaneUtil;
@@ -156,22 +157,20 @@ public class PlayListWorkCell extends VBox {
             starBtn.getStyleClass().addAll("lc-svg-btn", "list-item-star-btn");
             starBtn.setOnAction(actionEvent -> {
                 starBtn.setVisible(false);
-                StarWorkRemoveService service=new StarWorkRemoveService();
-                service.valueProperty().addListener((observableValue, aBoolean, t1) -> {
-                    if (t1 != null){
-                        if(t1){
-                            EventBusUtil.getDefault().post(new GridItemRemoveEvent(work));
-                            rating.getStyleClass().remove("user-rating");
-                            Notification.show(String.format("成功取消收藏作品(RJ%s)",work.getId()), MessageType.SUCCESS,Pos.TOP_CENTER, App.mainStage);
-                        }else {
-                            starBtn.setVisible(true);
-                            Notification.show(String.format("错误：无法取消收藏作品(RJ%s)",work.getId()), MessageType.FAILED,Pos.TOP_CENTER, App.mainStage);
-                        }
+
+                StarWorkRemoveTask task=new StarWorkRemoveTask(work.getId());
+                task.setOnSucceeded(workerStateEvent -> {
+                    ResponseBody<Boolean> value = task.getValue();
+                    if(value.isSuccess()){
+                        EventBusUtil.getDefault().post(new GridItemRemoveEvent(work));
+                        rating.getStyleClass().remove("user-rating");
+                        Notification.show(String.format("成功取消收藏作品(RJ%s)",work.getId()), MessageType.SUCCESS,Pos.TOP_CENTER, App.mainStage);
+                    }else {
+                        starBtn.setVisible(true);
+                        Notification.show(String.format("错误：无法取消收藏作品(RJ%s)",work.getId()), MessageType.FAILED,Pos.TOP_CENTER, App.mainStage);
                     }
                 });
-                service.setUrl(Config.HOST.get());
-                service.setId(work.getId());
-                service.start();
+                Thread.startVirtualThread(task);
 
             });
             headPane.getChildren().add(starBtn);
@@ -198,14 +197,17 @@ public class PlayListWorkCell extends VBox {
 
             rating.getStyleClass().add("user-rating");
             rating.setRating(i);
-            boolean b = StarApi.updateStar(Config.HOST.get(), work.getId(), i);
-            if (b){
-                Notification.show(String.format("成功收藏作品(RJ%s)",work.getId()), MessageType.SUCCESS,Pos.TOP_CENTER, App.mainStage);
-            }else {
-                Notification.show(String.format("错误：无法收藏作品(RJ%s)",work.getId()), MessageType.FAILED,Pos.TOP_CENTER, App.mainStage);
-            }
 
-
+            StarWorkAddTask task = new StarWorkAddTask(work.getId(), i);
+            task.setOnSucceeded(event -> {
+                ResponseBody<Boolean> value = task.getValue();
+                if (value.isSuccess()){
+                    Notification.show(String.format("成功收藏作品(RJ%s)",work.getId()), MessageType.SUCCESS,Pos.TOP_CENTER, App.mainStage);
+                }else {
+                    Notification.show(String.format("错误：无法收藏作品(RJ%s)",work.getId()), MessageType.FAILED,Pos.TOP_CENTER, App.mainStage);
+                }
+            });
+            Thread.startVirtualThread(task);
 
         });
         BorderPane borderPane1 = new BorderPane();

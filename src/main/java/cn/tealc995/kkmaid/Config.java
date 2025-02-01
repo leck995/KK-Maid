@@ -1,6 +1,6 @@
 package cn.tealc995.kkmaid;
 
-import cn.tealc995.api.HttpUtils;
+import cn.tealc995.kikoreu.HttpUtils;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.beans.property.SimpleBooleanProperty;

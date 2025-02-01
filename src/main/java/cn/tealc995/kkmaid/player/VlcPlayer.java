@@ -1,7 +1,7 @@
 package cn.tealc995.kkmaid.player;
 
 import cn.tealc995.kkmaid.Config;
-import cn.tealc995.api.model.Work;
+import cn.tealc995.kikoreu.model.Work;
 import cn.tealc995.kkmaid.event.EventBusUtil;
 import cn.tealc995.kkmaid.event.MainNotificationEvent;
 import cn.tealc995.kkmaid.model.Audio;

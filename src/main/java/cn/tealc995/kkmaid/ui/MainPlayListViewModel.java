@@ -1,16 +1,17 @@
 package cn.tealc995.kkmaid.ui;
 
+import cn.tealc995.kikoreu.model.ResponseBody;
 import cn.tealc995.kkmaid.Config;
-import cn.tealc995.api.model.MainWorks;
-import cn.tealc995.api.model.playList.PlayList;
-import cn.tealc995.api.model.Work;
-import cn.tealc995.api.model.playList.PlayListRemoveWork;
+import cn.tealc995.kikoreu.model.MainWorks;
+import cn.tealc995.kikoreu.model.playList.PlayList;
+import cn.tealc995.kikoreu.model.Work;
+import cn.tealc995.kikoreu.model.playList.PlayListRemoveWork;
 import cn.tealc995.kkmaid.event.BlackWorkEvent;
 import cn.tealc995.kkmaid.event.EventBusUtil;
 import cn.tealc995.kkmaid.event.MainNotificationEvent;
 import cn.tealc995.kkmaid.event.MainPlayListRemoveWorkEvent;
 import cn.tealc995.kkmaid.service.MainPlayListService;
-import cn.tealc995.kkmaid.service.PlayListRemoveWorkService;
+import cn.tealc995.kkmaid.service.api.PlayListRemoveWorkTask;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
@@ -44,7 +45,6 @@ public class MainPlayListViewModel {
     private MainPlayListService service;
     private final ObservableList<Integer> pageSizeItems=FXCollections.observableArrayList(12,24,48,96);
 
-    private PlayListRemoveWorkService playListRemoveWorkService;
     public MainPlayListViewModel(PlayList playList) {
         EventBusUtil.getDefault().register(this);
         init(playList);
@@ -104,27 +104,23 @@ public class MainPlayListViewModel {
 
     @Subscribe
     public void removeWork(MainPlayListRemoveWorkEvent event){
-        System.out.println(event.getWork().getId());
-        if (playListRemoveWorkService == null){
-            playListRemoveWorkService=new PlayListRemoveWorkService();
-            playListRemoveWorkService.valueProperty().addListener((observableValue, aBoolean, t1) -> {
-                if (t1 != null && t1) {
-                    EventBusUtil.getDefault().post(new MainNotificationEvent("移除成功"));
-                    Iterator<Work> iterator = workItems.iterator();
-                    while (iterator.hasNext()) {
-                        Work next = iterator.next();
-                        List<String> works = playListRemoveWorkService.getWork().getWorks();
-                        if (works.contains(next.getId())) {
-                            iterator.remove();
-                            System.out.println("移除");
-                        }
+        PlayListRemoveWork playListRemoveWork=new PlayListRemoveWork(playListId.get(), List.of(event.getWork().getId()),true);
+        PlayListRemoveWorkTask task =new PlayListRemoveWorkTask(playListRemoveWork);
+        task.setOnSucceeded(workerStateEvent -> {
+            ResponseBody<Boolean> value = task.getValue();
+            if (value.isSuccess()){
+                EventBusUtil.getDefault().post(new MainNotificationEvent("移除成功"));
+                Iterator<Work> iterator = workItems.iterator();
+                while (iterator.hasNext()) {
+                    Work next = iterator.next();
+                    List<String> works = playListRemoveWork.getWorks();
+                    if (works.contains(next.getId())) {
+                        iterator.remove();
                     }
                 }
-            });
-        }
-        playListRemoveWorkService.setUrl(Config.HOST.get());
-        playListRemoveWorkService.setWork(new PlayListRemoveWork(playListId.get(), List.of(event.getWork().getId()),true));
-        playListRemoveWorkService.restart();
+            }
+        });
+        Thread.startVirtualThread(task);
     }
 
 

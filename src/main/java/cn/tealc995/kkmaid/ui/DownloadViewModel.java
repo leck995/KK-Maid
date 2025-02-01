@@ -5,9 +5,9 @@ import cn.tealc995.aria2.Aria2Method;
 import cn.tealc995.aria2.model.Aria2Option;
 import cn.tealc995.aria2.model.Aria2Request;
 import cn.tealc995.kkmaid.Config;
-import cn.tealc995.api.model.Response;
-import cn.tealc995.api.model.Track;
-import cn.tealc995.api.model.Work;
+import cn.tealc995.kikoreu.model.Response;
+import cn.tealc995.kikoreu.model.Track;
+import cn.tealc995.kikoreu.model.Work;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 

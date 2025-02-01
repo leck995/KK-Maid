@@ -4,7 +4,7 @@ import atlantafx.base.controls.Card;
 import atlantafx.base.controls.Popover;
 import atlantafx.base.layout.InputGroup;
 import atlantafx.base.theme.Styles;
-import cn.tealc995.api.model.playList.PlayList;
+import cn.tealc995.kikoreu.model.playList.PlayList;
 import cn.tealc995.kkmaid.ui.cell.PlayListCell;
 import cn.tealc995.kkmaid.ui.component.Dialog;
 import com.jfoenix.controls.JFXDialog;

@@ -1,11 +1,11 @@
 package cn.tealc995.kkmaid.ui;
 
 import cn.tealc995.kkmaid.Config;
-import cn.tealc995.api.model.RoleEx;
+import cn.tealc995.kikoreu.model.RoleEx;
 import cn.tealc995.kkmaid.event.EventBusUtil;
 import cn.tealc995.kkmaid.event.MainCenterEvent;
 import cn.tealc995.kkmaid.event.SearchEvent;
-import cn.tealc995.kkmaid.service.CategoryService;
+import cn.tealc995.kkmaid.service.api.CategoryTask;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -33,24 +33,16 @@ public class CategoryViewModel {
         searchKey=new SimpleStringProperty();
         loading=new SimpleBooleanProperty(false);
 
-        CategoryService service=new CategoryService();
-        service.setHost(Config.HOST.get());
-        service.setType(type);
-        title.bind(service.titleProperty());
-        service.valueProperty().addListener((observableValue, roleExes, t1) -> {
-            items.setAll(t1);
+        CategoryTask task=new CategoryTask(type);
+
+        title.bind(task.titleProperty());
+        task.valueProperty().addListener((observableValue, roleExes, t1) -> {
+            items.setAll(t1.getData());
             itemsBack.setAll(items);
         });
 
-        loading.bind(Bindings.createBooleanBinding(() -> Boolean.valueOf(service.getMessage()),service.messageProperty()));
-
-        if (Config.HOST.get() != null && Config.HOST.get().length() > 0){
-            service.start();
-        }
-
-
-
-
+        loading.bind(Bindings.createBooleanBinding(() -> Boolean.valueOf(task.getMessage()),task.messageProperty()));
+       Thread.startVirtualThread(task);
 
         searchKey.addListener((observableValue, s, t1) -> filter());
     }

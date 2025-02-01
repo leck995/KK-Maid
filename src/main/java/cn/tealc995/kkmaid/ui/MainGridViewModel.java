@@ -1,9 +1,9 @@
 package cn.tealc995.kkmaid.ui;
 
 import cn.tealc995.kkmaid.Config;
-import cn.tealc995.api.model.MainWorks;
-import cn.tealc995.api.model.SortType;
-import cn.tealc995.api.model.Work;
+import cn.tealc995.kikoreu.model.MainWorks;
+import cn.tealc995.kikoreu.model.SortType;
+import cn.tealc995.kikoreu.model.Work;
 import cn.tealc995.kkmaid.event.BlackWorkEvent;
 import cn.tealc995.kkmaid.event.EventBusUtil;
 import cn.tealc995.kkmaid.event.GridItemRemoveEvent;

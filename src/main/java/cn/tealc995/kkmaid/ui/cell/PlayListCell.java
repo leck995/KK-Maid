@@ -1,7 +1,7 @@
 package cn.tealc995.kkmaid.ui.cell;
 
 import atlantafx.base.theme.Styles;
-import cn.tealc995.api.model.playList.PlayList;
+import cn.tealc995.kikoreu.model.playList.PlayList;
 import cn.tealc995.kkmaid.event.*;
 import cn.tealc995.kkmaid.ui.MainPlayListUI;
 import cn.tealc995.kkmaid.util.FXResourcesLoader;

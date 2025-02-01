@@ -1,7 +1,7 @@
 package cn.tealc995.kkmaid.service;
 
-import cn.tealc995.api.CategoryApi;
-import cn.tealc995.api.model.RoleEx;
+import cn.tealc995.kikoreu.api.CategoryApi;
+import cn.tealc995.kikoreu.model.RoleEx;
 import cn.tealc995.kkmaid.ui.CategoryType;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
@@ -23,7 +23,7 @@ public class TrackService extends Service<List<RoleEx>> {
         Task<List<RoleEx>> task=new Task<List<RoleEx>>() {
             @Override
             protected List<RoleEx> call() throws Exception {
-                updateMessage("true");
+            /*    updateMessage("true");
                 List<RoleEx> list = null;
                 if (type == CategoryType.CIRCLE){
                     list=CategoryApi.circle(host);
@@ -36,7 +36,8 @@ public class TrackService extends Service<List<RoleEx>> {
                     updateTitle("All VAS");
                 }
                 updateMessage("false");
-                return list;
+                return list;*/
+                return null;
             }
         };
         return task;

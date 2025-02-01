@@ -1,7 +1,9 @@
 package cn.tealc995.kkmaid.service;
 
-import cn.tealc995.api.PlayListApi;
-import cn.tealc995.api.model.playList.MainPlayList;
+import cn.tealc995.kikoreu.KKApi;
+import cn.tealc995.kikoreu.api.PlayListApi;
+import cn.tealc995.kikoreu.model.ResponseBody;
+import cn.tealc995.kikoreu.model.playList.MainPlayList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 
@@ -23,7 +25,8 @@ public class PlayListWorkExistService extends Service<MainPlayList> {
             @Override
             protected MainPlayList call() throws Exception {
                 updateMessage("true");
-                MainPlayList mainPlayList = PlayListApi.workExistInPlayList(host, params);
+                ResponseBody<MainPlayList> body = KKApi.getInstance().playListApi().workExistInPlayList(params);
+                MainPlayList mainPlayList = body.getData();
                 updateMessage("false");
                 return mainPlayList;
             }

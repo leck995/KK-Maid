@@ -4,7 +4,7 @@ import atlantafx.base.controls.*;
 import atlantafx.base.theme.Styles;
 import cn.tealc995.kkmaid.App;
 import cn.tealc995.kkmaid.Config;
-import cn.tealc995.api.model.SortType;
+import cn.tealc995.kikoreu.model.SortType;
 import cn.tealc995.kkmaid.event.EventBusUtil;
 import cn.tealc995.kkmaid.event.MainNotificationEvent;
 import cn.tealc995.kkmaid.player.MediaPlayerUtil;
@@ -385,14 +385,10 @@ public class SettingUI {
 
             Button loginBtn1=new Button("登录");
             loginBtn1.setOnAction(event1 -> {
-                String login = viewModel.login(nameField.getText(), passwordField.getText());
-                if (login != null){
-                    EventBusUtil.getDefault().post(new MainNotificationEvent("获取Token成功"));
-                    dialog.close();
-                }else {
-                    EventBusUtil.getDefault().post(new MainNotificationEvent("登陆失败,检查网络，用户名和密码"));
-                }
-
+                viewModel.login(nameField.getText(), passwordField.getText(),loginStatus ->{
+                   if (loginStatus)
+                       dialog.close();
+                });
             });
             Button cancel1=new Button("取消");
             cancel1.setOnAction(event1 -> dialog.close());

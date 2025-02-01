@@ -1,21 +1,18 @@
 package cn.tealc995.kkmaid.service;
 
+import cn.tealc995.kikoreu.KKApi;
+import cn.tealc995.kikoreu.model.*;
 import cn.tealc995.kkmaid.Config;
-import cn.tealc995.api.PlayListApi;
-import cn.tealc995.api.SearchApi;
-import cn.tealc995.api.StarApi;
-import cn.tealc995.api.WorksApi;
-import cn.tealc995.api.model.LanguageEdition;
-import cn.tealc995.api.model.MainWorks;
-import cn.tealc995.api.model.Role;
-import cn.tealc995.api.model.Work;
 import cn.tealc995.kkmaid.ui.CategoryType;
 import javafx.collections.ObservableSet;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 
 import java.io.File;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @description: 主界面中，获取作品列表
@@ -41,65 +38,69 @@ public class MainGridService extends Service<MainWorks> {
                     updateList();
                 }
 
-                MainWorks works;
+                ResponseBody<MainWorks> responseBody;
                 if (type == CategoryType.ALL) {
-                    works = WorksApi.works(host, params);
+                    responseBody = KKApi.getInstance().worksApi().works(params);
                 } else if (type == CategoryType.STAR) {
-                    works = StarApi.star(host, params);
+                    responseBody = KKApi.getInstance().starApi().star(params);
                 } else if (type == CategoryType.PLAY_LIST) {
-                    works = PlayListApi.works(host, params);
+                    responseBody = KKApi.getInstance().playListApi().works(params);
                 } else {
-                    works = SearchApi.search(host, String.format(type.getFormat(), searchKey), params);
+                    responseBody = KKApi.getInstance().searchApi().search(String.format(type.getFormat(), searchKey), params);
                 }
 
-
-                ObservableSet<String> workBlackList = Config.workBlackList;
-                ObservableSet<String> tagBlackList = Config.tagBlackList;
-                if (works != null) {
-                    for (Work work : works.getWorks()) {
-                        //筛选RJ黑名单
-                        work.setBlack(workBlackList.contains(work.getFullId()));
-                        //筛选标签黑名单
-                        for (Role tag : work.getTags()) {
-                            if (tagBlackList.contains(tag.getName())) {
-                                work.setBlack(true);
-                                break;
-                            }
-                        }
-
-                        //不是黑名单作品，匹配本地字幕
-                        if (!work.isBlack()) {
-                            if (!work.isHas_subtitle() && folderList != null) {
-                                for (String s : folderList) {
-                                    boolean exist = exist(work, s);
-                                    if (exist) {
-                                        work.setHas_subtitle(true);//存在字幕文件夹
-                                        break;
-                                    }
+                if (responseBody.isSuccess()) {
+                    MainWorks works = responseBody.getData();
+                    ObservableSet<String> workBlackList = Config.workBlackList;
+                    ObservableSet<String> tagBlackList = Config.tagBlackList;
+                    if (works != null) {
+                        for (Work work : works.getWorks()) {
+                            //筛选RJ黑名单
+                            work.setBlack(workBlackList.contains(work.getFullId()));
+                            //筛选标签黑名单
+                            for (Role tag : work.getTags()) {
+                                if (tagBlackList.contains(tag.getName())) {
+                                    work.setBlack(true);
+                                    break;
                                 }
                             }
 
-                            if (!work.isHas_subtitle() && zipList != null) {
-                                for (String s : zipList) {
-                                    boolean exist = exist(work, s);
-                                    if (exist) {
-                                        work.setHas_subtitle(true);//存在字幕zip包
-                                        work.setHasLocalSubtitle(true);
+                            //不是黑名单作品，匹配本地字幕
+                            if (!work.isBlack()) {
+                                if (!work.isHas_subtitle() && folderList != null) {
+                                    for (String s : folderList) {
+                                        boolean exist = exist(work, s);
+                                        if (exist) {
+                                            work.setHas_subtitle(true);//存在字幕文件夹
+                                            break;
+                                        }
+                                    }
+                                }
 
-                                        break;
+                                if (!work.isHas_subtitle() && zipList != null) {
+                                    for (String s : zipList) {
+                                        boolean exist = exist(work, s);
+                                        if (exist) {
+                                            work.setHas_subtitle(true);//存在字幕zip包
+                                            work.setHasLocalSubtitle(true);
+
+                                            break;
+                                        }
                                     }
                                 }
                             }
                         }
+
+                        //过滤所有黑名单作品
+                        List<Work> list = works.getWorks().stream().filter(work -> !work.isBlack()).toList();
+                        works.setWorks(list);
                     }
-
-                    //过滤所有黑名单作品
-                    List<Work> list = works.getWorks().stream().filter(work -> !work.isBlack()).toList();
-                    works.setWorks(list);
+                    updateMessage("false");
+                    return works;
+                } else {
+                    updateMessage("false");
+                    return null;
                 }
-
-                updateMessage("false");
-                return works;
             }
         };
         return task;

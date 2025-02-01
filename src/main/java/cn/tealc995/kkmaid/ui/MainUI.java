@@ -257,7 +257,7 @@ public class MainUI {
 
     private void checkLogin(){
         if (Config.TOKEN.get() != null && Config.TOKEN.get().length() > 0){
-            CheckLoginTask checkLoginTask=new CheckLoginTask(Config.HOST.get());
+            CheckLoginTask checkLoginTask=new CheckLoginTask();
             checkLoginTask.valueProperty().addListener((observableValue, aBoolean, t1) -> {
                 if (t1){
                     //Notification.show("登陆成功",MessageType.SUCCESS,3000,Pos.TOP_CENTER,App.mainStage);

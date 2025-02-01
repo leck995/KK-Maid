@@ -2,9 +2,9 @@ package cn.tealc995.kkmaid.ui;
 
 import atlantafx.base.theme.Styles;
 import cn.tealc995.kkmaid.App;
-import cn.tealc995.api.model.Role;
-import cn.tealc995.api.model.Work;
-import cn.tealc995.api.model.playList.PlayList;
+import cn.tealc995.kikoreu.model.Role;
+import cn.tealc995.kikoreu.model.Work;
+import cn.tealc995.kikoreu.model.playList.PlayList;
 import cn.tealc995.kkmaid.model.lrc.LrcFile;
 import cn.tealc995.kkmaid.model.lrc.LrcType;
 import cn.tealc995.kkmaid.service.SeekLrcFileService;

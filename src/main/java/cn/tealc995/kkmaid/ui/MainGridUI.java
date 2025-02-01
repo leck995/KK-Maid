@@ -1,7 +1,7 @@
 package cn.tealc995.kkmaid.ui;
 
-import cn.tealc995.api.model.SortType;
-import cn.tealc995.api.model.Work;
+import cn.tealc995.kikoreu.model.SortType;
+import cn.tealc995.kikoreu.model.Work;
 import cn.tealc995.kkmaid.ui.cell.WorkCell;
 import cn.tealc995.kkmaid.util.AnchorPaneUtil;
 import cn.tealc995.kkmaid.util.CssLoader;

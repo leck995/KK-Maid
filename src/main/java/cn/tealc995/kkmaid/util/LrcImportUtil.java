@@ -1,6 +1,6 @@
 package cn.tealc995.kkmaid.util;
 
-import cn.tealc995.api.HttpUtils;
+import cn.tealc995.kikoreu.HttpUtils;
 import cn.tealc995.kkmaid.filter.SupportSubtitleFormat;
 import cn.tealc995.kkmaid.model.lrc.LrcBean;
 import cn.tealc995.kkmaid.model.lrc.LrcFile;

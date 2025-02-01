@@ -1,7 +1,7 @@
 package cn.tealc995.kkmaid.ui;
 
 import cn.tealc995.kkmaid.App;
-import cn.tealc995.api.model.Track;
+import cn.tealc995.kikoreu.model.Track;
 import cn.tealc995.kkmaid.util.AnchorPaneUtil;
 import javafx.beans.binding.Bindings;
 import javafx.geometry.Bounds;

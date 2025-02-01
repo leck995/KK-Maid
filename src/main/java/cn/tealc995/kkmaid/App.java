@@ -1,6 +1,7 @@
 package cn.tealc995.kkmaid;
 
 import atlantafx.base.theme.PrimerDark;
+import cn.tealc995.kikoreu.KKApi;
 import cn.tealc995.kkmaid.player.MediaPlayerUtil;
 import cn.tealc995.kkmaid.ui.MainUI;
 import cn.tealc995.kkmaid.util.CssLoader;
@@ -36,8 +37,11 @@ public class App extends Application {
             System.setProperty("https.proxyPort", Config.proxyPort.get());
         }
 
-
         Application.setUserAgentStylesheet(new PrimerDark().getUserAgentStylesheet());
+
+        KKApi.getInstance().setToken(Config.TOKEN.get());
+        KKApi.getInstance().setHost(Config.HOST.get());
+
         MainUI mainUI=new MainUI();
 
 

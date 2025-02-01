@@ -1,15 +1,19 @@
 package cn.tealc995.kkmaid.ui;
 
+import cn.tealc995.kikoreu.model.ResponseBody;
 import cn.tealc995.kkmaid.Config;
-import cn.tealc995.api.UserApi;
-import cn.tealc995.api.model.SortType;
+import cn.tealc995.kikoreu.api.UserApi;
+import cn.tealc995.kikoreu.model.SortType;
 import cn.tealc995.kkmaid.event.EventBusUtil;
 import cn.tealc995.kkmaid.event.MainCenterEvent;
+import cn.tealc995.kkmaid.event.MainNotificationEvent;
+import cn.tealc995.kkmaid.service.LoginTask;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.util.Arrays;
+import java.util.function.Consumer;
 
 /**
  * @program: Asmr-Online
@@ -229,12 +233,20 @@ public class SettingUIViewModel {
         EventBusUtil.getDefault().post(new MainCenterEvent(null,false,false));
     }
 
-    public String login(String username,String password){
-        String login = UserApi.login(Config.HOST.get(), username, password);
-        if (login != null){
-            token.set(login);
-        }
-        return login;
+    public void login(String username, String password, Consumer<Boolean> onLogin){
+        LoginTask task=new LoginTask(username,password);
+        task.setOnSucceeded(workerStateEvent -> {
+            ResponseBody<String> value = task.getValue();
+            if (value.isSuccess()){
+                token.set(value.getData());
+                EventBusUtil.getDefault().post(new MainNotificationEvent("获取Token成功"));
+                onLogin.accept(true);
+            }else {
+                EventBusUtil.getDefault().post(new MainNotificationEvent("登陆失败,检查网络，用户名和密码"));
+                onLogin.accept(false);
+            }
+        });
+        Thread.startVirtualThread(task);
     }
 
 
