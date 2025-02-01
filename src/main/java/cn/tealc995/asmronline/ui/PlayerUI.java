@@ -1,13 +1,11 @@
 package cn.tealc995.asmronline.ui;
 
-import atlantafx.base.util.Animations;
 import cn.tealc995.asmronline.App;
 import cn.tealc995.asmronline.Config;
 import cn.tealc995.asmronline.event.EventBusUtil;
 import cn.tealc995.asmronline.event.MainDialogEvent;
 import cn.tealc995.asmronline.event.MainPaneEvent;
 import cn.tealc995.asmronline.model.lrc.LrcBean;
-import cn.tealc995.asmronline.player.LcMediaPlayer;
 import cn.tealc995.asmronline.player.MediaPlayerUtil;
 import cn.tealc995.asmronline.player.TeaMediaPlayer;
 import cn.tealc995.asmronline.ui.component.LrcView;
@@ -37,7 +35,6 @@ import javafx.scene.control.*;
 import javafx.scene.effect.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -47,11 +44,9 @@ import javafx.stage.FileChooser;
 import javafx.util.Duration;
 import net.coobird.thumbnailator.Thumbnails;
 
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 
 
 public class PlayerUI {
@@ -335,7 +330,7 @@ public class PlayerUI {
 
         });
         manageLrcBtn.setOnAction(event -> {
-            LrcFileDialogUi lrcFileDialogUi=new LrcFileDialogUi();
+            LrcFileDialogUI lrcFileDialogUi=new LrcFileDialogUI();
             EventBusUtil.getDefault().post(new MainDialogEvent(lrcFileDialogUi.getRoot()));
         });
 

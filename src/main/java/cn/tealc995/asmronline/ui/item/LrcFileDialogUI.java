@@ -1,7 +1,6 @@
 package cn.tealc995.asmronline.ui.item;
 
 import cn.tealc995.asmronline.App;
-import cn.tealc995.asmronline.api.HttpUtils;
 import cn.tealc995.asmronline.model.Audio;
 import cn.tealc995.asmronline.model.lrc.LrcFile;
 import cn.tealc995.asmronline.model.lrc.LrcType;
@@ -23,11 +22,11 @@ import javafx.util.Callback;
  * @author: Leck
  * @create: 2023-07-18 10:03
  */
-public class LrcFileDialogUi {
+public class LrcFileDialogUI {
     private LrcFileDialogViewModel viewModel;
     private StackPane root;
 
-    public LrcFileDialogUi() {
+    public LrcFileDialogUI() {
         viewModel=new LrcFileDialogViewModel();
         root=new StackPane();
         root.getStylesheets().add(CssLoader.getCss(CssLoader.lrc_file_dialog));
@@ -39,7 +38,7 @@ public class LrcFileDialogUi {
 
         ListView<Audio> songListView=new ListView<>();
         songListView.setItems(viewModel.getSongs());
-        songListView.setDisable(true);
+        //songListView.setDisable(true);
         songListView.setCellFactory(new Callback<ListView<Audio>, ListCell<Audio>>() {
             @Override
             public ListCell<Audio> call(ListView<Audio> audioListView) {
