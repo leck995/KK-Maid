@@ -10,7 +10,6 @@ module cn.tealc.kkmaid {
     requires com.jfoenix;
     requires javafx.media;
     requires jdk.crypto.cryptoki;
-    requires net.lingala.zip4j;
     requires org.slf4j;
     requires uk.co.caprica.vlcj;
     requires jaudiotagger;

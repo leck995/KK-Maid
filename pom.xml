@@ -147,13 +147,6 @@
         </dependency>
 
         <dependency>
-            <groupId>net.lingala.zip4j</groupId>
-            <artifactId>zip4j</artifactId>
-            <version>2.11.5</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/libs/zip4j-2.11.5.jar</systemPath>
-        </dependency>
-        <dependency>
             <groupId>org.controlsfx</groupId>
             <artifactId>controlsfx</artifactId>
             <version>11.2.1</version>

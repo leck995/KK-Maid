@@ -5,7 +5,6 @@ import cn.tealc995.kkmaid.model.lrc.LrcFile;
 import cn.tealc995.kkmaid.model.lrc.LrcType;
 import cn.tealc995.kkmaid.zip.NewZipUtil;
 import cn.tealc995.kkmaid.zip.ZipEntityFile;
-import cn.tealc995.kkmaid.zip.ZipUtil;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import org.slf4j.Logger;

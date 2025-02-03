@@ -1,12 +1,9 @@
 package cn.tealc995.kikoreu.api;
 
-import cn.tealc995.kikoreu.HttpUtils;
 import cn.tealc995.kikoreu.NewHttpClient;
 import cn.tealc995.kikoreu.model.MainWorks;
 import cn.tealc995.kikoreu.model.Response;
 import cn.tealc995.kikoreu.model.ResponseBody;
-import cn.tealc995.kkmaid.event.EventBusUtil;
-import cn.tealc995.kkmaid.event.MainNotificationEvent;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 

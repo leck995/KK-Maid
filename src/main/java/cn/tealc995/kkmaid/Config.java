@@ -1,6 +1,7 @@
 package cn.tealc995.kkmaid;
 
 import cn.tealc995.kikoreu.HttpUtils;
+import cn.tealc995.kikoreu.KKApi;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -86,18 +87,28 @@ public class Config {
     public static Properties properties;
 
     static {
-        if (TOKEN.get() != null && TOKEN.get().length() > 0){
-            HttpUtils.TOKEN=TOKEN.get();
+        if (TOKEN.get() != null && !TOKEN.get().isEmpty()){
+            KKApi.getInstance().setToken(Config.TOKEN.get());
+        }
+        if (HOST.get() != null && !HOST.get().isEmpty()){
+            KKApi.getInstance().setHost(Config.HOST.get());
         }
 
         TOKEN.addListener((observableValue, s, t1) -> {
-            if (t1.equals("")){
-                HttpUtils.TOKEN=null;
+            if (t1.isEmpty()){
+                KKApi.getInstance().setToken(null);
             }else {
-                HttpUtils.TOKEN=t1;
+                KKApi.getInstance().setToken(t1);
             }
         });
 
+        HOST.addListener((observableValue, s, t1) -> {
+            if (t1.isEmpty()){
+                KKApi.getInstance().setHost(null);
+            }else {
+                KKApi.getInstance().setHost(t1);
+            }
+        });
 
 
         InputStream input= null;

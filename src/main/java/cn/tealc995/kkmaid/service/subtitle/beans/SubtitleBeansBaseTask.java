@@ -1,15 +1,9 @@
-package cn.tealc995.kkmaid.service.subtitle;
+package cn.tealc995.kkmaid.service.subtitle.beans;
 
 import cn.tealc995.kikoreu.model.ResponseBody;
 import cn.tealc995.kkmaid.model.lrc.LrcBean;
-import cn.tealc995.kkmaid.util.LrcFormatUtil;
 import javafx.concurrent.Task;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.io.*;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 /**

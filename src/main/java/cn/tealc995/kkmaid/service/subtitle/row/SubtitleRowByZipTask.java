@@ -1,13 +1,12 @@
-package cn.tealc995.kkmaid.service.subtitle;
+package cn.tealc995.kkmaid.service.subtitle.row;
 
 import cn.tealc995.kikoreu.model.ResponseBody;
 import cn.tealc995.kkmaid.model.lrc.LrcBean;
 import cn.tealc995.kkmaid.model.lrc.LrcFile;
+import cn.tealc995.kkmaid.service.subtitle.beans.SubtitleBeansBaseTask;
 import cn.tealc995.kkmaid.util.LrcFormatUtil;
 import cn.tealc995.kkmaid.zip.NewZipUtil;
-import javafx.concurrent.Task;
 import org.apache.commons.compress.archivers.zip.ZipFile;
-import org.apache.commons.compress.utils.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,29 +18,29 @@ import java.util.Optional;
 
 /**
  * @program: KK-Maid
- * @description: 读取字幕压缩包内的指定字幕文件
+ * @description: 读取字幕压缩包内的指定字幕文件源文件
  * @author: Leck
  * @create: 2025-02-03 21:05
  */
-public class SubtitleBeansByZipTask extends SubtitleBeansBaseTask {
-    private static final Logger LOG = LoggerFactory.getLogger(SubtitleBeansByZipTask.class);
+public class SubtitleRowByZipTask extends SubtitleRowBaseTask {
+    private static final Logger LOG = LoggerFactory.getLogger(SubtitleRowByZipTask.class);
     private final LrcFile source; //要读取的字幕文件信息
     private Charset zipCharset; //编码，压缩包的
     private Charset textCharset; //编码，压缩包的文本编码
 
 
-    public SubtitleBeansByZipTask(LrcFile source) {
+    public SubtitleRowByZipTask(LrcFile source) {
         this.source = source;
     }
 
-    public SubtitleBeansByZipTask(LrcFile source, Charset zipCharset, Charset textCharset) {
+    public SubtitleRowByZipTask(LrcFile source, Charset zipCharset, Charset textCharset) {
         this.source = source;
         this.zipCharset = zipCharset;
         this.textCharset = textCharset;
     }
 
     @Override
-    protected ResponseBody<List<LrcBean>> call() throws Exception {
+    protected ResponseBody<String> call() throws Exception {
         ZipFile zipFile = null;
         Optional<BufferedReader> readerOptional = null;
         try {
@@ -60,7 +59,7 @@ public class SubtitleBeansByZipTask extends SubtitleBeansBaseTask {
                 while ((line = bufferedReader.readLine()) != null) {
                     sb.append(line).append("\\n");
                 }
-                return ResponseBody.create(200,"成功加载字幕",LrcFormatUtil.getLrcListFromLrcText(sb.toString()));
+                return ResponseBody.create(200,"成功加载字幕",sb.toString());
             }else {
                 return ResponseBody.create(0,String.format("无法正确读取压缩包 %s 内字幕文件：%s",source.getZipPath(),source.getPath()),null);
             }

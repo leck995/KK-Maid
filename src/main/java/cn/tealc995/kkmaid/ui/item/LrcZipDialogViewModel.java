@@ -7,13 +7,13 @@ import cn.tealc995.kkmaid.model.lrc.LrcType;
 import cn.tealc995.kkmaid.player.MediaPlayerUtil;
 import cn.tealc995.kkmaid.zip.NewZipUtil;
 import cn.tealc995.kkmaid.zip.ZipEntityFile;
-import cn.tealc995.kkmaid.zip.ZipUtil;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 

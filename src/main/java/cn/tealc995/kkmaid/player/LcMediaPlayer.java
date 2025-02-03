@@ -2,25 +2,23 @@ package cn.tealc995.kkmaid.player;
 
 
 import cn.tealc995.kikoreu.model.ResponseBody;
-import cn.tealc995.kkmaid.Config;
 import cn.tealc995.kikoreu.model.Work;
+import cn.tealc995.kkmaid.Config;
 import cn.tealc995.kkmaid.event.EventBusUtil;
 import cn.tealc995.kkmaid.event.MainNotificationEvent;
 import cn.tealc995.kkmaid.model.Audio;
-import cn.tealc995.kkmaid.model.lrc.LrcBean;
 import cn.tealc995.kkmaid.model.Music;
+import cn.tealc995.kkmaid.model.lrc.LrcBean;
 import cn.tealc995.kkmaid.model.lrc.LrcFile;
 import cn.tealc995.kkmaid.model.lrc.LrcType;
 import cn.tealc995.kkmaid.service.SeekLrcFileService;
-import cn.tealc995.kkmaid.service.subtitle.SubtitleBeansBaseTask;
-import cn.tealc995.kkmaid.service.subtitle.SubtitleBeansByFolderTask;
-import cn.tealc995.kkmaid.service.subtitle.SubtitleBeansByNetTask;
-import cn.tealc995.kkmaid.service.subtitle.SubtitleBeansByZipTask;
+import cn.tealc995.kkmaid.service.subtitle.beans.SubtitleBeansBaseTask;
+import cn.tealc995.kkmaid.service.subtitle.beans.SubtitleBeansByFolderTask;
+import cn.tealc995.kkmaid.service.subtitle.beans.SubtitleBeansByNetTask;
+import cn.tealc995.kkmaid.service.subtitle.beans.SubtitleBeansByZipTask;
 import cn.tealc995.kkmaid.ui.component.DesktopLrcDialog;
-import cn.tealc995.kkmaid.util.LrcImportUtil;
 import cn.tealc995.kkmaid.zip.NewZipUtil;
 import cn.tealc995.kkmaid.zip.ZipEntityFile;
-import cn.tealc995.kkmaid.zip.ZipUtil;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -34,7 +32,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 
 /**

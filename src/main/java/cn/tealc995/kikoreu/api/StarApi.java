@@ -40,7 +40,7 @@ public class StarApi extends BaseApi{
 
     public ResponseBody<Boolean> updateStar(String workId,Integer rating){
         String row=String.format("{\"work_id\":%s,\"rating\":%d}",workId,rating);
-        Response response = HttpUtils.put( "/api/review", row);
+        Response response = httpClient.put( "/api/review", row);
         if (response.isSuccess()){
             return ResponseBody.create(response.getCode(),response.getMessage(),true);
         } else {
@@ -49,7 +49,7 @@ public class StarApi extends BaseApi{
     }
 
     public ResponseBody<Boolean> deleteStar(String workId){
-        Response response  = HttpUtils.delete("/api/review?work_id="+workId);
+        Response response  = httpClient.delete("/api/review?work_id="+workId);
         if (response.isSuccess()){
             return ResponseBody.create(response.getCode(),response.getMessage(),true);
         } else {

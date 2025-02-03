@@ -5,7 +5,6 @@ import cn.tealc995.kkmaid.filter.SupportSubtitleFormat;
 import cn.tealc995.kkmaid.model.lrc.LrcBean;
 import cn.tealc995.kkmaid.model.lrc.LrcFile;
 import cn.tealc995.kkmaid.zip.NewZipUtil;
-import cn.tealc995.kkmaid.zip.ZipUtil;
 import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.apache.commons.compress.utils.Lists;
 
@@ -20,29 +19,6 @@ import java.util.Optional;
  * @create: 2023-07-18 08:28
  */
 public class LrcImportUtil {
-    public static List<LrcBean> getLrcFromFolder(String path){
-        File file=new File(path);
-        if (file.exists()){
-            StringBuilder row;
-            try {
-                BufferedReader br= new BufferedReader(new InputStreamReader(new FileInputStream(file),"UTF-8"));
-                String line;
-                row = new StringBuilder();
-                while ((line = br.readLine()) != null) {
-                    row.append(line);
-                    row.append(System.lineSeparator());
-                }
-                br.close();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            return LrcFormatUtil.getLrcListFromLrcText(row.toString());
-        }else{
-            return null;
-        }
-    }
-
-
     public static String getLrcRowFromFolder(String path){
         File file=new File(path);
         if (file.exists()){
@@ -124,16 +100,6 @@ public class LrcImportUtil {
         return null;
     }
 
-
-    public static List<LrcBean> getLrcFromNet(String path){
-        String s = HttpUtils.download(path);
-        if (SupportSubtitleFormat.getType(path) == SupportSubtitleFormat.LRC){
-            return LrcFormatUtil.getLrcListFromLrcText(s);
-        }else if (SupportSubtitleFormat.getType(path) == SupportSubtitleFormat.VTT){
-            return LrcFormatUtil.getLrcListFromVttText(s);
-        }
-        return null;
-    }
 
 
     public static String getLrcRowFromNet(String path){
