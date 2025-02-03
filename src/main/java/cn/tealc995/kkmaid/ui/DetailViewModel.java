@@ -1,7 +1,7 @@
 package cn.tealc995.kkmaid.ui;
 
 import cn.tealc995.kikoreu.model.ResponseBody;
-import cn.tealc995.kkmaid.Config;
+import cn.tealc995.kkmaid.config.Config;
 import cn.tealc995.kikoreu.model.Track;
 import cn.tealc995.kikoreu.model.Work;
 import cn.tealc995.kikoreu.model.playList.PlayList;
@@ -97,7 +97,7 @@ public class DetailViewModel {
         params.put("version", "2");
         params.put("workID",work.get().getId());
 
-        playListWorkExistService.setHost(Config.HOST.get());
+        playListWorkExistService.setHost(Config.setting.getHOST());
         playListWorkExistService.setParams(params);
         playListWorkExistService.restart();
 

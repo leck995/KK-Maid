@@ -1,7 +1,7 @@
 package cn.tealc995.kkmaid;
 
 import atlantafx.base.theme.PrimerDark;
-import cn.tealc995.kikoreu.KKApi;
+import cn.tealc995.kkmaid.config.Config;
 import cn.tealc995.kkmaid.player.MediaPlayerUtil;
 import cn.tealc995.kkmaid.ui.MainUI;
 import cn.tealc995.kkmaid.util.CssLoader;
@@ -32,31 +32,23 @@ public class App extends Application {
         stage.close();
         mainStage=new RoundStage();
 
-        if (Config.proxyModel.get()){
-            System.setProperty("https.proxyHost", Config.proxyHost.get());
-            System.setProperty("https.proxyPort", Config.proxyPort.get());
+        if (Config.setting.isProxyModel()){
+            System.setProperty("https.proxyHost", Config.setting.getProxyHost());
+            System.setProperty("https.proxyPort", Config.setting.getProxyPort());
         }
 
         Application.setUserAgentStylesheet(new PrimerDark().getUserAgentStylesheet());
-
-        KKApi.getInstance().setToken(Config.TOKEN.get());
-        KKApi.getInstance().setHost(Config.HOST.get());
-
         MainUI mainUI=new MainUI();
 
-
-
-
         mainStage.setOnHidden(windowEvent -> {
-            System.out.println("退出程序");
             Platform.exit();
         });
 
         mainStage.setContent(mainUI.getRoot());
         mainStage.getScene().getStylesheets().addAll(CssLoader.getCss(CssLoader.baseUI),CssLoader.getCss(CssLoader.main));
         mainStage.getScene().setFill(Color.TRANSPARENT);
-        mainStage.setWidth(Config.stageWidth.get());
-        mainStage.setHeight(Config.stageHeight.get());
+        mainStage.setWidth(Config.setting.getStageWidth());
+        mainStage.setHeight(Config.setting.getStageHeight());
         mainStage.setFullScreenExitHint("");
         mainStage.initStyle(StageStyle.TRANSPARENT);
 

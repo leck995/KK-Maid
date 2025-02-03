@@ -1,7 +1,7 @@
 package cn.tealc995.kkmaid.ui;
 
 import cn.tealc995.kikoreu.model.playList.*;
-import cn.tealc995.kkmaid.Config;
+import cn.tealc995.kkmaid.config.Config;
 import cn.tealc995.kkmaid.event.EventBusUtil;
 import cn.tealc995.kkmaid.event.MainNotificationEvent;
 import cn.tealc995.kkmaid.event.PlayListAlterEvent;
@@ -59,7 +59,7 @@ public class PlayListViewModel {
         params.put("page", String.valueOf(currentPage.get() + 1));
         params.put("pageSize", String.valueOf(pageSize.get()));
         params.put("filterBy", "all");
-        service.setHost(Config.HOST.get());
+        service.setHost(Config.setting.getHOST());
         service.setParams(params);
         service.restart();
     }
@@ -137,8 +137,8 @@ public class PlayListViewModel {
         Set<String> list = new HashSet<>();
         Pattern pattern = Pattern.compile("(?<=RJ)\\d+");
         Matcher matcher;
-        if (Config.lrcFileFolder.get() != null && Config.lrcFileFolder.get().length() > 0) {
-            File folder = new File(Config.lrcFileFolder.get());
+        if (Config.setting.getLrcFileFolder() != null && !Config.setting.getLrcFileFolder().isEmpty()) {
+            File folder = new File(Config.setting.getLrcFileFolder());
             if (folder.exists()) {
                 File[] files = folder.listFiles(File::isDirectory);
                 for (File file : files) {
@@ -149,8 +149,8 @@ public class PlayListViewModel {
                 }
             }
         }
-        if (Config.lrcZipFolder.get() != null && Config.lrcZipFolder.get().length() > 0) {
-            File folder = new File(Config.lrcZipFolder.get());
+        if (Config.setting.getLrcZipFolder() != null && !Config.setting.getLrcZipFolder().isEmpty()) {
+            File folder = new File(Config.setting.getLrcZipFolder());
             if (folder.exists()) {
                 File[] files = folder.listFiles(File::isFile);
                 for (File file : files) {
@@ -161,7 +161,7 @@ public class PlayListViewModel {
                 }
             }
         }
-        list.removeAll(Config.workBlackList);
+        list.removeAll(Config.blackList.getWorkBlackList());
         return list;
     }
 

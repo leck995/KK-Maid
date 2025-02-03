@@ -3,7 +3,7 @@ package cn.tealc995.kkmaid.ui;
 import atlantafx.base.theme.Styles;
 import atlantafx.base.util.Animations;
 import cn.tealc995.kkmaid.App;
-import cn.tealc995.kkmaid.Config;
+import cn.tealc995.kkmaid.config.Config;
 import cn.tealc995.kkmaid.event.*;
 import cn.tealc995.kkmaid.service.CheckLoginTask;
 import cn.tealc995.kkmaid.util.CssLoader;
@@ -136,7 +136,7 @@ public class MainUI {
         starBtn.setGraphic(new Region());
         starBtn.setToggleGroup(group);
         starBtn.setOnAction(actionEvent -> {
-            if (Config.TOKEN.get() != null && Config.TOKEN.get().length() > 0){
+            if (Config.setting.getTOKEN()!= null && !Config.setting.getTOKEN().isEmpty()){
                 if (!starBtn.isSelected()){
                     starBtn.setSelected(true);
                 }else {
@@ -155,7 +155,7 @@ public class MainUI {
         playListBtn.setGraphic(new Region());
         playListBtn.setToggleGroup(group);
         playListBtn.setOnAction(actionEvent -> {
-            if (Config.TOKEN.get() != null && Config.TOKEN.get().length() > 0){
+            if (Config.setting.getTOKEN()!= null && !Config.setting.getTOKEN().isEmpty()){
                 backBaseCenter();
                 PlayListUI playListUI=new PlayListUI();
                 addCenter(playListUI.getRoot());
@@ -256,19 +256,19 @@ public class MainUI {
 
 
     private void checkLogin(){
-        if (Config.TOKEN.get() != null && Config.TOKEN.get().length() > 0){
+        if (Config.setting.getTOKEN()!= null && !Config.setting.getTOKEN().isEmpty()){
             CheckLoginTask checkLoginTask=new CheckLoginTask();
             checkLoginTask.valueProperty().addListener((observableValue, aBoolean, t1) -> {
                 if (t1){
                     //Notification.show("登陆成功",MessageType.SUCCESS,3000,Pos.TOP_CENTER,App.mainStage);
                     showNotification(new MainNotificationEvent("登陆成功"));
                 }else {
-                    showNotification(new MainNotificationEvent("登录Token失效,请重新获取Token"));
+                    showNotification(new MainNotificationEvent("网络问题或用户Token失效（请重新获取Token）"));
                 }
             });
             checkLoginTask.run();
         }else {
-            showNotification(new MainNotificationEvent("当前以游客状态登录"));
+            showNotification(new MainNotificationEvent("当前未登录，请登录后使用"));
             //Notification.show("当前以游客状态登录",MessageType.WARNING,3000,Pos.TOP_CENTER,App.mainStage);
         }
 

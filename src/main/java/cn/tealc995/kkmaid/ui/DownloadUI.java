@@ -3,7 +3,7 @@ package cn.tealc995.kkmaid.ui;
 import atlantafx.base.controls.Card;
 import atlantafx.base.theme.Styles;
 import cn.tealc995.kkmaid.App;
-import cn.tealc995.kkmaid.Config;
+import cn.tealc995.kkmaid.config.Config;
 import cn.tealc995.kikoreu.model.Response;
 import cn.tealc995.kikoreu.model.Track;
 import cn.tealc995.kikoreu.model.Work;
@@ -50,7 +50,7 @@ public class DownloadUI {
         Label title=new Label("下载: RJ"+rootTrack.getTitle());
         title.getStyleClass().add(Styles.TITLE_3);
 
-        Label dir=new Label("保存至:"+Config.downloadDir.get());
+        Label dir=new Label("保存至:"+Config.setting.getDownloadDir());
         dir.getStyleClass().add(Styles.TEXT_MUTED);
 
         StackPane top=new StackPane(title,dir);
@@ -127,7 +127,7 @@ public class DownloadUI {
         Button downloadBtn=new Button("下载");
         downloadBtn.setOnAction(event -> {
            /* selected.stream().map(TreeItem::getValue).forEach(s -> System.out.println(s.getTitle()));*/
-            if (Config.downloadDir.get() == null || Config.aria2Host ==null || Config.ariaRPCKey ==null){
+            if (Config.setting.getDownloadDir() == null || Config.setting.getAria2Host() ==null || Config.setting.getAriaRPCKey() ==null){
                 Notification.show("先在设置中配置下载目录和Aria2", MessageType.WARNING,2000, Pos.TOP_CENTER, App.mainStage);
             }else {
                 Set<Track> set=new HashSet<>();

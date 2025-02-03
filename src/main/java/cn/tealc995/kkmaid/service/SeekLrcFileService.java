@@ -1,6 +1,6 @@
 package cn.tealc995.kkmaid.service;
 
-import cn.tealc995.kkmaid.Config;
+import cn.tealc995.kkmaid.config.Config;
 import cn.tealc995.kkmaid.model.lrc.LrcFile;
 import cn.tealc995.kkmaid.model.lrc.LrcType;
 import cn.tealc995.kkmaid.zip.NewZipUtil;
@@ -36,20 +36,20 @@ public class SeekLrcFileService extends Service<List<LrcFile>> {
 
     @Override
     protected Task<List<LrcFile>> createTask() {
-        Task<List<LrcFile>> task=new Task<List<LrcFile>>() {
+        Task<List<LrcFile>> task = new Task<List<LrcFile>>() {
             @Override
             protected List<LrcFile> call() throws Exception {
-                if (ids != null){
+                if (ids != null) {
                     for (String id : ids) {
                         List<LrcFile> lrcFiles = seekLrcFile(id);
-                        if (lrcFiles != null){
+                        if (lrcFiles != null) {
                             return lrcFiles;
                         }
                     }
                 }
-                if (id != null){
+                if (id != null) {
                     List<LrcFile> lrcFiles = seekLrcFile(id);
-                    if (lrcFiles != null){
+                    if (lrcFiles != null) {
                         return lrcFiles;
                     }
                 }
@@ -60,40 +60,39 @@ public class SeekLrcFileService extends Service<List<LrcFile>> {
     }
 
     public void setId(String id) {
-        ids=null;
+        ids = null;
         this.id = id;
     }
 
     public void setIds(List<String> ids) {
-        id=null;
+        id = null;
         this.ids = ids;
     }
 
-    public void setCharset(Charset charset){
-        this.charset=charset;
+    public void setCharset(Charset charset) {
+        this.charset = charset;
     }
 
 
-
     /**
+     * @return void
      * @description:
      * @name: seekLrcFile
      * @author: Leck
-     * @param:	id	记住这个id传过来7位的id变成8位
-     * @return  void
-     * @date:   2023/7/19
+     * @param: id    记住这个id传过来7位的id变成8位
+     * @date: 2023/7/19
      */
     private List<LrcFile> seekLrcFile(String id) {
-        System.out.println("SeekLrcFileService搜寻的id:"+id);
-        String folder = Config.lrcFileFolder.get();
+        System.out.println("SeekLrcFileService搜寻的id:" + id);
+        String folder = Config.setting.getLrcFileFolder();
         if (folder != null && !folder.isEmpty()) {
             System.out.println("在字幕文件夹中寻找");
             File file = new File(folder);
             if (file.exists() && file.isDirectory()) {
                 String finalId;
-                if (id.toLowerCase().contains("rj")){
-                    finalId=id.toLowerCase();
-                }else {
+                if (id.toLowerCase().contains("rj")) {
+                    finalId = id.toLowerCase();
+                } else {
                     finalId = "rj" + id;
                 }
 
@@ -116,19 +115,19 @@ public class SeekLrcFileService extends Service<List<LrcFile>> {
             }
         }
 
-        folder = Config.lrcZipFolder.get();
+        folder = Config.setting.getLrcZipFolder();
         if (folder != null && !folder.isEmpty()) {
             System.out.println("在字幕包文件夹中寻找");
             File rootFolder = new File(folder);
             if (rootFolder.exists() && rootFolder.isDirectory()) {
-                String finalId = id.toLowerCase().replace("rj","");
-                if (finalId.length() == 7){
+                String finalId = id.toLowerCase().replace("rj", "");
+                if (finalId.length() == 7) {
                     finalId = "0" + finalId;
                 }
                 String searchId = finalId;
                 File[] files = rootFolder.listFiles(file -> {
-                    String name = file.getName().toLowerCase().replace("rj","");
-                    if (name.length() == 7){
+                    String name = file.getName().toLowerCase().replace("rj", "");
+                    if (name.length() == 7) {
                         name = "0" + name;
                     }
                     return file.isFile() && name.contains(searchId) && name.endsWith(".zip");
@@ -137,13 +136,13 @@ public class SeekLrcFileService extends Service<List<LrcFile>> {
                     System.out.println("在字幕压缩包文件夹中找到相关字幕");
                     File file = files[0];
                     try {
-                        List<ZipEntityFile> allLrcFile = NewZipUtil.getAllLrcFile(file,charset);
+                        List<ZipEntityFile> allLrcFile = NewZipUtil.getAllLrcFile(file, charset);
                         List<LrcFile> list = new ArrayList<>();
                         for (ZipEntityFile zipEntityFile : allLrcFile) {
                             list.add(new LrcFile(zipEntityFile.getName(), zipEntityFile.getPath(), LrcType.ZIP, file.getPath()));
                         }
                         return list;
-                    }catch (IOException e) {
+                    } catch (IOException e) {
                         LOG.error("加载字幕Zip出现错误");
                     }
                 }

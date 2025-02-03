@@ -3,7 +3,7 @@ package cn.tealc995.kkmaid.ui;
 import atlantafx.base.controls.*;
 import atlantafx.base.theme.Styles;
 import cn.tealc995.kkmaid.App;
-import cn.tealc995.kkmaid.Config;
+import cn.tealc995.kkmaid.config.Config;
 import cn.tealc995.kikoreu.model.SortType;
 import cn.tealc995.kkmaid.event.EventBusUtil;
 import cn.tealc995.kkmaid.event.MainNotificationEvent;
@@ -510,7 +510,6 @@ public class SettingUI {
             File file = directoryChooser.showDialog(App.mainStage);
             if (file != null){
                 viewModel.setLrcFileFolder(file.getPath());
-                System.out.println("aa"+Config.lrcFileFolder.get());
             }
         });
         HBox hBox1=new HBox(folderField,folderImportBtn);
@@ -619,7 +618,7 @@ public class SettingUI {
     }
     private Pane initAboutTab(){
 
-        Label label=new Label("未来道具11号(KK Maid) " + Config.version.get());
+        Label label=new Label("未来道具11号(KK Maid) " + Config.version);
         label.getStyleClass().add("title-2");
 
 

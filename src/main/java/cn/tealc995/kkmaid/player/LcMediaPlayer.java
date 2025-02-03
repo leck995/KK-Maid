@@ -3,7 +3,7 @@ package cn.tealc995.kkmaid.player;
 
 import cn.tealc995.kikoreu.model.ResponseBody;
 import cn.tealc995.kikoreu.model.Work;
-import cn.tealc995.kkmaid.Config;
+import cn.tealc995.kkmaid.config.Config;
 import cn.tealc995.kkmaid.event.EventBusUtil;
 import cn.tealc995.kkmaid.event.MainNotificationEvent;
 import cn.tealc995.kkmaid.model.Audio;
@@ -253,7 +253,7 @@ public class LcMediaPlayer implements TeaMediaPlayer {
                     mediaPlayer.play();
                 } else {
                     //播放下一曲
-                    if (Config.stopPlayOnEnd.get() && index == songs.size() - 1) {
+                    if (Config.setting.isStopPlayOnEnd() && index == songs.size() - 1) {
                         playing.set(false);
                     } else {
                         next();
@@ -501,7 +501,7 @@ public class LcMediaPlayer implements TeaMediaPlayer {
     public void setMusic(Music music, int index) {
         this.index = index;
         this.music.set(music);
-        if (music.getLrcFiles() == null || Config.lrcPriority.get()) {
+        if (music.getLrcFiles() == null || Config.setting.isLrcPriority()) {
             if (music.getWork().hasLanguages()) {
                 seekLrcFileService.setIds(music.getWork().getAllId());
             } else {
@@ -521,10 +521,8 @@ public class LcMediaPlayer implements TeaMediaPlayer {
      * @date: 2023/7/19
      */
     private void seekLrcFile(String id) {
-        System.out.println("AA:" + id);
-        String folder = Config.lrcFileFolder.get();
+        String folder = Config.setting.getLrcFileFolder();
         if (folder != null && folder.length() > 0) {
-            System.out.println("ssssssss");
             File file = new File(folder);
             if (file.exists() && file.isDirectory()) {
                 String finalId = "rj" + id;
@@ -546,7 +544,7 @@ public class LcMediaPlayer implements TeaMediaPlayer {
             }
         }
 
-        folder = Config.lrcZipFolder.get();
+        folder = Config.setting.getLrcZipFolder();
         if (folder != null && !folder.isEmpty()) {
             File rootFolder = new File(folder);
             if (rootFolder.exists() && rootFolder.isDirectory()) {
@@ -678,7 +676,7 @@ public class LcMediaPlayer implements TeaMediaPlayer {
                         //移除黑名单数据
                         list.removeIf(lrcBean -> {
                             String row = lrcBean.getRowText();
-                            for (String s : Config.textBlackList) {
+                            for (String s : Config.blackList.getTextBlackList()) {
                                 if (row.contains(s)) {
                                     return true;
                                 }

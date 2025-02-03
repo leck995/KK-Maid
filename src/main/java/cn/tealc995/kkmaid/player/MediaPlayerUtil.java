@@ -1,6 +1,6 @@
 package cn.tealc995.kkmaid.player;
 
-import cn.tealc995.kkmaid.Config;
+import cn.tealc995.kkmaid.config.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,7 +16,7 @@ public class MediaPlayerUtil {
     private static VlcPlayer vlcPlayer;
 
     public static TeaMediaPlayer mediaPlayer(){
-        if (Config.useVlcPlayer.get()){
+        if (Config.setting.isUseVlcPlayer()){
             if (vlcPlayer == null){
                 try {
                     vlcPlayer=new VlcPlayer();

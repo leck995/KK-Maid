@@ -4,7 +4,7 @@ import cn.tealc995.kikoreu.model.ResponseBody;
 import cn.tealc995.kikoreu.model.Role;
 import cn.tealc995.kikoreu.model.Work;
 import cn.tealc995.kkmaid.App;
-import cn.tealc995.kkmaid.Config;
+import cn.tealc995.kkmaid.config.Config;
 import cn.tealc995.kkmaid.event.*;
 import cn.tealc995.kkmaid.service.api.StarWorkRemoveTask;
 import cn.tealc995.kkmaid.service.api.StarWorkAddTask;
@@ -173,7 +173,7 @@ public class WorkCell extends VBox {
 
 
         rating.addEventFilter(MouseEvent.MOUSE_CLICKED,event -> {
-            if (Config.TOKEN.get() == null || Config.TOKEN.get().isEmpty()){
+            if (Config.setting.getTOKEN() == null || Config.setting.getTOKEN().isEmpty()){
                 Notification.show("使用收藏功能需要在设置中填写Token", MessageType.WARNING,2000,Pos.TOP_CENTER,App.mainStage);
                 event.consume();
             }
@@ -239,7 +239,7 @@ public class WorkCell extends VBox {
 
                 MenuItem blackBtn = new MenuItem("加入黑名单");
                 blackBtn.setOnAction(event -> {
-                    Config.tagBlackList.add(category.getName());
+                    Config.blackList.getTagBlackList().add(category.getName());
                     EventBusUtil.getDefault().post(new BlackWorkEvent(work));
                 });
                 ContextMenu contextMenu = new ContextMenu(blackBtn);
@@ -324,7 +324,7 @@ public class WorkCell extends VBox {
 
             MenuItem blacklistItem=new MenuItem("加入黑名单");
             blacklistItem.setOnAction(event -> {
-                Config.workBlackList.add(work.getFullId());
+                Config.blackList.getWorkBlackList().add(work.getFullId());
                 EventBusUtil.getDefault().post(new BlackWorkEvent(work));
             });
             ContextMenu contextMenu=new ContextMenu(copyParentItem,blacklistItem);

@@ -2,7 +2,7 @@ package cn.tealc995.kkmaid.service;
 
 import cn.tealc995.kikoreu.KKApi;
 import cn.tealc995.kikoreu.model.*;
-import cn.tealc995.kkmaid.Config;
+import cn.tealc995.kkmaid.config.Config;
 import cn.tealc995.kkmaid.ui.CategoryType;
 import javafx.collections.ObservableSet;
 import javafx.concurrent.Service;
@@ -51,8 +51,8 @@ public class MainGridService extends Service<MainWorks> {
 
                 if (responseBody.isSuccess()) {
                     MainWorks works = responseBody.getData();
-                    ObservableSet<String> workBlackList = Config.workBlackList;
-                    ObservableSet<String> tagBlackList = Config.tagBlackList;
+                    ObservableSet<String> workBlackList = Config.blackList.getWorkBlackList();
+                    ObservableSet<String> tagBlackList = Config.blackList.getTagBlackList();
                     if (works != null) {
                         for (Work work : works.getWorks()) {
                             //筛选RJ黑名单
@@ -108,25 +108,26 @@ public class MainGridService extends Service<MainWorks> {
 
 
     private void updateList() {
-        if (Config.lrcFileFolder.get() != null && Config.lrcFileFolder.get().length() > 0) {
-            folderList = new HashSet<>();
-            File dir = new File(Config.lrcFileFolder.get());
+        String lrcFileFolder = Config.setting.getLrcFileFolder();
+        if (lrcFileFolder != null && !lrcFileFolder.isEmpty()){
+            folderList=new HashSet<>();
+            File dir=new File(lrcFileFolder);
             File[] files = dir.listFiles((dir1, name) -> dir1.isDirectory());
             if (files != null) {
                 for (File file : files) {
-                    folderList.add(file.getName().toLowerCase());
+                    folderList.add(file.getName().toUpperCase());
                 }
             }
-
         }
 
-        if (Config.lrcZipFolder.get() != null && Config.lrcZipFolder.get().length() > 0) {
-            zipList = new HashSet<>();
-            File dir = new File(Config.lrcZipFolder.get());
-            File[] files = dir.listFiles(pathname -> pathname.isFile() && pathname.getName().toLowerCase().endsWith(".zip"));
+        String lrcZipFolder = Config.setting.getLrcZipFolder();
+        if (lrcZipFolder != null && !lrcZipFolder.isEmpty()){
+            zipList=new HashSet<>();
+            File dir=new File(lrcZipFolder);
+            File[] files = dir.listFiles((dir1, name) -> dir1.isFile() && name.toLowerCase().endsWith(".zip"));
             if (files != null) {
                 for (File file : files) {
-                    zipList.add(file.getName().toLowerCase());
+                    zipList.add(file.getName().toUpperCase());
                 }
             }
         }

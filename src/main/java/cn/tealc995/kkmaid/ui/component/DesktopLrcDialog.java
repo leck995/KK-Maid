@@ -1,7 +1,7 @@
 package cn.tealc995.kkmaid.ui.component;
 
 
-import cn.tealc995.kkmaid.Config;
+import cn.tealc995.kkmaid.config.Config;
 import cn.tealc995.kkmaid.player.MediaPlayerUtil;
 import cn.tealc995.kkmaid.util.CssLoader;
 import cn.tealc995.teaFX.handler.DragWindowHandler;
@@ -75,19 +75,19 @@ public class DesktopLrcDialog extends Stage {
         text.setFontSmoothingType(FontSmoothingType.GRAY);
         text.textProperty().bind(MediaPlayerUtil.mediaPlayer().lrcSelectedTextProperty());
 
-        hasBold.bind(Config.desktopLRCBoldModel);
+        hasBold.bind(Config.setting.desktopLRCBoldModelProperty());
         hasBold.addListener((observableValue, aBoolean, t1) -> {
             if (t1){
                 text.fontProperty().bind(Bindings.createObjectBinding(
                         ()->
-                                (Font.font(Font.getDefault().getFamily(),FontWeight.BOLD,Config.desktopLRCFontSize.get())),
-                        Config.desktopLRCFontSize)
+                                (Font.font(Font.getDefault().getFamily(),FontWeight.BOLD,Config.setting.getDesktopLRCFontSize())),
+                        Config.setting.desktopLRCFontSizeProperty())
                 );
             }else{
                 text.fontProperty().bind(Bindings.createObjectBinding(
                         ()->
-                                (Font.font(Config.desktopLRCFontSize.get())),
-                        Config.desktopLRCFontSize)
+                                (Font.font(Config.setting.getDesktopLRCFontSize())),
+                        Config.setting.desktopLRCFontSizeProperty())
                 );
             }
         });
@@ -97,28 +97,28 @@ public class DesktopLrcDialog extends Stage {
         if (hasBold.get()){
             text.fontProperty().bind(Bindings.createObjectBinding(
                     ()->
-                            (Font.font(Font.getDefault().getFamily(),FontWeight.BOLD,Config.desktopLRCFontSize.get())),
-                    Config.desktopLRCFontSize)
+                            (Font.font(Font.getDefault().getFamily(),FontWeight.BOLD,Config.setting.getDesktopLRCFontSize())),
+                    Config.setting.desktopLRCFontSizeProperty())
             );
         }else{
             text.fontProperty().bind(Bindings.createObjectBinding(
                     ()->
-                            (Font.font(Config.desktopLRCFontSize.get())),
-                    Config.desktopLRCFontSize)
+                            (Font.font(Config.setting.getDesktopLRCFontSize())),
+                    Config.setting.desktopLRCFontSizeProperty())
             );
         }
 
         text.fillProperty().bind(Bindings.createObjectBinding(
                 () ->
-                        (Color.web(Config.desktopLRCFontColor.get())),
-                Config.desktopLRCFontColor)
+                        (Color.web(Config.setting.getDesktopLRCFontColor())),
+                Config.setting.desktopLRCFontColorProperty())
         );
         //Font font=Font.font()
-        //text.setFont(Font.font(Font.getDefault().getName(),FontWeight.BOLD,Config.desktopLRCFontSize.get()));
+        //text.setFont(Font.font(Font.getDefault().getName(),FontWeight.BOLD,Config.setting.desktopLRCFontSize.get()));
         //text.setStyle("-fx-font-weight: BOLD");
 
 
-        hasEffect.bind(Config.desktopLRCBorderModel);
+        hasEffect.bind(Config.setting.desktopLRCBorderModelProperty());
         hasEffect.addListener((observableValue, aBoolean, t1) -> {
             if (!t1){
                 text.effectProperty().unbind();
@@ -128,20 +128,20 @@ public class DesktopLrcDialog extends Stage {
                 text.effectProperty().bind(
                         Bindings.createObjectBinding(
                                 ()->
-                                        (new DropShadow(BlurType.THREE_PASS_BOX,Color.web(Config.desktopLRCBorderColor.get()),10.0,0,0,0)),
-                                Config.desktopLRCBorderColor));
+                                        (new DropShadow(BlurType.THREE_PASS_BOX,Color.web(Config.setting.getDesktopLRCBorderColor()),10.0,0,0,0)),
+                                Config.setting.desktopLRCBorderColorProperty()));
         });
         if (hasEffect.get()){
             text.effectProperty().bind(
                     Bindings.createObjectBinding(
                             ()->
-                                    (new DropShadow(BlurType.THREE_PASS_BOX,Color.web(Config.desktopLRCBorderColor.get()),10.0,0,0,0)),
-                            Config.desktopLRCBorderColor));
+                                    (new DropShadow(BlurType.THREE_PASS_BOX,Color.web(Config.setting.getDesktopLRCBorderColor()),10.0,0,0,0)),
+                            Config.setting.desktopLRCBorderColorProperty()));
         }
 
 
 
-        hasStroke.bind(Config.desktopLRCStrokeModel);
+        hasStroke.bind(Config.setting.desktopLRCStrokeModelProperty());
         hasStroke.addListener((observableValue, aBoolean, t1) -> {
             if (!t1){
                 text.strokeProperty().unbind();
@@ -150,14 +150,14 @@ public class DesktopLrcDialog extends Stage {
             else
                 text.strokeProperty().bind(Bindings.createObjectBinding(
                         () ->
-                                (Color.web(Config.desktopLRCStrokeColor.get())),
-                        Config.desktopLRCStrokeColor));
+                                (Color.web(Config.setting.getDesktopLRCStrokeColor())),
+                        Config.setting.desktopLRCStrokeColorProperty()));
         });
         if (hasStroke.get()){
             text.strokeProperty().bind(Bindings.createObjectBinding(
                     () ->
-                            (Color.web(Config.desktopLRCStrokeColor.get())),
-                    Config.desktopLRCStrokeColor));
+                            (Color.web(Config.setting.getDesktopLRCStrokeColor())),
+                    Config.setting.desktopLRCStrokeColorProperty()));
         }
 
 

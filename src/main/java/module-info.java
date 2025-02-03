@@ -37,4 +37,6 @@ module cn.tealc.kkmaid {
     exports cn.tealc995.aria2.model;
     exports cn.tealc995.aria2;
     exports cn.tealc995.kikoreu.api;
+    exports cn.tealc995.kkmaid.config;
+    opens cn.tealc995.kkmaid.config to javafx.fxml;
 }

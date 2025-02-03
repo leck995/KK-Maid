@@ -1,6 +1,6 @@
 package cn.tealc995.kkmaid.ui;
 
-import cn.tealc995.kkmaid.Config;
+import cn.tealc995.kkmaid.config.Config;
 import cn.tealc995.kikoreu.model.MainWorks;
 import cn.tealc995.kikoreu.model.SortType;
 import cn.tealc995.kikoreu.model.Work;
@@ -64,9 +64,9 @@ public class MainGridViewModel {
         currentPage=new SimpleIntegerProperty(0);
         pageSize=new SimpleIntegerProperty(48);
         totalCount=new SimpleLongProperty(0);
-        subtext=new SimpleBooleanProperty(Config.gridSubtitleModel.get());
-        descOrder=new SimpleBooleanProperty(Config.gridSortDescModel.get());
-        selectSortType=new SimpleObjectProperty<>(SortType.valueOf(Config.gridOrder.get()));
+        subtext=new SimpleBooleanProperty(Config.setting.isGridSubtitleModel());
+        descOrder=new SimpleBooleanProperty(Config.setting.isGridSortDescModel());
+        selectSortType=new SimpleObjectProperty<>(SortType.valueOf(Config.setting.getGridOrder()));
         searchKey=new SimpleStringProperty();
         loading=new SimpleBooleanProperty(false);
         message=new SimpleStringProperty();
@@ -89,7 +89,7 @@ public class MainGridViewModel {
     }
 
     public void update(){
-        if (Config.HOST.get() == null || Config.HOST.get().length() == 0){
+        if (Config.setting.getHOST() == null || Config.setting.getHOST().isEmpty()){
             message.set("请先填写服务器地址");
             return;
         }
@@ -125,7 +125,7 @@ public class MainGridViewModel {
         service.setParams(params);
         service.setSearchKey(searchKey.get());
         service.setType(title.get());
-        service.setHost(Config.HOST.get());
+        service.setHost(Config.setting.getHOST());
         service.restart();
 
     }

@@ -1,7 +1,7 @@
 package cn.tealc995.kkmaid.player;
 
 import cn.tealc995.kikoreu.model.ResponseBody;
-import cn.tealc995.kkmaid.Config;
+import cn.tealc995.kkmaid.config.Config;
 import cn.tealc995.kikoreu.model.Work;
 import cn.tealc995.kkmaid.event.EventBusUtil;
 import cn.tealc995.kkmaid.event.MainNotificationEvent;
@@ -224,7 +224,7 @@ public class VlcPlayer implements TeaMediaPlayer {
                         mediaPlayer.controls().stop();
                         mediaPlayer.controls().play();
                     }else {
-                        if (Config.stopPlayOnEnd.get() && index==songs.size()-1){
+                        if (Config.setting.isStopPlayOnEnd() && index==songs.size()-1){
                             playing.set(false);
                         }else {
                             next();
@@ -289,7 +289,7 @@ public class VlcPlayer implements TeaMediaPlayer {
     public void setMusic(Music music, int index) {
         this.index=index;
         this.music.set(music);
-        if (music.getLrcFiles() == null || Config.lrcPriority.get()){
+        if (music.getLrcFiles() == null || Config.setting.isLrcPriority()){
             if (music.getWork().hasLanguages()){
                 seekLrcFileService.setIds(music.getWork().getAllId());
             }else {
@@ -601,7 +601,7 @@ public class VlcPlayer implements TeaMediaPlayer {
                         //移除黑名单数据
                         list.removeIf(lrcBean -> {
                             String row = lrcBean.getRowText();
-                            for (String s : Config.textBlackList) {
+                            for (String s : Config.blackList.getTextBlackList()) {
                                 if (row.contains(s)) {
                                     return true;
                                 }

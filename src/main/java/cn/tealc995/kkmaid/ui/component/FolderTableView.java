@@ -3,7 +3,7 @@ package cn.tealc995.kkmaid.ui.component;
 
 import atlantafx.base.theme.Styles;
 import cn.tealc995.kkmaid.App;
-import cn.tealc995.kkmaid.Config;
+import cn.tealc995.kkmaid.config.Config;
 import cn.tealc995.kikoreu.HttpUtils;
 import cn.tealc995.kikoreu.model.Track;
 import cn.tealc995.kikoreu.model.Work;
@@ -93,7 +93,7 @@ public class FolderTableView extends BorderPane {
         Button downloadBtn = new Button(null, new FontIcon(Material2AL.ARROW_DOWNWARD));
         downloadBtn.getStyleClass().add(Styles.BUTTON_ICON);
         downloadBtn.setOnAction(event -> {
-            if (Config.downloadDir.get() == null || Config.aria2Host == null || Config.ariaRPCKey == null) {
+            if (Config.setting.getDownloadDir() == null || Config.setting.getAria2Host() == null || Config.setting.getAriaRPCKey() == null) {
                 Notification.show("先在设置中配置下载目录和Aria2", MessageType.WARNING, 2000, Pos.TOP_CENTER, App.mainStage);
             } else {
                 Track track = new Track();

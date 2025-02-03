@@ -1,7 +1,7 @@
 package cn.tealc995.kkmaid.ui;
 
 import cn.tealc995.kikoreu.model.ResponseBody;
-import cn.tealc995.kkmaid.Config;
+import cn.tealc995.kkmaid.config.Config;
 import cn.tealc995.kikoreu.model.MainWorks;
 import cn.tealc995.kikoreu.model.playList.PlayList;
 import cn.tealc995.kikoreu.model.Work;
@@ -80,7 +80,7 @@ public class MainPlayListViewModel {
     }
 
     public void update(){
-        if (Config.HOST.get() == null || Config.HOST.get().length() == 0){
+        if (Config.setting.getHOST() == null || Config.setting.getHOST().isEmpty()){
             message.set("请先填写服务器地址");
             return;
         }
@@ -94,7 +94,7 @@ public class MainPlayListViewModel {
         params.put("pageSize",String.valueOf(pageSize.get()));
         params.put("id", playListId.get());
         service.setParams(params);
-        service.setHost(Config.HOST.get());
+        service.setHost(Config.setting.getHOST());
         service.restart();
     }
 

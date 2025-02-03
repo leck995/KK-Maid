@@ -1,7 +1,7 @@
 package cn.tealc995.kkmaid.ui;
 
 import cn.tealc995.kkmaid.App;
-import cn.tealc995.kkmaid.Config;
+import cn.tealc995.kkmaid.config.Config;
 import cn.tealc995.kkmaid.event.EventBusUtil;
 import cn.tealc995.kkmaid.event.MainDialogEvent;
 import cn.tealc995.kkmaid.event.MainPaneEvent;
@@ -94,9 +94,9 @@ public class PlayerUI {
 
     @FXML
     private void  initialize(){
-        GaussianFilter gaussianFilter=new GaussianFilter(Config.detailGaussianSize.get());
+        GaussianFilter gaussianFilter=new GaussianFilter(Config.setting.getDetailGaussianSize());
         ContrastFilter contrastFilter=new ContrastFilter();
-        contrastFilter.setBrightness(Config.detailDarkerSize.floatValue());
+        contrastFilter.setBrightness(Config.setting.detailDarkerSizeProperty().floatValue());
 
         Rectangle rectangle=new Rectangle();
         rectangle.setFill(Color.RED);
@@ -146,7 +146,7 @@ public class PlayerUI {
 
 
         SimpleBooleanProperty detailAlbumRadiusModel=new SimpleBooleanProperty();
-        detailAlbumRadiusModel.bind(Config.detailAlbumRadiusModel);
+        detailAlbumRadiusModel.bind(Config.setting.detailAlbumRadiusModelProperty());
         if (detailAlbumRadiusModel.get()){
             albumPane.setClip(creatClip());
         }
@@ -348,16 +348,16 @@ public class PlayerUI {
         Rectangle rectangle=new Rectangle();
         rectangle.widthProperty().bind(albumPane.widthProperty().add(-10));
         rectangle.heightProperty().bind(albumPane.heightProperty().add(-10));
-        rectangle.arcWidthProperty().bind(Config.detailAlbumRadiusSize);
-        rectangle.arcHeightProperty().bind(Config.detailAlbumRadiusSize);
+        rectangle.arcWidthProperty().bind(Config.setting.detailAlbumRadiusSizeProperty());
+        rectangle.arcHeightProperty().bind(Config.setting.detailAlbumRadiusSizeProperty());
 
         SimpleBooleanProperty detailAlbumEffectModel=new SimpleBooleanProperty();
-        detailAlbumEffectModel.bind( Config.detailAlbumEffectModel);
+        detailAlbumEffectModel.bind( Config.setting.detailAlbumEffectModelProperty());
 
 
         if (detailAlbumEffectModel.get()){
             DropShadow dropShadow = new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(25, 25, 26,0.9), 2, 1, 2, 2);
-            dropShadow.radiusProperty().bind(Config.detailAlbumEffectSize);
+            dropShadow.radiusProperty().bind(Config.setting.detailAlbumEffectSizeProperty());
             rectangle.setEffect(dropShadow);
         }
 

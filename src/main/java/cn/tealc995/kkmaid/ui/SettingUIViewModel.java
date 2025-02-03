@@ -1,8 +1,7 @@
 package cn.tealc995.kkmaid.ui;
 
 import cn.tealc995.kikoreu.model.ResponseBody;
-import cn.tealc995.kkmaid.Config;
-import cn.tealc995.kikoreu.api.UserApi;
+import cn.tealc995.kkmaid.config.Config;
 import cn.tealc995.kikoreu.model.SortType;
 import cn.tealc995.kkmaid.event.EventBusUtil;
 import cn.tealc995.kkmaid.event.MainCenterEvent;
@@ -38,21 +37,21 @@ public class SettingUIViewModel {
     /*=================播放界面======================*/
     private SimpleIntegerProperty gaussianSize;//高斯模糊
 
-    private SimpleDoubleProperty darkerSize;;//暗角
+    private SimpleDoubleProperty darkerSize;
+    ;//暗角
     private SimpleBooleanProperty detailAlbumEffectModel;//设置播放界面封面阴影，默认开启
-    private  SimpleDoubleProperty detailAlbumEffectSize;//播放界面封面圆角大小
+    private SimpleDoubleProperty detailAlbumEffectSize;//播放界面封面圆角大小
     private SimpleBooleanProperty detailAlbumRadiusModel;//播放界面封面圆角
     private SimpleDoubleProperty detailAlbumRadiusSize;//播放界面封面圆角大小
-    private  SimpleBooleanProperty detailLrcAlignment;//设置播放界面歌词对其方式，默认左对齐false,true为居中
-
+    private SimpleBooleanProperty detailLrcAlignment;//设置播放界面歌词对其方式，默认左对齐false,true为居中
 
 
     /*=================服务器======================*/
     private SimpleStringProperty host;
     private SimpleStringProperty token;
-    private  SimpleBooleanProperty proxyModel;
-    private  SimpleStringProperty proxyHost;
-    private  SimpleStringProperty proxyPort;
+    private SimpleBooleanProperty proxyModel;
+    private SimpleStringProperty proxyHost;
+    private SimpleStringProperty proxyPort;
 
     /*===============桌面歌词=================*/
     private SimpleIntegerProperty desktopLRCStageWidth;
@@ -64,7 +63,6 @@ public class SettingUIViewModel {
     private SimpleBooleanProperty desktopLRCStrokeModel;
     private SimpleStringProperty desktopLRCStrokeColor;
     private SimpleBooleanProperty desktopLRCBoldModel;
-
 
 
     private SimpleStringProperty lrcZipFolder;
@@ -86,162 +84,153 @@ public class SettingUIViewModel {
 
     public SettingUIViewModel() {
         /*========================基本========================*/
-        autoCheckVersion=new SimpleBooleanProperty();
-        stageWidth=new SimpleDoubleProperty();
-        stageHeight=new SimpleDoubleProperty();
+        autoCheckVersion = new SimpleBooleanProperty();
+        stageWidth = new SimpleDoubleProperty();
+        stageHeight = new SimpleDoubleProperty();
 
-        autoCheckVersion.bindBidirectional(Config.autoCheckVersion);
-        stageWidth.bindBidirectional(Config.stageWidth);
-        stageHeight.bindBidirectional(Config.stageHeight);
+        autoCheckVersion.bindBidirectional(Config.setting.autoCheckVersionProperty());
+        stageWidth.bindBidirectional(Config.setting.stageWidthProperty());
+        stageHeight.bindBidirectional(Config.setting.stageHeightProperty());
 
-        sortItems= FXCollections.observableArrayList(SortType.release,SortType.create_date,SortType.nsfw,SortType.rate_average_2dp,SortType.dl_count,SortType.price,SortType.review_count,SortType.random);
-        gridOrder=new SimpleObjectProperty<>(SortType.valueOf(Config.gridOrder.get()));
-        gridOrder.addListener((observableValue, sortType, t1) -> Config.gridOrder.set(t1.name()));
+        sortItems = FXCollections.observableArrayList(SortType.release, SortType.create_date, SortType.nsfw, SortType.rate_average_2dp, SortType.dl_count, SortType.price, SortType.review_count, SortType.random);
+        gridOrder = new SimpleObjectProperty<>(SortType.valueOf(Config.setting.getGridOrder()));
+        gridOrder.addListener((observableValue, sortType, t1) -> Config.setting.setGridOrder(t1.name()));
 
 
-        gridDesc=new SimpleBooleanProperty();
-        gridSubtitle=new SimpleBooleanProperty();
-        gridSubtitle.bindBidirectional(Config.gridSubtitleModel);
-        gridDesc.bindBidirectional(Config.gridSortDescModel);
+        gridDesc = new SimpleBooleanProperty();
+        gridSubtitle = new SimpleBooleanProperty();
+        gridSubtitle.bindBidirectional(Config.setting.gridSubtitleModelProperty());
+        gridDesc.bindBidirectional(Config.setting.gridSortDescModelProperty());
         /*=================播放界面======================*/
 
-        gaussianSize=new SimpleIntegerProperty();
-        gaussianSize.bindBidirectional(Config.detailGaussianSize);
+        gaussianSize = new SimpleIntegerProperty();
+        gaussianSize.bindBidirectional(Config.setting.detailGaussianSizeProperty());
 
-        darkerSize=new SimpleDoubleProperty();
-        darkerSize.bindBidirectional(Config.detailDarkerSize);
+        darkerSize = new SimpleDoubleProperty();
+        darkerSize.bindBidirectional(Config.setting.detailDarkerSizeProperty());
 
-        detailAlbumEffectSize=new SimpleDoubleProperty();
-        detailAlbumEffectSize.bindBidirectional(Config.detailAlbumEffectSize);
+        detailAlbumEffectSize = new SimpleDoubleProperty();
+        detailAlbumEffectSize.bindBidirectional(Config.setting.detailAlbumEffectSizeProperty());
 
-        detailAlbumEffectModel=new SimpleBooleanProperty();
-        detailAlbumEffectModel.bindBidirectional(Config.detailAlbumEffectModel);
+        detailAlbumEffectModel = new SimpleBooleanProperty();
+        detailAlbumEffectModel.bindBidirectional(Config.setting.detailAlbumEffectModelProperty());
 
-        detailAlbumRadiusModel=new SimpleBooleanProperty();
-        detailAlbumRadiusModel.bindBidirectional(Config.detailAlbumRadiusModel);
+        detailAlbumRadiusModel = new SimpleBooleanProperty();
+        detailAlbumRadiusModel.bindBidirectional(Config.setting.detailAlbumRadiusModelProperty());
 
-        detailAlbumRadiusSize=new SimpleDoubleProperty();
-        detailAlbumRadiusSize.bindBidirectional(Config.detailAlbumRadiusSize);
+        detailAlbumRadiusSize = new SimpleDoubleProperty();
+        detailAlbumRadiusSize.bindBidirectional(Config.setting.detailAlbumRadiusSizeProperty());
 
 
         /*=================服务器======================*/
-        host=new SimpleStringProperty();
-        token=new SimpleStringProperty();
-        proxyModel=new SimpleBooleanProperty();
-        proxyHost=new SimpleStringProperty();
-        proxyPort=new SimpleStringProperty();
-        host.bindBidirectional(Config.HOST);
-        token.bindBidirectional(Config.TOKEN);
-        proxyModel.bindBidirectional(Config.proxyModel);
-        proxyHost.bindBidirectional(Config.proxyHost);
-        proxyPort.bindBidirectional(Config.proxyPort);
+        host = new SimpleStringProperty();
+        token = new SimpleStringProperty();
+        proxyModel = new SimpleBooleanProperty();
+        proxyHost = new SimpleStringProperty();
+        proxyPort = new SimpleStringProperty();
+        host.bindBidirectional(Config.setting.HOSTProperty());
+        token.bindBidirectional(Config.setting.TOKENProperty());
+        proxyModel.bindBidirectional(Config.setting.proxyModelProperty());
+        proxyHost.bindBidirectional(Config.setting.proxyHostProperty());
+        proxyPort.bindBidirectional(Config.setting.proxyPortProperty());
 
         /*===============桌面歌词=================*/
-        desktopLRCStageWidth=new SimpleIntegerProperty();
-        desktopLRCFontSize=new SimpleIntegerProperty();
-        desktopLRCFontColor=new SimpleStringProperty();
-        desktopLRCBorderModel=new SimpleBooleanProperty();
-        desktopLRCBorderColor=new SimpleStringProperty();
+        desktopLRCStageWidth = new SimpleIntegerProperty();
+        desktopLRCFontSize = new SimpleIntegerProperty();
+        desktopLRCFontColor = new SimpleStringProperty();
+        desktopLRCBorderModel = new SimpleBooleanProperty();
+        desktopLRCBorderColor = new SimpleStringProperty();
 
-        desktopLRCStrokeModel=new SimpleBooleanProperty();
-        desktopLRCStrokeColor=new SimpleStringProperty();
-        desktopLRCBoldModel=new SimpleBooleanProperty();
+        desktopLRCStrokeModel = new SimpleBooleanProperty();
+        desktopLRCStrokeColor = new SimpleStringProperty();
+        desktopLRCBoldModel = new SimpleBooleanProperty();
 
-        desktopLRCStageWidth.bindBidirectional(Config.desktopLRCStageWidth);
-        desktopLRCFontSize.bindBidirectional(Config.desktopLRCFontSize);
-        desktopLRCFontColor.bindBidirectional(Config.desktopLRCFontColor);
-        desktopLRCBorderModel.bindBidirectional(Config.desktopLRCBorderModel);
-        desktopLRCBorderColor.bindBidirectional(Config.desktopLRCBorderColor);
-        desktopLRCStrokeModel.bindBidirectional(Config.desktopLRCStrokeModel);
+        desktopLRCStageWidth.bindBidirectional(Config.setting.desktopLRCStageWidthProperty());
+        desktopLRCFontSize.bindBidirectional(Config.setting.desktopLRCFontSizeProperty());
+        desktopLRCFontColor.bindBidirectional(Config.setting.desktopLRCFontColorProperty());
+        desktopLRCBorderModel.bindBidirectional(Config.setting.desktopLRCBorderModelProperty());
+        desktopLRCBorderColor.bindBidirectional(Config.setting.desktopLRCBorderColorProperty());
+        desktopLRCStrokeModel.bindBidirectional(Config.setting.desktopLRCStrokeModelProperty());
 
-        desktopLRCStrokeColor.bindBidirectional(Config.desktopLRCStrokeColor);
-        desktopLRCBoldModel.bindBidirectional(Config.desktopLRCBoldModel);
+        desktopLRCStrokeColor.bindBidirectional(Config.setting.desktopLRCStrokeColorProperty());
+        desktopLRCBoldModel.bindBidirectional(Config.setting.desktopLRCBoldModelProperty());
 
 
         /*===============字幕=================*/
-        lrcFileFolder=new SimpleStringProperty();
-        lrcZipFolder=new SimpleStringProperty();
-        lrcFileFolder.bindBidirectional(Config.lrcFileFolder);
-        lrcZipFolder.bindBidirectional(Config.lrcZipFolder);
+        lrcFileFolder = new SimpleStringProperty();
+        lrcZipFolder = new SimpleStringProperty();
+        lrcFileFolder.bindBidirectional(Config.setting.lrcFileFolderProperty());
+        lrcZipFolder.bindBidirectional(Config.setting.lrcZipFolderProperty());
 
 
         /*===============黑名单=================*/
-        workBlackList=new SimpleStringProperty();
-        StringBuilder workBuilder=new StringBuilder();
-        for (String s : Config.workBlackList) {
+        workBlackList = new SimpleStringProperty();
+        StringBuilder workBuilder = new StringBuilder();
+        for (String s : Config.blackList.getWorkBlackList()) {
             workBuilder.append("RJ").append(s).append(" ");
         }
         workBlackList.set(workBuilder.toString());
 
-        tagBlackList=new SimpleStringProperty();
-        StringBuilder tagBuilder=new StringBuilder();
-        for (String s : Config.tagBlackList) {
+        tagBlackList = new SimpleStringProperty();
+        StringBuilder tagBuilder = new StringBuilder();
+        for (String s : Config.blackList.getTagBlackList()) {
             tagBuilder.append(s).append(" ");
         }
         tagBlackList.set(tagBuilder.toString());
 
-        textBlackList=new SimpleStringProperty();
-        StringBuilder textBuilder=new StringBuilder();
-        for (String s : Config.textBlackList) {
+        textBlackList = new SimpleStringProperty();
+        StringBuilder textBuilder = new StringBuilder();
+        for (String s : Config.blackList.getTextBlackList()) {
             textBuilder.append(s).append(System.lineSeparator());
         }
         textBlackList.set(textBuilder.toString());
 
         /*===============播放=================*/
-        selectPlayerIndex=new SimpleIntegerProperty();
-        if (Config.useVlcPlayer.get()){
+        selectPlayerIndex = new SimpleIntegerProperty();
+        if (Config.setting.isUseVlcPlayer()) {
             selectPlayerIndex.set(1);
-        }else {
+        } else {
             selectPlayerIndex.set(0);
         }
-        players=FXCollections.observableArrayList("默认","VLC播放器");
-        stopPlayOnEnd=new SimpleBooleanProperty();
-        stopPlayOnEnd.bindBidirectional(Config.stopPlayOnEnd);
+        players = FXCollections.observableArrayList("默认", "VLC播放器");
+        stopPlayOnEnd = new SimpleBooleanProperty();
+        stopPlayOnEnd.bindBidirectional(Config.setting.stopPlayOnEndProperty());
 
 
-
-        downloadDir=new SimpleStringProperty();//下载目录
-        downloadDir.bindBidirectional(Config.downloadDir);
-        aria2Host=new SimpleStringProperty();//aria2
-        aria2Host.bindBidirectional(Config.aria2Host);
-        ariaRPCKey=new SimpleStringProperty();//aria2授权密钥
-        ariaRPCKey.bindBidirectional(Config.ariaRPCKey);
-        saveNameTemplate=new SimpleStringProperty("{RJ}");//命名模板
-        saveNameTemplate.bindBidirectional(Config.saveNameTemplate);
+        downloadDir = new SimpleStringProperty();//下载目录
+        downloadDir.bindBidirectional(Config.setting.downloadDirProperty());
+        aria2Host = new SimpleStringProperty();//aria2
+        aria2Host.bindBidirectional(Config.setting.aria2HostProperty());
+        ariaRPCKey = new SimpleStringProperty();//aria2授权密钥
+        ariaRPCKey.bindBidirectional(Config.setting.ariaRPCKeyProperty());
+        saveNameTemplate = new SimpleStringProperty("{RJ}");//命名模板
+        saveNameTemplate.bindBidirectional(Config.setting.saveNameTemplateProperty());
 
     }
 
 
-
-
-
-    public void save(){
+    public void save() {
         updateBlackList();
         updateSelectPlayer();
 
         Config.saveProperties();
-        EventBusUtil.getDefault().post(new MainCenterEvent(null,false,false));
+        EventBusUtil.getDefault().post(new MainCenterEvent(null, false, false));
     }
 
 
-
-
-
-
-
-    public void cancel(){
-        EventBusUtil.getDefault().post(new MainCenterEvent(null,false,false));
+    public void cancel() {
+        EventBusUtil.getDefault().post(new MainCenterEvent(null, false, false));
     }
 
-    public void login(String username, String password, Consumer<Boolean> onLogin){
-        LoginTask task=new LoginTask(username,password);
+    public void login(String username, String password, Consumer<Boolean> onLogin) {
+        LoginTask task = new LoginTask(username, password);
         task.setOnSucceeded(workerStateEvent -> {
             ResponseBody<String> value = task.getValue();
-            if (value.isSuccess()){
+            if (value.isSuccess()) {
                 token.set(value.getData());
                 EventBusUtil.getDefault().post(new MainNotificationEvent("获取Token成功"));
                 onLogin.accept(true);
-            }else {
+            } else {
                 EventBusUtil.getDefault().post(new MainNotificationEvent("登陆失败,检查网络，用户名和密码"));
                 onLogin.accept(false);
             }
@@ -250,34 +239,32 @@ public class SettingUIViewModel {
     }
 
 
-
-    private void updateBlackList(){
+    private void updateBlackList() {
         String rj = workBlackList.get().toUpperCase().replaceAll("RJ", "");
         String[] s = rj.split(" ");
-        Config.workBlackList.clear();
-        Config.workBlackList.addAll(Arrays.stream(s).toList());
+        Config.blackList.getWorkBlackList().clear();
+        Config.blackList.getWorkBlackList().addAll(Arrays.stream(s).toList());
         String tag = tagBlackList.get().toUpperCase().replaceAll("RJ", "");
         String[] tags = tag.split(" ");
-        Config.tagBlackList.clear();
-        Config.tagBlackList.addAll(Arrays.stream(tags).toList());
+        Config.blackList.getTagBlackList().clear();
+        Config.blackList.getTagBlackList().addAll(Arrays.stream(tags).toList());
 
         String[] texts = textBlackList.get().split(System.lineSeparator());
-        Config.textBlackList.clear();
-        Config.textBlackList.addAll(Arrays.stream(texts).toList());
+        Config.blackList.getTextBlackList().clear();
+        Config.blackList.getTextBlackList().addAll(Arrays.stream(texts).toList());
     }
 
 
-
     /**
+     * @return void
      * @description: 设置播放器内核
      * @name: updateSelectPlayer
      * @author: Leck
-     * @param:	index
-     * @return  void
-     * @date:   2023/8/13
+     * @param: index
+     * @date: 2023/8/13
      */
-    private void updateSelectPlayer(){
-        Config.useVlcPlayer.set(selectPlayerIndex.get() == 1);
+    private void updateSelectPlayer() {
+        Config.setting.setUseVlcPlayer(selectPlayerIndex.get() == 1);
     }
 
 

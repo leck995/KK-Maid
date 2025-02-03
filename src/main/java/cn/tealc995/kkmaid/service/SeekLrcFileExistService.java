@@ -1,6 +1,6 @@
 package cn.tealc995.kkmaid.service;
 
-import cn.tealc995.kkmaid.Config;
+import cn.tealc995.kkmaid.config.Config;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 
@@ -8,7 +8,6 @@ import java.io.File;
 import java.util.*;
 
 /**
- * @program: Asmr-Online
  * @description:
  * @author: Leck
  * @create: 2023-08-02 05:14
@@ -38,21 +37,27 @@ public class SeekLrcFileExistService extends Service<Boolean> {
 
 
     private void updateList(){
-        if (Config.lrcFileFolder.get() != null && Config.lrcFileFolder.get().length() > 0){
+        String lrcFileFolder = Config.setting.getLrcFileFolder();
+        if (lrcFileFolder != null && !lrcFileFolder.isEmpty()){
             folderList=new HashSet<>();
-            File dir=new File(Config.lrcFileFolder.get());
+            File dir=new File(lrcFileFolder);
             File[] files = dir.listFiles((dir1, name) -> dir1.isDirectory());
-            for (File file : files) {
-                folderList.add(file.getName().toUpperCase());
+            if (files != null) {
+                for (File file : files) {
+                    folderList.add(file.getName().toUpperCase());
+                }
             }
         }
 
-        if (Config.lrcZipFolder.get() != null && Config.lrcZipFolder.get().length() > 0){
+        String lrcZipFolder = Config.setting.getLrcZipFolder();
+        if (lrcZipFolder != null && !lrcZipFolder.isEmpty()){
             zipList=new HashSet<>();
-            File dir=new File(Config.lrcZipFolder.get());
+            File dir=new File(lrcZipFolder);
             File[] files = dir.listFiles((dir1, name) -> dir1.isFile() && name.toLowerCase().endsWith(".zip"));
-            for (File file : files) {
-                zipList.add(file.getName().toUpperCase());
+            if (files != null) {
+                for (File file : files) {
+                    zipList.add(file.getName().toUpperCase());
+                }
             }
         }
     }
