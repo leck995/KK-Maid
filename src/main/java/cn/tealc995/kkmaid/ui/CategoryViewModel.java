@@ -1,6 +1,5 @@
 package cn.tealc995.kkmaid.ui;
 
-import cn.tealc995.kkmaid.Config;
 import cn.tealc995.kikoreu.model.RoleEx;
 import cn.tealc995.kkmaid.event.EventBusUtil;
 import cn.tealc995.kkmaid.event.MainCenterEvent;
