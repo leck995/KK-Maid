@@ -10,10 +10,10 @@ import java.util.List;
  */
 public class ZipEntityFile {
     private String name;
-    private String path;
-    private String type;
-    private List<ZipEntityFile> children;
-    private boolean root;
+    private String path; //文件的路径，
+    private String type; //文件类型，文件夹，字幕以及未知其他类型
+    private List<ZipEntityFile> children; //子项
+    private boolean root; //判断是否是根节点
 
     public ZipEntityFile(String name, List<ZipEntityFile> children) {
         this.name = name;
@@ -21,42 +21,40 @@ public class ZipEntityFile {
     }
 
     public ZipEntityFile(String filePath) {
-        path=filePath;
-        if (filePath.endsWith("/")){
-            type="folder";
+        path = filePath;
+        if (filePath.endsWith("/")) {
+            type = "folder";
             String temp = filePath.substring(0, filePath.length() - 1);
-            int startIndex=temp.indexOf("/");
-            if (startIndex==-1){
-                name=temp;//根文件
-                root=true;
-            }else{
-                int endIndex=temp.lastIndexOf("/");
-                if (startIndex==endIndex){
-                    name=temp.substring(startIndex+1);
-                    root=false;
-                }else {
-                    name=temp.substring(endIndex+1);
-                    root=false;
+            int startIndex = temp.indexOf("/");
+            if (startIndex == -1) {
+                name = temp;//根文件
+                root = true;
+            } else {
+                int endIndex = temp.lastIndexOf("/");
+                if (startIndex == endIndex) {
+                    name = temp.substring(startIndex + 1);
+                    root = false;
+                } else {
+                    name = temp.substring(endIndex + 1);
+                    root = false;
                 }
             }
-        }else {
+        } else {
             String lowerCase = filePath.toLowerCase();
-            if (lowerCase.endsWith(".lrc")){
-                type="lrc";
-            }else {
-                type="unknown";
+            if (lowerCase.endsWith(".lrc")) {
+                type = "lrc";
+            } else {
+                type = "unknown";
             }
-            int startIndex=filePath.lastIndexOf("/");
-            if (startIndex !=-1){
-                name=filePath.substring(startIndex+1);
-                root=false;
-            }else {
-                name=filePath;
-                root=true;
+            int startIndex = filePath.lastIndexOf("/");
+            if (startIndex != -1) {
+                name = filePath.substring(startIndex + 1);
+                root = false;
+            } else {
+                name = filePath;
+                root = true;
             }
         }
-
-
 
 
     }
@@ -68,15 +66,15 @@ public class ZipEntityFile {
     public boolean isLrc() {
         return type.equals("lrc");
     }
+
     public String getParentPath() {
-        if (root)
-            return path;
+        if (root) return path;
         else {
-            if (isFolder()){//目录以"/"结尾
+            if (isFolder()) {//目录以"/"结尾
                 String temp = path.substring(0, path.length() - 2);
-                return  temp.substring(0,temp.lastIndexOf("/")+1);
-            }else {
-                return  path.substring(0,path.lastIndexOf("/")+1);
+                return temp.substring(0, temp.lastIndexOf("/") + 1);
+            } else {
+                return path.substring(0, path.lastIndexOf("/") + 1);
             }
 
 

@@ -4,14 +4,17 @@ import cn.tealc995.kikoreu.HttpUtils;
 import cn.tealc995.kkmaid.filter.SupportSubtitleFormat;
 import cn.tealc995.kkmaid.model.lrc.LrcBean;
 import cn.tealc995.kkmaid.model.lrc.LrcFile;
+import cn.tealc995.kkmaid.zip.NewZipUtil;
 import cn.tealc995.kkmaid.zip.ZipUtil;
+import org.apache.commons.compress.archivers.zip.ZipFile;
+import org.apache.commons.compress.utils.Lists;
 
 import java.io.*;
 import java.nio.charset.Charset;
 import java.util.List;
+import java.util.Optional;
 
 /**
- * @program: Asmr-Online
  * @description: 导入并解析歌词的工具类
  * @author: Leck
  * @create: 2023-07-18 08:28
@@ -63,47 +66,62 @@ public class LrcImportUtil {
     }
 
     public static List<LrcBean> getLrcFromZip(LrcFile lrcFile){
-        try {
-            BufferedReader bufferedReader = ZipUtil.getLrcBufferedReader(lrcFile.getZipPath(), lrcFile.getPath());
-            StringBuilder sb=new StringBuilder();
-            String line;
-            while ((line = bufferedReader.readLine())!= null){
-                sb.append(line).append("\\n");
+        try(ZipFile zipFile = NewZipUtil.getZipFile(lrcFile.getZipPath())) {
+            Optional<BufferedReader> readerOptional = NewZipUtil.getSubtitleFileBufferedReader(zipFile, lrcFile.getPath());
+            if (readerOptional.isPresent()) {
+                BufferedReader bufferedReader = readerOptional.get();
+                StringBuilder sb=new StringBuilder();
+                String line;
+                while ((line = bufferedReader.readLine())!= null){
+                    sb.append(line).append("\\n");
+                }
+                bufferedReader.close();
+                return LrcFormatUtil.getLrcListFromLrcText(sb.toString());
             }
-            bufferedReader.close();
-            return LrcFormatUtil.getLrcListFromLrcText(sb.toString());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        return Lists.newArrayList();
     }
 
     public static String getLrcRowFromZip(LrcFile lrcFile){
-        try {
-            BufferedReader bufferedReader = ZipUtil.getLrcBufferedReader(lrcFile.getZipPath(), lrcFile.getPath());
-            StringBuilder sb=new StringBuilder();
-            String line;
-            while ((line = bufferedReader.readLine())!= null){
-                sb.append(line).append("\\n");
+        try(ZipFile zipFile = NewZipUtil.getZipFile(lrcFile.getZipPath())) {
+            Optional<BufferedReader> readerOptional = NewZipUtil.getSubtitleFileBufferedReader(zipFile, lrcFile.getPath());
+            if (readerOptional.isPresent()) {
+                BufferedReader bufferedReader = readerOptional.get();
+                StringBuilder sb=new StringBuilder();
+                String line;
+                while ((line = bufferedReader.readLine())!= null){
+                    sb.append(line).append("\\n");
+                }
+                bufferedReader.close();
+                return sb.toString();
             }
-            bufferedReader.close();
-            return sb.toString();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        return null;
     }
+
+
     public static String getLrcRowFromZip(LrcFile lrcFile,Charset charset){
-        try {
-            BufferedReader bufferedReader = ZipUtil.getLrcBufferedReader(lrcFile.getZipPath(), lrcFile.getPath(),charset);
-            StringBuilder sb=new StringBuilder();
-            String line;
-            while ((line = bufferedReader.readLine())!= null){
-                sb.append(line).append("\\n");
+        try(ZipFile zipFile = NewZipUtil.getZipFile(lrcFile.getZipPath(),charset)) {
+            Optional<BufferedReader> readerOptional = NewZipUtil.getSubtitleFileBufferedReader(zipFile, lrcFile.getPath());
+            if (readerOptional.isPresent()) {
+                BufferedReader bufferedReader = readerOptional.get();
+                StringBuilder sb=new StringBuilder();
+                String line;
+                while ((line = bufferedReader.readLine())!= null){
+                    sb.append(line).append("\\n");
+                }
+                bufferedReader.close();
+                return sb.toString();
             }
-            bufferedReader.close();
-            return sb.toString();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        return null;
     }
 
 

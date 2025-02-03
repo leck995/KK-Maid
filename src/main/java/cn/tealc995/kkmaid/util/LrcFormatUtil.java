@@ -21,7 +21,7 @@ public class LrcFormatUtil {
     private static  Matcher lineMatcher;
 
 
-    public static  List<LrcBean> getLrcListFromLrcText(String lrc) {
+    public static List<LrcBean> getLrcListFromLrcText(String lrc) {
         if (lrc==null){
             return null;
         }

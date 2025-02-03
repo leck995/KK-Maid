@@ -24,6 +24,7 @@ module cn.tealc.kkmaid {
     // add icon pack modules
     requires org.kordamp.ikonli.material2;
     requires java.net.http;
+    requires org.apache.commons.compress;
 
     opens cn.tealc995.kkmaid to javafx.fxml;
     opens cn.tealc995.kkmaid.ui to javafx.fxml;

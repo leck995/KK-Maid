@@ -5,10 +5,13 @@ import cn.tealc995.kkmaid.event.MainDialogEvent;
 import cn.tealc995.kkmaid.model.lrc.LrcFile;
 import cn.tealc995.kkmaid.model.lrc.LrcType;
 import cn.tealc995.kkmaid.player.MediaPlayerUtil;
+import cn.tealc995.kkmaid.zip.NewZipUtil;
 import cn.tealc995.kkmaid.zip.ZipEntityFile;
 import cn.tealc995.kkmaid.zip.ZipUtil;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -21,6 +24,7 @@ import java.util.List;
  * @create: 2023-07-17 05:52
  */
 public class LrcZipDialogViewModel {
+    private static final Logger LOG = LoggerFactory.getLogger(LrcZipDialogViewModel.class);
     private SimpleStringProperty title;
     private SimpleObjectProperty<File> lrcFile;
     private SimpleObjectProperty<ZipEntityFile> rootItem;
@@ -36,12 +40,15 @@ public class LrcZipDialogViewModel {
 
 
     private void importZipFile(File file){
-        List<ZipEntityFile> list = ZipUtil.getAllFile(file);
-        ZipEntityFile zipEntityFile = new ZipEntityFile("ROOT", list);
-        zipEntityFile.setType("folder");
-        rootItem.set(zipEntityFile);
-        title.set(file.getName());
-
+        try {
+            List<ZipEntityFile> list = NewZipUtil.getAllFile(file);
+            ZipEntityFile zipEntityFile = new ZipEntityFile("ROOT", list);
+            zipEntityFile.setType("folder");
+            rootItem.set(zipEntityFile);
+            title.set(file.getName());
+        } catch (IOException e) {
+            LOG.error("读取ZIP出现错误",e);
+        }
     }
 
     /**

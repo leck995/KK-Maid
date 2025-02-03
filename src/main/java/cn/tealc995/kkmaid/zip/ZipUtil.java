@@ -14,11 +14,11 @@ import java.util.List;
 import java.util.stream.Stream;
 
 /**
- * @program: Asmr-Online
  * @description:
  * @author: Leck
  * @create: 2023-07-18 08:22
  */
+@Deprecated
 public class ZipUtil {
 
     /**

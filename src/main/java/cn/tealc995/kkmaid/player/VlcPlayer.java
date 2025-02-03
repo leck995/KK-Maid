@@ -1,5 +1,6 @@
 package cn.tealc995.kkmaid.player;
 
+import cn.tealc995.kikoreu.model.ResponseBody;
 import cn.tealc995.kkmaid.Config;
 import cn.tealc995.kikoreu.model.Work;
 import cn.tealc995.kkmaid.event.EventBusUtil;
@@ -10,12 +11,17 @@ import cn.tealc995.kkmaid.model.lrc.LrcBean;
 import cn.tealc995.kkmaid.model.lrc.LrcFile;
 import cn.tealc995.kkmaid.model.lrc.LrcType;
 import cn.tealc995.kkmaid.service.SeekLrcFileService;
+import cn.tealc995.kkmaid.service.subtitle.SubtitleBeansBaseTask;
+import cn.tealc995.kkmaid.service.subtitle.SubtitleBeansByFolderTask;
+import cn.tealc995.kkmaid.service.subtitle.SubtitleBeansByNetTask;
+import cn.tealc995.kkmaid.service.subtitle.SubtitleBeansByZipTask;
 import cn.tealc995.kkmaid.ui.component.DesktopLrcDialog;
 import cn.tealc995.kkmaid.util.LrcImportUtil;
 import javafx.application.Platform;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Worker;
 import javafx.scene.image.Image;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -153,25 +159,7 @@ public class VlcPlayer implements TeaMediaPlayer {
 
         playingAudio.addListener((observableValue, media1, t1) -> {
             if (t1 != null){
-                if (lrcFiles.size() > 0){
-                    List<LrcFile> list = lrcFiles.stream().filter( lrcFile -> lrcFile.getTitleWithoutSuffix().equals(t1.getTitleWithoutSuffix())).toList();
-                    if (list.size() > 0){//当有名称对应的歌词时
-                        lrcBeans.set(FXCollections.observableArrayList(lrcFileToBeans(list.get(0))));
-                    }else {
-                        if (lrcFiles.size() == music.get().getAudios().size()){ //如果没有匹配的歌词，判断歌词列表size和歌曲列表size，相同则获取对应index的歌词。
-                            List<LrcBean> lrcBeans1 = lrcFileToBeans(lrcFiles.get(index));
-                            if (lrcBeans1 != null){
-                                lrcBeans.set(FXCollections.observableArrayList(lrcBeans1));
-                            }else {
-                                lrcBeans.get().clear();
-                                lrcSelectedText.set("当前无字幕");
-                            }
-                        }else {
-                            lrcBeans.get().clear();
-                            lrcSelectedText.set("当前无字幕");
-                        }
-                    }
-                }
+                changeSubtitle(t1.getTitleWithoutSuffix());
             }
         });
 
@@ -364,13 +352,14 @@ public class VlcPlayer implements TeaMediaPlayer {
     @Override
     public void updateLrcFile(List<LrcFile> list, int index) {
         lrcFiles.setAll(list);
-        lrcBeans.set(FXCollections.observableArrayList(lrcFileToBeans(list.get(index))));
+        loadSubtitleFile(list.get(index));
+        
     }
 
     @Override
     public void updateLrcFile(List<LrcFile> list) {
         lrcFiles.setAll(list);
-        lrcBeans.set(FXCollections.observableArrayList(lrcFileToBeans(list.get(index))));
+        loadSubtitleFile(list.get(index));
     }
 
     @Override
@@ -596,28 +585,66 @@ public class VlcPlayer implements TeaMediaPlayer {
         return bufferedTime;
     }
 
-    private List<LrcBean> lrcFileToBeans(LrcFile lrcFile) {
-        List<LrcBean> lrcBeans = null;
+    private void loadSubtitleFile(LrcFile lrcFile) {
+        SubtitleBeansBaseTask task = null;
         if (lrcFile.getType() == LrcType.NET) {
-            lrcBeans = LrcImportUtil.getLrcFromNet(lrcFile.getPath());
+            task = new SubtitleBeansByNetTask(lrcFile.getPath());
         } else if (lrcFile.getType() == LrcType.FOLDER) {
-            lrcBeans = LrcImportUtil.getLrcFromFolder(lrcFile.getPath());
+            task = new SubtitleBeansByFolderTask(lrcFile.getPath());
         } else if (lrcFile.getType() == LrcType.ZIP) {
-            lrcBeans = LrcImportUtil.getLrcFromZip(lrcFile);
+            task = new SubtitleBeansByZipTask(lrcFile);
         }
-        if (lrcBeans != null) {
-            lrcBeans.removeIf(lrcBean -> {
-                String row = lrcBean.getRowText();
-                for (String s : Config.textBlackList) {
-                    if (row.contains(s)) {
-                        return true;
+        if (task != null) {
+            task.setOnSucceeded(workerStateEvent -> {
+                SubtitleBeansBaseTask source = (SubtitleBeansBaseTask) workerStateEvent.getSource();
+                ResponseBody<List<LrcBean>> value = source.getValue();
+                if (value.isSuccess()) {
+                    List<LrcBean> list = value.getData();
+                    if (list != null) {
+                        //移除黑名单数据
+                        list.removeIf(lrcBean -> {
+                            String row = lrcBean.getRowText();
+                            for (String s : Config.textBlackList) {
+                                if (row.contains(s)) {
+                                    return true;
+                                }
+                            }
+                            return false;
+                        });
+                        //加载到lrcBeans中
+                        lrcBeans.set(FXCollections.observableArrayList(list));
+                    }else {
+                        lrcBeans.get().clear();
+                        lrcSelectedText.set("当前无字幕");
                     }
                 }
-                return false;
             });
-            return lrcBeans;
-        } else {
-            return new ArrayList<>();
+            Thread.startVirtualThread(task);
+        }
+    }
+
+
+
+    /**
+     * @description: 切换字幕
+     * @param:	subtitleTitle	
+     * @return  void
+     * @date:   2025/2/3
+     */
+    private void changeSubtitle(String subtitleTitle) {
+        if (!lrcFiles.isEmpty()){
+            List<LrcFile> list = lrcFiles.stream()
+                    .filter(lrcFile -> lrcFile.getTitleWithoutSuffix().equals(subtitleTitle)).toList();
+            if (!list.isEmpty()){//当有名称对应的歌词时
+                loadSubtitleFile(list.getFirst());
+            }else {//如果没有匹配的歌词，
+                if (lrcFiles.size() == music.get().getAudios().size()){ //判断歌词列表size和歌曲列表size，相同则获取对应index的歌词。
+                    loadSubtitleFile(lrcFiles.get(index));
+                }else {
+                    lrcBeans.get().clear();
+                    lrcSelectedText.set("当前无字幕");
+                }
+            }
         }
     }
 

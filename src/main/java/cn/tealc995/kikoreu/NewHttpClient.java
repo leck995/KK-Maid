@@ -127,7 +127,6 @@ public class NewHttpClient {
         HttpRequest request = initRequest(host + path)
                 .GET()
                 .build();
-
         try {
             HttpResponse<String> httpResponse = client.send(request, HttpResponse.BodyHandlers.ofString());
             return new Response(httpResponse.statusCode(), httpResponse.body());
@@ -135,24 +134,18 @@ public class NewHttpClient {
             System.out.println(e.getMessage());
             return new Response(-1, e.getMessage());
         }
-/*        try {
-            URL url = new URL(path);
-            URLConnection urlConnection = url.openConnection();
-            urlConnection.connect();
-
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(), StandardCharsets.UTF_8));
-            StringBuilder sb = new StringBuilder();
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                sb.append(line).append("\\n");
-            }
-            bufferedReader.close();
-            return sb.toString();
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }*/
+    }
+    public Response downloadWithoutHost(String path) {
+        HttpRequest request = initRequest(path)
+                .GET()
+                .build();
+        try {
+            HttpResponse<String> httpResponse = client.send(request, HttpResponse.BodyHandlers.ofString());
+            return new Response(httpResponse.statusCode(), httpResponse.body());
+        } catch (IOException | InterruptedException e) {
+            System.out.println(e.getMessage());
+            return new Response(-1, e.getMessage());
+        }
     }
 
     public Response post(String path, String json) {

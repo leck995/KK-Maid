@@ -3,12 +3,16 @@ package cn.tealc995.kkmaid.service;
 import cn.tealc995.kkmaid.Config;
 import cn.tealc995.kkmaid.model.lrc.LrcFile;
 import cn.tealc995.kkmaid.model.lrc.LrcType;
+import cn.tealc995.kkmaid.zip.NewZipUtil;
 import cn.tealc995.kkmaid.zip.ZipEntityFile;
 import cn.tealc995.kkmaid.zip.ZipUtil;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +24,7 @@ import java.util.List;
  * @create: 2023-07-19 14:47
  */
 public class SeekLrcFileService extends Service<List<LrcFile>> {
+    private static final Logger LOG = LoggerFactory.getLogger(SeekLrcFileService.class);
     private String id;
     private List<String> ids;
     private Charset charset = Charset.forName("GBK");
@@ -113,7 +118,7 @@ public class SeekLrcFileService extends Service<List<LrcFile>> {
         }
 
         folder = Config.lrcZipFolder.get();
-        if (folder != null && folder.length() > 0) {
+        if (folder != null && !folder.isEmpty()) {
             System.out.println("在字幕包文件夹中寻找");
             File rootFolder = new File(folder);
             if (rootFolder.exists() && rootFolder.isDirectory()) {
@@ -132,12 +137,16 @@ public class SeekLrcFileService extends Service<List<LrcFile>> {
                 if (files != null && files.length > 0) {
                     System.out.println("在字幕压缩包文件夹中找到相关字幕");
                     File file = files[0];
-                    List<ZipEntityFile> allLrcFile = ZipUtil.getAllLrcFile(file,charset);
-                    List<LrcFile> list = new ArrayList<>();
-                    for (ZipEntityFile zipEntityFile : allLrcFile) {
-                        list.add(new LrcFile(zipEntityFile.getName(), zipEntityFile.getPath(), LrcType.ZIP, file.getPath()));
+                    try {
+                        List<ZipEntityFile> allLrcFile = NewZipUtil.getAllLrcFile(file,charset);
+                        List<LrcFile> list = new ArrayList<>();
+                        for (ZipEntityFile zipEntityFile : allLrcFile) {
+                            list.add(new LrcFile(zipEntityFile.getName(), zipEntityFile.getPath(), LrcType.ZIP, file.getPath()));
+                        }
+                        return list;
+                    }catch (IOException e) {
+                        LOG.error("加载字幕Zip出现错误");
                     }
-                    return list;
                 }
             }
         }
