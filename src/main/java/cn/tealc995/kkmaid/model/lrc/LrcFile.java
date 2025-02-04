@@ -63,5 +63,10 @@ public class LrcFile {
     public void setZipPath(String zipPath) {
         this.zipPath = zipPath;
     }
+
+    @Override
+    public String toString() {
+        return title;
+    }
 }
 

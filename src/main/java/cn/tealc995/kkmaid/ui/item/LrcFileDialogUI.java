@@ -3,10 +3,8 @@ package cn.tealc995.kkmaid.ui.item;
 import cn.tealc995.kkmaid.App;
 import cn.tealc995.kkmaid.model.Audio;
 import cn.tealc995.kkmaid.model.lrc.LrcFile;
-import cn.tealc995.kkmaid.model.lrc.LrcType;
-import cn.tealc995.kkmaid.ui.stage.SubtitleStage;
+import cn.tealc995.kkmaid.ui.stage.LocalSubtitleStage;
 import cn.tealc995.kkmaid.util.CssLoader;
-import cn.tealc995.kkmaid.util.LrcImportUtil;
 import cn.tealc995.teaFX.controls.notification.MessageType;
 import cn.tealc995.teaFX.controls.notification.Notification;
 import javafx.collections.ObservableList;
@@ -82,17 +80,8 @@ public class LrcFileDialogUI {
         Button readBtn=new Button("查看");
         readBtn.setOnAction(event -> {
             ObservableList<Integer> selectedIndices = lrcFileListView.getSelectionModel().getSelectedIndices();
-            if (selectedIndices.size() > 0){
-                String row = null;
-                LrcType type = lrcFileListView.getSelectionModel().getSelectedItems().get(0).getType();
-                if (type == LrcType.NET){
-                    row = LrcImportUtil.getLrcRowFromNet(lrcFileListView.getSelectionModel().getSelectedItems().get(0).getPath());
-                }else if (type == LrcType.ZIP){
-                    row = LrcImportUtil.getLrcRowFromZip(lrcFileListView.getSelectionModel().getSelectedItems().get(0));
-                }else if (type == LrcType.FOLDER){
-                    row = LrcImportUtil.getLrcRowFromFolder(lrcFileListView.getSelectionModel().getSelectedItems().get(0).getPath());
-                }
-                SubtitleStage stage=new SubtitleStage(row);
+            if (!selectedIndices.isEmpty()){
+                LocalSubtitleStage stage=new LocalSubtitleStage(lrcFileListView.getItems(),lrcFileListView.getSelectionModel().getSelectedIndices().getFirst());
                 stage.show();
             }else {
                 Notification.show("请先选择要操作的歌词", MessageType.WARNING,Pos.TOP_CENTER,App.mainStage);

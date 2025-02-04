@@ -1,27 +1,25 @@
 package cn.tealc995.kkmaid.ui;
 
 import atlantafx.base.theme.Styles;
-import cn.tealc995.kkmaid.App;
 import cn.tealc995.kikoreu.model.Role;
 import cn.tealc995.kikoreu.model.Work;
 import cn.tealc995.kikoreu.model.playList.PlayList;
+import cn.tealc995.kkmaid.App;
 import cn.tealc995.kkmaid.model.lrc.LrcFile;
-import cn.tealc995.kkmaid.model.lrc.LrcType;
 import cn.tealc995.kkmaid.service.subtitle.SeekSubtitleFileService;
 import cn.tealc995.kkmaid.ui.component.FolderTableView;
-import cn.tealc995.kkmaid.ui.stage.SubtitleStage;
+import cn.tealc995.kkmaid.ui.stage.LocalSubtitleStage;
 import cn.tealc995.kkmaid.util.CssLoader;
-import cn.tealc995.kkmaid.util.LrcImportUtil;
 import cn.tealc995.teaFX.controls.notification.MessageType;
 import cn.tealc995.teaFX.controls.notification.Notification;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.shape.Rectangle;
@@ -48,25 +46,26 @@ public class DetailUI {
     private StackPane root;
     private DetailViewModel viewModel;
     private Work work;
+
     public DetailUI(Work work) {
         this.work = work;
-        viewModel=new DetailViewModel(work);
-        root=new StackPane();
+        viewModel = new DetailViewModel(work);
+        root = new StackPane();
         borderPane = new BorderPane();
 
         ImageView imageView = new ImageView();
         imageView.imageProperty().bind(viewModel.posterProperty());
         imageView.setFitHeight(210);
         imageView.setFitWidth(280);
-        Rectangle rectangle=new Rectangle(280,210);
+        Rectangle rectangle = new Rectangle(280, 210);
         rectangle.setArcHeight(15);
         rectangle.setArcWidth(15);
         imageView.setClip(rectangle);
 
 
-        Button playListBtn=new Button("添加到歌单",new FontIcon(Material2AL.ADD));
+        Button playListBtn = new Button("添加到歌单", new FontIcon(Material2AL.ADD));
         //playListBtn.setContentDisplay(ContentDisplay.RIGHT);
-        CheckComboBox<PlayList> checkComboBox=new CheckComboBox<>(viewModel.getPlayLists());
+        CheckComboBox<PlayList> checkComboBox = new CheckComboBox<>(viewModel.getPlayLists());
         checkComboBox.setPrefWidth(150.0);
         checkComboBox.setTitle("添加到歌单");
         playListBtn.prefWidthProperty().bind(checkComboBox.widthProperty());
@@ -74,12 +73,13 @@ public class DetailUI {
         checkComboBox.setConverter(new StringConverter<PlayList>() {
             @Override
             public String toString(PlayList playList) {
-                if (playList != null){
+                if (playList != null) {
                     return playList.getName();
-                }else
+                } else
                     return null;
 
             }
+
             @Override
             public PlayList fromString(String s) {
                 return null;
@@ -91,34 +91,34 @@ public class DetailUI {
             checkComboBox.show();
         });
 
-       checkComboBox.getItems().addListener((ListChangeListener<? super PlayList>) change -> {
-           while (change.next()){
-               if (change.wasAdded()){
-                   for (PlayList playList : change.getAddedSubList()) {
-                       if (playList.getExist()){
-                           checkComboBox.getCheckModel().check(playList);
-                       }
+        checkComboBox.getItems().addListener((ListChangeListener<? super PlayList>) change -> {
+            while (change.next()) {
+                if (change.wasAdded()) {
+                    for (PlayList playList : change.getAddedSubList()) {
+                        if (playList.getExist()) {
+                            checkComboBox.getCheckModel().check(playList);
+                        }
 
-                   }
-               }
-           }
+                    }
+                }
+            }
 
-       });
+        });
 
         checkComboBox.getCheckModel().getCheckedItems().addListener((ListChangeListener<? super PlayList>) change -> {
-            while (change.next()){
-                if (change.wasAdded()){
+            while (change.next()) {
+                if (change.wasAdded()) {
                     for (PlayList playList : change.getAddedSubList()) {
-                        if (!playList.getExist()){
-                            viewModel.updatePlayListWork(playList,false);
+                        if (!playList.getExist()) {
+                            viewModel.updatePlayListWork(playList, false);
                             playList.setExist(true);
                         }
                     }
                 }
-                if (change.wasRemoved()){
+                if (change.wasRemoved()) {
                     for (PlayList playList : change.getRemoved()) {
-                        if (playList.getExist()){
-                            viewModel.updatePlayListWork(playList,true);
+                        if (playList.getExist()) {
+                            viewModel.updatePlayListWork(playList, true);
                             playList.setExist(false);
                         }
 
@@ -128,10 +128,7 @@ public class DetailUI {
         });
 
 
-
-        StackPane playListPane=new StackPane(checkComboBox,playListBtn);
-
-
+        StackPane playListPane = new StackPane(checkComboBox, playListBtn);
 
 
         FlowPane tagsPane = new FlowPane();
@@ -147,7 +144,7 @@ public class DetailUI {
                 Label label = new Label(tag.getName());
                 label.getStyleClass().add("tag-label");
                 label.setOnMouseClicked(mouseEvent -> {
-                    Notification.show("世界线可能发生了变动，没有任何响应。", MessageType.SUCCESS,Pos.TOP_CENTER, App.mainStage);
+                    Notification.show("世界线可能发生了变动，没有任何响应。", MessageType.SUCCESS, Pos.TOP_CENTER, App.mainStage);
                 });
                 tagsPane.getChildren().add(label);
             }
@@ -158,7 +155,7 @@ public class DetailUI {
                 Label label = new Label(vas.getName());
                 label.getStyleClass().add("actor-label");
                 label.setOnMouseClicked(mouseEvent -> {
-                    Notification.show("世界线可能发生了变动，没有任何响应。", MessageType.SUCCESS,Pos.TOP_CENTER, App.mainStage);
+                    Notification.show("世界线可能发生了变动，没有任何响应。", MessageType.SUCCESS, Pos.TOP_CENTER, App.mainStage);
                 });
                 actorsPane.getChildren().add(label);
             }
@@ -168,24 +165,24 @@ public class DetailUI {
         Label circleLabel = new Label();
         if (work.getCircle() != null) {
             circleLabel.setText(work.getCircle().getName());
-        }else {
+        } else {
             circleLabel.setVisible(false);
         }
 
         circleLabel.getStyleClass().add("list-item-big-circle");
         circleLabel.setGraphic(new Region());
         circleLabel.setOnMouseClicked(mouseEvent -> {
-            Notification.show("世界线可能发生了变动，没有任何响应。", MessageType.SUCCESS,Pos.TOP_CENTER, App.mainStage);
+            Notification.show("世界线可能发生了变动，没有任何响应。", MessageType.SUCCESS, Pos.TOP_CENTER, App.mainStage);
         });
-        circleLabel.setPadding(new Insets(0,0,0,10));
+        circleLabel.setPadding(new Insets(0, 0, 0, 10));
 
 
-        Label titleLabel=new Label();
+        Label titleLabel = new Label();
         titleLabel.getStyleClass().add("detail-dialog-title");
         titleLabel.setText(work.getTitle());
 
 
-        VBox left = new VBox(imageView,playListPane,circleLabel, tagsPane, actorsPane);
+        VBox left = new VBox(imageView, playListPane, circleLabel, tagsPane, actorsPane);
         left.getStyleClass().add("detail-dialog-left");
         left.setAlignment(Pos.TOP_LEFT);
         left.setSpacing(15);
@@ -194,21 +191,19 @@ public class DetailUI {
         leftScrollPane.setPrefWidth(300);
 
 
-        FolderTableView folderTableView = new FolderTableView(work,viewModel.getTracks());
+        FolderTableView folderTableView = new FolderTableView(work, viewModel.getTracks());
 
         borderPane.setTop(titleLabel);
         borderPane.setLeft(leftScrollPane);
         borderPane.setCenter(folderTableView);
         borderPane.getStyleClass().add("detail-dialog");
 
-        if (work.isHasLocalSubtitle()){
+        if (work.isHasLocalSubtitle()) {
             createLrcView();
             //borderPane.setPrefSize(1300,600);
-        }else {
+        } else {
             //borderPane.setPrefSize(1000,600);
         }
-
-
 
 
         root.getChildren().add(borderPane);
@@ -217,8 +212,7 @@ public class DetailUI {
     }
 
 
-
-    private void createLrcView(){
+    private void createLrcView() {
         VBox lrcPane = new VBox();
         ListView<LrcFile> lrcFileListView = new ListView<>();
         lrcFileListView.setPrefWidth(300);
@@ -232,12 +226,10 @@ public class DetailUI {
         utfItem.setToggleGroup(charsetGroup);
         gbkItem.getStyleClass().add(Styles.LEFT_PILL);
         utfItem.getStyleClass().add(Styles.RIGHT_PILL);
-        HBox charsetPane = new HBox(gbkItem,utfItem);
+        HBox charsetPane = new HBox(gbkItem, utfItem);
 
 
         SeekSubtitleFileService seekSubtitleFileService = new SeekSubtitleFileService();
-
-
 
 
         seekSubtitleFileService.setIds(work.getAllId());
@@ -245,7 +237,7 @@ public class DetailUI {
             List<LrcFile> items = seekSubtitleFileService.getValue();
             if (items != null && !items.isEmpty()) {
                 lrcFileListView.setItems(FXCollections.observableList(items));
-            }else {
+            } else {
                 showLrcFileBtn.setDisable(true);
             }
         });
@@ -267,7 +259,7 @@ public class DetailUI {
             }
         });
 
-        HBox buttonsPane = new HBox(10.0,showLrcFileBtn,charsetPane);
+        HBox buttonsPane = new HBox(10.0, showLrcFileBtn, charsetPane);
 
         lrcPane.getChildren().addFirst(buttonsPane);
 
@@ -286,30 +278,18 @@ public class DetailUI {
     }
 
 
-
-
-
-
     public StackPane getRoot() {
         return root;
     }
 
 
-   class LocalLrcCell extends ListCell<LrcFile> {
+    class LocalLrcCell extends ListCell<LrcFile> {
         public LocalLrcCell() {
-            setPadding(new Insets(3,0,3,5));
+            setPadding(new Insets(3, 0, 3, 5));
             setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2) {
-                    String row = null;
-                    LrcType type = getItem().getType();
-                    if (type == LrcType.NET){
-                        row = LrcImportUtil.getLrcRowFromNet(getItem().getPath());
-                    }else if (type == LrcType.ZIP){
-                        row = LrcImportUtil.getLrcRowFromZip(getItem(),viewModel.getCharset());
-                    }else if (type == LrcType.FOLDER){
-                        row = LrcImportUtil.getLrcRowFromFolder(getItem().getPath());
-                    }
-                    SubtitleStage stage=new SubtitleStage(row);
+                    LocalSubtitleStage stage = new LocalSubtitleStage(getListView().getItems(), getIndex());
+
                     stage.show();
                 }
             });
@@ -321,7 +301,7 @@ public class DetailUI {
             if (!b) {
                 setText(lrcFile.getTitle());
 
-            }else {
+            } else {
                 setText(null);
             }
         }
