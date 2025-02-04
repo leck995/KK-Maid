@@ -73,19 +73,18 @@ public class PlayListWorksService extends WorksBaseService {
     }
 
     private void matchLocalSubtitles(Work work) {
-        if (!work.isHas_subtitle() && subtitleData.getFolderList() != null) {
+        if (subtitleData.getFolderList() != null) {
             for (String folder : subtitleData.getFolderList()) {
                 if (exist(work, folder)) {
-                    work.setHas_subtitle(true);
+                    work.setHasLocalSubtitle(true);
                     break;
                 }
             }
         }
 
-        if (!work.isHas_subtitle() && subtitleData.getZipList() != null) {
+        if (subtitleData.getZipList() != null) {
             for (String zip : subtitleData.getZipList()) {
                 if (exist(work, zip)) {
-                    work.setHas_subtitle(true);
                     work.setHasLocalSubtitle(true);
                     break;
                 }

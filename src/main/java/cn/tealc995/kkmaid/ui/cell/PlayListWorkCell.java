@@ -130,18 +130,19 @@ public class PlayListWorkCell extends VBox {
             tagPane.getChildren().add(nsfwLabel);
         }
 
-        if (work.isHas_subtitle()) {
-            Label label = new Label();
-            label.setId("grid-item-subtext");
-            if (work.isHasLocalSubtitle()){
-                label.setText("本地字幕");
-            }else {
-                label.setText("字幕");
-            }
-            label.getStyleClass().add("list-item-tag");
-            tagPane.getChildren().add(label);
+        Label subtitle = new Label();
+        subtitle.setId("grid-item-subtext");
+        subtitle.getStyleClass().add("list-item-tag");
+        tagPane.getChildren().add(subtitle);
+        if (work.isHasLocalSubtitle() && work.isHas_subtitle()){
+            subtitle.setText("双字幕");
+        }else if (work.isHasLocalSubtitle()){
+            subtitle.setText("本地字幕");
+        }else if (work.isHas_subtitle()){
+            subtitle.setText("字幕");
+        }else {
+            subtitle.setVisible(false);
         }
-
 
 
         Rating rating = new Rating();

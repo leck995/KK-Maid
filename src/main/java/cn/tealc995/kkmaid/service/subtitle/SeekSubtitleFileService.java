@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @description:
+ * @description: 根据作品ID获取对应的字幕信息列表
  * @author: Leck
  * @create: 2023-07-19 14:47
  */
