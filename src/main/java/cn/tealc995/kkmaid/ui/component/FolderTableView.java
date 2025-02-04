@@ -75,7 +75,6 @@ public class FolderTableView extends BorderPane {
         this.items.addListener((ListChangeListener<? super Track>) observable -> {
             if (itemsBack == null){
                 itemsBack = FXCollections.observableArrayList(items);
-                items.forEach(s -> System.out.println(s.getTitle()));
             }
         });
         rootPath = new SimpleStringProperty();
@@ -140,8 +139,6 @@ public class FolderTableView extends BorderPane {
 
         pathViewPane.onActionProperty().addListener(((observableValue, s, t1) -> {
             if (t1 != null) {
-                // String s1 = URLUtils.getParent(rootPath.get(),null) + File.separator + t1;
-                System.out.println(t1);
                 if (t1.equals("根目录")) {
                     items.setAll(itemsBack);
                     currentPath.set("根目录");
@@ -353,7 +350,6 @@ public class FolderTableView extends BorderPane {
         items.setAll(track.getChildren());
         currentPath.set(currentPath.get() + "/" + track.getTitle());
         pathViewPane.setPath(currentPath.get());
-        //tableView.sort();
     }
 
 

@@ -123,7 +123,7 @@ public class LcMediaPlayer implements TeaMediaPlayer {
                 if (t1.getLrcFiles() != null) {
                     lrcFiles.setAll(t1.getLrcFiles());
                 } else {
-                    if (lrcFiles.size() > 0)
+                    if (!lrcFiles.isEmpty())
                         lrcFiles.clear();
                 }
                 init(index, true);

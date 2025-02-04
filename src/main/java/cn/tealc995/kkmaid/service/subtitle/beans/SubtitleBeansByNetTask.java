@@ -19,7 +19,7 @@ import java.util.List;
 
 /**
  * @program: KK-Maid
- * @description: 读取网络中的字幕文件
+ * @description: 读取网络中的字幕文件；
  * @author: Leck
  * @create: 2025-02-03 21:05
  */

@@ -13,7 +13,7 @@ import java.util.List;
 
 /**
  * @program: KK-Maid
- * @description: 读取字幕文件夹内的指定字幕文件。用处过小，考虑弃用该功能
+ * @description: 读取字幕文件夹内的指定字幕文件；注意，只支持LRC格式，VTT不支持。用处过小，考虑弃用该功能
  * @author: Leck
  * @create: 2025-02-03 21:05
  */

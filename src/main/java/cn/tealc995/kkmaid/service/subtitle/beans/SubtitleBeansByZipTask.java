@@ -17,7 +17,7 @@ import java.util.Optional;
 
 /**
  * @program: KK-Maid
- * @description: 读取字幕压缩包内的指定字幕文件
+ * @description: 读取字幕压缩包内的指定字幕文件；注意，只支持LRC格式，VTT不支持
  * @author: Leck
  * @create: 2025-02-03 21:05
  */
