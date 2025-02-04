@@ -10,12 +10,12 @@ import javafx.concurrent.Task;
 import java.util.*;
 
 /**
- * @description:
+ * @description: 获取所有的分类关键词列表
  * @author: Leck
  * @create: 2023-07-15 23:16
  */
 public class CategoryTask extends Task<ResponseBody<List<RoleEx>>> {
-    private CategoryType type;
+    private final CategoryType type;
 
     public CategoryTask(CategoryType type) {
         this.type = type;
@@ -25,26 +25,21 @@ public class CategoryTask extends Task<ResponseBody<List<RoleEx>>> {
     protected ResponseBody<List<RoleEx>> call() throws Exception {
         updateMessage("true");
         ResponseBody<List<RoleEx>> body = null;
-        if (type == CategoryType.CIRCLE){
-            body= KKApi.getInstance().categoryApi().circle();
+        if (type == CategoryType.CIRCLE) {
+            body = KKApi.getInstance().categoryApi().circle();
             updateTitle("All CIRCLES");
         } else if (type == CategoryType.TAG) {
-            body=KKApi.getInstance().categoryApi().tag();
+            body = KKApi.getInstance().categoryApi().tag();
             updateTitle("All TAGS");
-        }else if (type == CategoryType.VA){
-            body=KKApi.getInstance().categoryApi().va();
+        } else if (type == CategoryType.VA) {
+            body = KKApi.getInstance().categoryApi().va();
             updateTitle("All VAS");
         }
-        if (body.isSuccess() && body.getData() != null){
-            Collections.sort(body.getData() , (o1, o2) -> o2.getCount().compareTo(o1.getCount()));
+        assert body != null;
+        if (body.isSuccess() && body.getData() != null) {
+            Collections.sort(body.getData(), (o1, o2) -> o2.getCount().compareTo(o1.getCount()));
         }
         updateMessage("false");
         return body;
     }
-
-
-
-
-
-
 }

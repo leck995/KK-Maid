@@ -5,7 +5,7 @@ import atlantafx.base.util.Animations;
 import cn.tealc995.kkmaid.App;
 import cn.tealc995.kkmaid.config.Config;
 import cn.tealc995.kkmaid.event.*;
-import cn.tealc995.kkmaid.service.CheckLoginTask;
+import cn.tealc995.kkmaid.service.api.login.CheckLoginTask;
 import cn.tealc995.kkmaid.util.CssLoader;
 import cn.tealc995.kkmaid.util.FXResourcesLoader;
 import cn.tealc995.teaFX.controls.TitleBar;

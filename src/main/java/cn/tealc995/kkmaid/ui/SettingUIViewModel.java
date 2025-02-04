@@ -6,7 +6,7 @@ import cn.tealc995.kikoreu.model.SortType;
 import cn.tealc995.kkmaid.event.EventBusUtil;
 import cn.tealc995.kkmaid.event.MainCenterEvent;
 import cn.tealc995.kkmaid.event.MainNotificationEvent;
-import cn.tealc995.kkmaid.service.LoginTask;
+import cn.tealc995.kkmaid.service.api.login.LoginTask;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

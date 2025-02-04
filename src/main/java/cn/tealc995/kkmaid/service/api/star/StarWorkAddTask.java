@@ -1,11 +1,8 @@
-package cn.tealc995.kkmaid.service.api;
+package cn.tealc995.kkmaid.service.api.star;
 
 import cn.tealc995.kikoreu.KKApi;
 import cn.tealc995.kikoreu.model.ResponseBody;
-import cn.tealc995.kikoreu.model.Track;
 import javafx.concurrent.Task;
-
-import java.util.List;
 
 /**
  * @program: KK-Maid

@@ -10,7 +10,7 @@ import cn.tealc995.kkmaid.model.Music;
 import cn.tealc995.kkmaid.model.lrc.LrcBean;
 import cn.tealc995.kkmaid.model.lrc.LrcFile;
 import cn.tealc995.kkmaid.model.lrc.LrcType;
-import cn.tealc995.kkmaid.service.SeekLrcFileService;
+import cn.tealc995.kkmaid.service.subtitle.SeekSubtitleFileService;
 import cn.tealc995.kkmaid.service.subtitle.beans.SubtitleBeansBaseTask;
 import cn.tealc995.kkmaid.service.subtitle.beans.SubtitleBeansByFolderTask;
 import cn.tealc995.kkmaid.service.subtitle.beans.SubtitleBeansByNetTask;
@@ -53,7 +53,7 @@ public class VlcPlayer implements TeaMediaPlayer {
     private SimpleStringProperty lrcSelectedText;
     private SimpleObjectProperty<Audio> playingAudio;
     private int index=0;
-    private SeekLrcFileService seekLrcFileService;
+    private SeekSubtitleFileService seekSubtitleFileService;
     private final MediaPlayerFactory mediaPlayerFactory;
     private final AudioPlayerComponent playerComponent;
 
@@ -197,8 +197,8 @@ public class VlcPlayer implements TeaMediaPlayer {
                 }
             }
         });
-        seekLrcFileService=new SeekLrcFileService();
-        seekLrcFileService.valueProperty().addListener((observableValue, list, t1) -> {
+        seekSubtitleFileService =new SeekSubtitleFileService();
+        seekSubtitleFileService.valueProperty().addListener((observableValue, list, t1) -> {
             if (t1!= null){
                 updateLrcFile(t1);
                 EventBusUtil.getDefault().post(new MainNotificationEvent("检测到本地字幕文件"));
@@ -291,11 +291,11 @@ public class VlcPlayer implements TeaMediaPlayer {
         this.music.set(music);
         if (music.getLrcFiles() == null || Config.setting.isLrcPriority()){
             if (music.getWork().hasLanguages()){
-                seekLrcFileService.setIds(music.getWork().getAllId());
+                seekSubtitleFileService.setIds(music.getWork().getAllId());
             }else {
-                seekLrcFileService.setId(music.getWork().getFullId());
+                seekSubtitleFileService.setId(music.getWork().getFullId());
             }
-            seekLrcFileService.restart();
+            seekSubtitleFileService.restart();
         }
     }
 

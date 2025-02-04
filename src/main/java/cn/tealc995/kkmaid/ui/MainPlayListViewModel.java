@@ -10,8 +10,8 @@ import cn.tealc995.kkmaid.event.BlackWorkEvent;
 import cn.tealc995.kkmaid.event.EventBusUtil;
 import cn.tealc995.kkmaid.event.MainNotificationEvent;
 import cn.tealc995.kkmaid.event.MainPlayListRemoveWorkEvent;
-import cn.tealc995.kkmaid.service.MainPlayListService;
-import cn.tealc995.kkmaid.service.api.PlayListRemoveWorkTask;
+import cn.tealc995.kkmaid.service.api.works.PlayListWorksService;
+import cn.tealc995.kkmaid.service.api.playlist.PlayListRemoveWorkTask;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
@@ -42,7 +42,7 @@ public class MainPlayListViewModel {
     private SimpleIntegerProperty removeIndex;//用来让界面上的work移除
     private SimpleBooleanProperty loading;
     private SimpleStringProperty message;
-    private MainPlayListService service;
+    private PlayListWorksService service;
     private final ObservableList<Integer> pageSizeItems=FXCollections.observableArrayList(12,24,48,96);
 
     public MainPlayListViewModel(PlayList playList) {
@@ -85,7 +85,7 @@ public class MainPlayListViewModel {
             return;
         }
         if (service==null){
-            service=new MainPlayListService();
+            service=new PlayListWorksService();
             loading.bind(Bindings.createBooleanBinding(() -> Boolean.valueOf(service.getMessage()),service.messageProperty()));
             mainWorks.bind(service.valueProperty());
         }
@@ -94,7 +94,6 @@ public class MainPlayListViewModel {
         params.put("pageSize",String.valueOf(pageSize.get()));
         params.put("id", playListId.get());
         service.setParams(params);
-        service.setHost(Config.setting.getHOST());
         service.restart();
     }
 

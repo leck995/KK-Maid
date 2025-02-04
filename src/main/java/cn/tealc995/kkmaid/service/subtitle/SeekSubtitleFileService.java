@@ -1,4 +1,4 @@
-package cn.tealc995.kkmaid.service;
+package cn.tealc995.kkmaid.service.subtitle;
 
 import cn.tealc995.kkmaid.config.Config;
 import cn.tealc995.kkmaid.model.lrc.LrcFile;
@@ -22,17 +22,11 @@ import java.util.List;
  * @author: Leck
  * @create: 2023-07-19 14:47
  */
-public class SeekLrcFileService extends Service<List<LrcFile>> {
-    private static final Logger LOG = LoggerFactory.getLogger(SeekLrcFileService.class);
+public class SeekSubtitleFileService extends Service<List<LrcFile>> {
+    private static final Logger LOG = LoggerFactory.getLogger(SeekSubtitleFileService.class);
     private String id;
     private List<String> ids;
     private Charset charset = Charset.forName("GBK");
-
-    @Override
-    protected void succeeded() {
-        super.succeeded();
-        System.out.println("SeekLrcFileService success");
-    }
 
     @Override
     protected Task<List<LrcFile>> createTask() {

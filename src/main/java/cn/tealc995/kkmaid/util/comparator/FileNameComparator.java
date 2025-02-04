@@ -1,4 +1,4 @@
-package cn.tealc995.kkmaid.util;
+package cn.tealc995.kkmaid.util.comparator;
 
 import java.util.Comparator;
 
@@ -14,22 +14,27 @@ public class FileNameComparator implements Comparator<String> {
         return naturalOrder(s1, s2);
     }
 
+
     private int naturalOrder(String s1, String s2) {
         // 使用正则表达式将字符串分割为数字和非数字部分
         String[] parts1 = s1.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
         String[] parts2 = s2.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
 
         for (int i = 0; i < Math.min(parts1.length, parts2.length); i++) {
-            int cmp = parts1[i].compareToIgnoreCase(parts2[i]);
+            int cmp;
+            // 如果都是数字，进行数值比较
+            if (isNumeric(parts1[i]) && isNumeric(parts2[i])) {
+                cmp = Integer.compare(Integer.parseInt(parts1[i]), Integer.parseInt(parts2[i]));
+            } else {
+                // 否则，进行字符串比较
+                cmp = parts1[i].compareTo(parts2[i]);
+            }
             if (cmp != 0) {
-                // 如果是数字部分，进行数值比较
-                if (isNumeric(parts1[i]) && isNumeric(parts2[i])) {
-                    return Integer.compare(Integer.parseInt(parts1[i]), Integer.parseInt(parts2[i]));
-                }
-                return cmp; // 返回字符串比较结果
+                return cmp; // 返回比较结果
             }
         }
-        return Integer.compare(parts1.length, parts2.length); // 长度比较
+        // 如果到这里，说明前面部分相同，比较长度
+        return Integer.compare(parts1.length, parts2.length);
     }
 
     private boolean isNumeric(String str) {

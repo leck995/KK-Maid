@@ -2,11 +2,11 @@ package cn.tealc995.kkmaid.ui.component;
 
 
 import atlantafx.base.theme.Styles;
-import cn.tealc995.kkmaid.App;
-import cn.tealc995.kkmaid.config.Config;
 import cn.tealc995.kikoreu.HttpUtils;
 import cn.tealc995.kikoreu.model.Track;
 import cn.tealc995.kikoreu.model.Work;
+import cn.tealc995.kkmaid.App;
+import cn.tealc995.kkmaid.config.Config;
 import cn.tealc995.kkmaid.event.EventBusUtil;
 import cn.tealc995.kkmaid.event.MainDialogEvent;
 import cn.tealc995.kkmaid.filter.SupportAudioFormat;
@@ -29,7 +29,6 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
@@ -37,11 +36,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.util.Callback;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.material2.Material2AL;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -71,9 +70,12 @@ public class FolderTableView extends BorderPane {
         this.work = work;
         this.items = items;
 
+
+
         this.items.addListener((ListChangeListener<? super Track>) observable -> {
             if (itemsBack == null){
                 itemsBack = FXCollections.observableArrayList(items);
+                items.forEach(s -> System.out.println(s.getTitle()));
             }
         });
         rootPath = new SimpleStringProperty();
@@ -162,6 +164,7 @@ public class FolderTableView extends BorderPane {
                                 }
                             }
                         }
+                        assert child != null;
                         items.setAll(child.getChildren());
                         currentPath.set(t1);
                     }
@@ -188,46 +191,43 @@ public class FolderTableView extends BorderPane {
         tableView.getColumns().addAll(typeCol, nameCol);
         nameCol.setCellValueFactory(new PropertyValueFactory<Track, String>("title"));
         typeCol.setCellValueFactory(new PropertyValueFactory<Track, String>("type"));
-        typeCol.setCellFactory(new Callback<>() {
-            @Override
-            public TableCell<Track, String> call(TableColumn<Track, String> AsmrFileStringTableColumn) {
-                TableCell<Track, String> tableCell = new TableCell<>() {
-                    @Override
-                    protected void updateItem(String s, boolean b) {
-                        if (!b) {
-                            ImageView imageView;
-                            if (s.equals("folder")) {
-                                imageView = new ImageView();
-                                imageView.setFitHeight(30);
-                                imageView.setPreserveRatio(true);
-                                imageView.setImage(getFolderImage());
-                                setGraphic(imageView);
-                            } else if (s.equals("audio")) {
-                                imageView = new ImageView();
-                                imageView.setFitHeight(30);
-                                imageView.setPreserveRatio(true);
-                                imageView.setImage(getAudioImage());
-                                setGraphic(imageView);
-                            } else if (s.equals("image")) {
-                                imageView = new ImageView();
-                                imageView.setFitHeight(30);
-                                imageView.setPreserveRatio(true);
-                                imageView.setImage(getPicImage());
-                                setGraphic(imageView);
-                            } else {
-                                imageView = new ImageView();
-                                imageView.setFitHeight(30);
-                                imageView.setPreserveRatio(true);
-                                imageView.setImage(getOtherImage());
-                                setGraphic(imageView);
-                            }
+        typeCol.setCellFactory(AsmrFileStringTableColumn -> {
+            TableCell<Track, String> tableCell = new TableCell<>() {
+                @Override
+                protected void updateItem(String s, boolean b) {
+                    if (!b) {
+                        ImageView imageView;
+                        if (s.equals("folder")) {
+                            imageView = new ImageView();
+                            imageView.setFitHeight(30);
+                            imageView.setPreserveRatio(true);
+                            imageView.setImage(getFolderImage());
+                            setGraphic(imageView);
+                        } else if (s.equals("audio")) {
+                            imageView = new ImageView();
+                            imageView.setFitHeight(30);
+                            imageView.setPreserveRatio(true);
+                            imageView.setImage(getAudioImage());
+                            setGraphic(imageView);
+                        } else if (s.equals("image")) {
+                            imageView = new ImageView();
+                            imageView.setFitHeight(30);
+                            imageView.setPreserveRatio(true);
+                            imageView.setImage(getPicImage());
+                            setGraphic(imageView);
                         } else {
-                            setGraphic(null);
+                            imageView = new ImageView();
+                            imageView.setFitHeight(30);
+                            imageView.setPreserveRatio(true);
+                            imageView.setImage(getOtherImage());
+                            setGraphic(imageView);
                         }
+                    } else {
+                        setGraphic(null);
                     }
-                };
-                return tableCell;
-            }
+                }
+            };
+            return tableCell;
         });
 
         tableView.setRowFactory(view -> {

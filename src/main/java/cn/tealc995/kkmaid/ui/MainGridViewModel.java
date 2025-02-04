@@ -8,7 +8,7 @@ import cn.tealc995.kkmaid.event.BlackWorkEvent;
 import cn.tealc995.kkmaid.event.EventBusUtil;
 import cn.tealc995.kkmaid.event.GridItemRemoveEvent;
 import cn.tealc995.kkmaid.event.SearchEvent;
-import cn.tealc995.kkmaid.service.MainGridService;
+import cn.tealc995.kkmaid.service.api.works.MainWorksService;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
@@ -40,7 +40,7 @@ public class MainGridViewModel {
 
     private SimpleBooleanProperty descOrder;
 
-    private ObservableList<SortType> sortItems= FXCollections.observableArrayList(SortType.release,SortType.create_date,SortType.nsfw,SortType.rate_average_2dp,SortType.dl_count,SortType.price,SortType.review_count,SortType.random);
+    private ObservableList<SortType> sortItems = FXCollections.observableArrayList(SortType.release, SortType.create_date, SortType.nsfw, SortType.rate_average_2dp, SortType.dl_count, SortType.price, SortType.review_count, SortType.random);
 
     private SimpleObjectProperty<SortType> selectSortType;
     private SimpleStringProperty searchKey;
@@ -49,34 +49,35 @@ public class MainGridViewModel {
     private SimpleStringProperty message;
 
 
-    private MainGridService service;
+    private MainWorksService service;
+
     public MainGridViewModel() {
         EventBusUtil.getDefault().register(this);
         init();
         update();
     }
 
-    private void init(){
-        title=new SimpleObjectProperty<>(CategoryType.ALL);
-        mainWorks=new SimpleObjectProperty<>();
-        workItems=FXCollections.observableArrayList();
-        countPage=new SimpleIntegerProperty(10);
-        currentPage=new SimpleIntegerProperty(0);
-        pageSize=new SimpleIntegerProperty(48);
-        totalCount=new SimpleLongProperty(0);
-        subtext=new SimpleBooleanProperty(Config.setting.isGridSubtitleModel());
-        descOrder=new SimpleBooleanProperty(Config.setting.isGridSortDescModel());
-        selectSortType=new SimpleObjectProperty<>(SortType.valueOf(Config.setting.getGridOrder()));
-        searchKey=new SimpleStringProperty();
-        loading=new SimpleBooleanProperty(false);
-        message=new SimpleStringProperty();
-        playListId=new SimpleStringProperty();
+    private void init() {
+        title = new SimpleObjectProperty<>(CategoryType.ALL);
+        mainWorks = new SimpleObjectProperty<>();
+        workItems = FXCollections.observableArrayList();
+        countPage = new SimpleIntegerProperty(10);
+        currentPage = new SimpleIntegerProperty(0);
+        pageSize = new SimpleIntegerProperty(48);
+        totalCount = new SimpleLongProperty(0);
+        subtext = new SimpleBooleanProperty(Config.setting.isGridSubtitleModel());
+        descOrder = new SimpleBooleanProperty(Config.setting.isGridSortDescModel());
+        selectSortType = new SimpleObjectProperty<>(SortType.valueOf(Config.setting.getGridOrder()));
+        searchKey = new SimpleStringProperty();
+        loading = new SimpleBooleanProperty(false);
+        message = new SimpleStringProperty();
+        playListId = new SimpleStringProperty();
 
 
         mainWorks.addListener((observableValue, mainWorks1, mainWorks2) -> {
-            if (mainWorks2 != null){
+            if (mainWorks2 != null) {
                 workItems.setAll(mainWorks2.getWorks());
-                countPage.set((int) Math.ceil((double) mainWorks2.getPagination().getTotalCount() /mainWorks2.getPagination().getPageSize()));
+                countPage.set((int) Math.ceil((double) mainWorks2.getPagination().getTotalCount() / mainWorks2.getPagination().getPageSize()));
                 totalCount.set(mainWorks2.getPagination().getTotalCount());
             }
         });
@@ -88,53 +89,49 @@ public class MainGridViewModel {
 
     }
 
-    public void update(){
-        if (Config.setting.getHOST() == null || Config.setting.getHOST().isEmpty()){
+    public void update() {
+        if (Config.setting.getHOST() == null || Config.setting.getHOST().isEmpty()) {
             message.set("请先填写服务器地址");
             return;
         }
 
-        if (service==null){
-            service=new MainGridService();
-            loading.bind(Bindings.createBooleanBinding(() -> Boolean.valueOf(service.getMessage()),service.messageProperty()));
+        if (service == null) {
+            service = new MainWorksService();
+            loading.bind(Bindings.createBooleanBinding(() -> Boolean.valueOf(service.getMessage()), service.messageProperty()));
             mainWorks.bind(service.valueProperty());
         }
 
 
-
-        Map<String,String> params=new HashMap<>();
-        if (title.get() !=CategoryType.PLAY_LIST){
-            params.put("order",getSelectSortType().name());
-            if(getSelectSortType()==SortType.nsfw){
+        Map<String, String> params = new HashMap<>();
+        if (title.get() != CategoryType.PLAY_LIST) {
+            params.put("order", getSelectSortType().name());
+            if (getSelectSortType() == SortType.nsfw) {
                 descOrder.set(false);
             }
-            params.put("sort",isDescOrder() ? "desc":"asc");
-            params.put("page",String.valueOf(getCurrentPage()+1));
-            params.put("subtitle",isSubtext() ? "1" : "0");
-            params.put("pageSize",String.valueOf(pageSize.get()));
+            params.put("sort", isDescOrder() ? "desc" : "asc");
+            params.put("page", String.valueOf(getCurrentPage() + 1));
+            params.put("subtitle", isSubtext() ? "1" : "0");
+            params.put("pageSize", String.valueOf(pageSize.get()));
             //params.put("withPlaylistStatus[]","c939f5c9-04ff-49fb-99e7-09872c6b639a");
-            params.put("includeTranslationWorks","true");
-        }else {
+            params.put("includeTranslationWorks", "true");
+        } else {
             params.put("page", String.valueOf(currentPage.get() + 1));
-            params.put("pageSize",String.valueOf(pageSize.get()));
+            params.put("pageSize", String.valueOf(pageSize.get()));
             params.put("id", playListId.get());
         }
-
 
 
         service.setParams(params);
         service.setSearchKey(searchKey.get());
         service.setType(title.get());
-        service.setHost(Config.setting.getHOST());
         service.restart();
 
     }
 
 
-
     @Subscribe
     public void setSearchKey(SearchEvent event) {
-        if (event.getType()==CategoryType.SEARCH){
+        if (event.getType() == CategoryType.SEARCH) {
             subtext.set(false);
         }
         title.set(event.getType());
@@ -145,54 +142,55 @@ public class MainGridViewModel {
     }
 
     public String getTitle() {
-        if (title.get() ==CategoryType.ALL){
+        if (title.get() == CategoryType.ALL) {
             return title.get().getTitle();
-        }else if (title.get() ==CategoryType.STAR){
+        } else if (title.get() == CategoryType.STAR) {
             return title.get().getTitle();
-        }else{
-            return title.get().getTitle()+" : "+searchKey.get();
+        } else {
+            return title.get().getTitle() + " : " + searchKey.get();
         }
     }
 
 
     /**
+     * @return void
      * @description: 当前功能不知为何没生效，在ui中虽然绑定了removeIndex,但值变化时不会监听到，很奇怪。请注意
      * @name: removeWork
      * @author: Leck
-     * @param:	event
-     * @return  void
-     * @date:   2023/7/15
+     * @param: event
+     * @date: 2023/7/15
      */
     @Subscribe
-    public void removeWork(GridItemRemoveEvent event){
-        if (title.get() == CategoryType.STAR){
+    public void removeWork(GridItemRemoveEvent event) {
+        if (title.get() == CategoryType.STAR) {
             workItems.remove(event.getWork());
         }
     }
 
     /**
+     * @return void
      * @description: 在加入黑名单的时候调用此方法，用于在当前列表中移除
      * @name: removeWork
      * @author: Leck
-     * @param:	event
-     * @return  void
-     * @date:   2023/8/8
+     * @param: event
+     * @date: 2023/8/8
      */
     @Subscribe
-    public void removeWork(BlackWorkEvent event){
+    public void removeWork(BlackWorkEvent event) {
         workItems.remove(event.getWork());
     }
 
 
-    public void nextPage(){
+    public void nextPage() {
         int next = getCurrentPage() + 1;
-        if (next < getCountPage()){
+        if (next < getCountPage()) {
             setCurrentPage(next);
         }
     }
-    public void prePage(){
+
+    public void prePage() {
         int pre = getCurrentPage() - 1;
-        if (pre >= 0){
+        if (pre >= 0) {
             setCurrentPage(pre);
         }
     }

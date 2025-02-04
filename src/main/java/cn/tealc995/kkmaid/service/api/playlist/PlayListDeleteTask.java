@@ -1,9 +1,7 @@
-package cn.tealc995.kkmaid.service.api;
+package cn.tealc995.kkmaid.service.api.playlist;
 
 import cn.tealc995.kikoreu.KKApi;
-import cn.tealc995.kikoreu.api.PlayListApi;
 import cn.tealc995.kikoreu.model.ResponseBody;
-import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 
 /**

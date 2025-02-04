@@ -6,10 +6,10 @@ import cn.tealc995.kkmaid.event.EventBusUtil;
 import cn.tealc995.kkmaid.event.MainNotificationEvent;
 import cn.tealc995.kkmaid.event.PlayListAlterEvent;
 import cn.tealc995.kkmaid.event.PlayListRemoveEvent;
-import cn.tealc995.kkmaid.service.api.PlayListAlterTask;
-import cn.tealc995.kkmaid.service.api.PlayListCreateTask;
-import cn.tealc995.kkmaid.service.api.PlayListDeleteTask;
-import cn.tealc995.kkmaid.service.PlayListService;
+import cn.tealc995.kkmaid.service.api.playlist.PlayListAlterTask;
+import cn.tealc995.kkmaid.service.api.playlist.PlayListCreateTask;
+import cn.tealc995.kkmaid.service.api.playlist.PlayListDeleteTask;
+import cn.tealc995.kkmaid.service.api.playlist.PlayListService;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
@@ -59,7 +59,6 @@ public class PlayListViewModel {
         params.put("page", String.valueOf(currentPage.get() + 1));
         params.put("pageSize", String.valueOf(pageSize.get()));
         params.put("filterBy", "all");
-        service.setHost(Config.setting.getHOST());
         service.setParams(params);
         service.restart();
     }

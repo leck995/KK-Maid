@@ -7,7 +7,7 @@ import cn.tealc995.kikoreu.model.Work;
 import cn.tealc995.kikoreu.model.playList.PlayList;
 import cn.tealc995.kkmaid.model.lrc.LrcFile;
 import cn.tealc995.kkmaid.model.lrc.LrcType;
-import cn.tealc995.kkmaid.service.SeekLrcFileService;
+import cn.tealc995.kkmaid.service.subtitle.SeekSubtitleFileService;
 import cn.tealc995.kkmaid.ui.component.FolderTableView;
 import cn.tealc995.kkmaid.ui.stage.SubtitleStage;
 import cn.tealc995.kkmaid.util.CssLoader;
@@ -235,14 +235,14 @@ public class DetailUI {
         HBox charsetPane = new HBox(gbkItem,utfItem);
 
 
-        SeekLrcFileService seekLrcFileService = new SeekLrcFileService();
+        SeekSubtitleFileService seekSubtitleFileService = new SeekSubtitleFileService();
 
 
 
 
-        seekLrcFileService.setIds(work.getAllId());
-        seekLrcFileService.setOnSucceeded(event -> {
-            List<LrcFile> items = seekLrcFileService.getValue();
+        seekSubtitleFileService.setIds(work.getAllId());
+        seekSubtitleFileService.setOnSucceeded(event -> {
+            List<LrcFile> items = seekSubtitleFileService.getValue();
             if (items != null && !items.isEmpty()) {
                 lrcFileListView.setItems(FXCollections.observableList(items));
             }else {
@@ -250,7 +250,7 @@ public class DetailUI {
             }
         });
 
-        seekLrcFileService.start();
+        seekSubtitleFileService.start();
         lrcFileListView.setCellFactory(lrcFileListView1 -> new LocalLrcCell());
 
         lrcPane.getChildren().add(lrcFileListView);
@@ -273,14 +273,14 @@ public class DetailUI {
 
         gbkItem.setOnAction(event1 -> {
             viewModel.setCharset(Charset.forName("GBK"));
-            seekLrcFileService.setCharset(Charset.forName("GBK"));
-            seekLrcFileService.restart();
+            seekSubtitleFileService.setCharset(Charset.forName("GBK"));
+            seekSubtitleFileService.restart();
         });
 
         utfItem.setOnAction(event1 -> {
             viewModel.setCharset(StandardCharsets.UTF_8);
-            seekLrcFileService.setCharset(StandardCharsets.UTF_8);
-            seekLrcFileService.restart();
+            seekSubtitleFileService.setCharset(StandardCharsets.UTF_8);
+            seekSubtitleFileService.restart();
         });
         borderPane.setRight(lrcPane);
     }

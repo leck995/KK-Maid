@@ -1,13 +1,11 @@
-package cn.tealc995.kkmaid.service;
+package cn.tealc995.kkmaid.service.api.login;
 
 import cn.tealc995.kikoreu.KKApi;
-import cn.tealc995.kikoreu.api.UserApi;
 import cn.tealc995.kikoreu.model.ResponseBody;
 import javafx.concurrent.Task;
 
 /**
- * @program: Asmr-Online
- * @description:
+ * @description: 用于在设置中登陆获取Token
  * @author: Leck
  * @create: 2023-07-19 10:09
  */

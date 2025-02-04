@@ -1,4 +1,4 @@
-package cn.tealc995.kkmaid.service.api;
+package cn.tealc995.kkmaid.service.api.playlist;
 
 import cn.tealc995.kikoreu.KKApi;
 import cn.tealc995.kikoreu.model.ResponseBody;
