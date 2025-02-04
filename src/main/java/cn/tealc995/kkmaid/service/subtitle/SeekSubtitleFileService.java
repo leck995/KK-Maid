@@ -3,6 +3,7 @@ package cn.tealc995.kkmaid.service.subtitle;
 import cn.tealc995.kkmaid.config.Config;
 import cn.tealc995.kkmaid.model.lrc.LrcFile;
 import cn.tealc995.kkmaid.model.lrc.LrcType;
+import cn.tealc995.kkmaid.util.comparator.LrcFileComparator;
 import cn.tealc995.kkmaid.zip.NewZipUtil;
 import cn.tealc995.kkmaid.zip.ZipEntityFile;
 import javafx.concurrent.Service;
@@ -37,6 +38,7 @@ public class SeekSubtitleFileService extends Service<List<LrcFile>> {
                     for (String id : ids) {
                         List<LrcFile> lrcFiles = seekLrcFile(id);
                         if (lrcFiles != null) {
+                            lrcFiles.sort(new LrcFileComparator());
                             return lrcFiles;
                         }
                     }
@@ -44,6 +46,7 @@ public class SeekSubtitleFileService extends Service<List<LrcFile>> {
                 if (id != null) {
                     List<LrcFile> lrcFiles = seekLrcFile(id);
                     if (lrcFiles != null) {
+                        lrcFiles.sort(new LrcFileComparator());
                         return lrcFiles;
                     }
                 }
