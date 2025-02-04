@@ -2,6 +2,8 @@ package cn.tealc995.kkmaid.ui;
 
 import atlantafx.base.theme.Styles;
 import atlantafx.base.util.Animations;
+import cn.tealc995.kikoreu.model.ResponseBody;
+import cn.tealc995.kikoreu.model.User;
 import cn.tealc995.kkmaid.App;
 import cn.tealc995.kkmaid.config.Config;
 import cn.tealc995.kkmaid.event.*;
@@ -258,18 +260,22 @@ public class MainUI {
     private void checkLogin(){
         if (Config.setting.getTOKEN()!= null && !Config.setting.getTOKEN().isEmpty()){
             CheckLoginTask checkLoginTask=new CheckLoginTask();
-            checkLoginTask.valueProperty().addListener((observableValue, aBoolean, t1) -> {
-                if (t1){
-                    //Notification.show("登陆成功",MessageType.SUCCESS,3000,Pos.TOP_CENTER,App.mainStage);
-                    showNotification(new MainNotificationEvent("登陆成功"));
+            checkLoginTask.setOnSucceeded(workerStateEvent -> {
+                ResponseBody<User> responseBody = checkLoginTask.getValue();
+                if (responseBody.isSuccess()){
+                    if (responseBody.getData().isLoggedIn()){
+                        showNotification(new MainNotificationEvent("登陆成功"));
+                    }else {
+                        showNotification(new MainNotificationEvent("登陆失效，请重新登录获取Token"));
+                    }
+
                 }else {
-                    showNotification(new MainNotificationEvent("网络问题或用户Token失效（请重新获取Token）"));
+                    showNotification(new MainNotificationEvent("登陆失败,原因："+responseBody.getMsg()));
                 }
             });
-            checkLoginTask.run();
+            Thread.startVirtualThread(checkLoginTask);
         }else {
             showNotification(new MainNotificationEvent("当前未登录，请登录后使用"));
-            //Notification.show("当前以游客状态登录",MessageType.WARNING,3000,Pos.TOP_CENTER,App.mainStage);
         }
 
 
