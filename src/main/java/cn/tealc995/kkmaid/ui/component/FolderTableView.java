@@ -63,14 +63,11 @@ public class FolderTableView extends BorderPane {
     private StringProperty rootPath;
     private StringProperty currentPath;
     private PathViewPane pathViewPane;
-    private HBox controlsPane;
     private Image audioImage, picImage, otherImage, videoImage, folderImage;
 
     public FolderTableView(Work work, ObservableList<Track> items) {
         this.work = work;
         this.items = items;
-
-
 
         this.items.addListener((ListChangeListener<? super Track>) observable -> {
             if (itemsBack == null){
@@ -81,53 +78,10 @@ public class FolderTableView extends BorderPane {
         currentPath = new SimpleStringProperty("根目录");
         initTableView();
         initPathView();
-        initControls();
-
         setTop(pathViewPane);
         setCenter(tableView);
-
-        setBottom(controlsPane);
     }
 
-
-    private void initControls() {
-        Button downloadBtn = new Button(null, new FontIcon(Material2AL.ARROW_DOWNWARD));
-        downloadBtn.getStyleClass().add(Styles.BUTTON_ICON);
-        downloadBtn.setOnAction(event -> {
-            if (Config.setting.getDownloadDir() == null || Config.setting.getAria2Host() == null || Config.setting.getAriaRPCKey() == null) {
-                Notification.show("先在设置中配置下载目录和Aria2", MessageType.WARNING, 2000, Pos.TOP_CENTER, App.mainStage);
-            } else {
-                Track track = new Track();
-                track.setTitle(work.getFullId());
-                track.setType("folder");
-                track.setChildren(itemsBack);
-                DownloadUI downloadUI = new DownloadUI(work, track);
-                EventBusUtil.getDefault().post(new MainDialogEvent(downloadUI.getRoot()));
-            }
-
-        });
-
-/*        Button selectBtn=new Button(null,new FontIcon(Material2AL.CHECK_BOX));
-
-        selectBtn.setOnAction(event -> {
-            if (tableView.getSelectionModel().getSelectedItems().size() > 1){
-                tableView.getSelectionModel().clearSelection();
-            }else {
-                tableView.getSelectionModel().selectAll();
-            }
-        });
-
-
-
-        selectBtn.getStyleClass().add(Styles.BUTTON_ICON);
-
-        Label tipLabel=new Label("按住Shift进行多选");
-        tipLabel.getStyleClass().add(Styles.TEXT_SUBTLE);*/
-        controlsPane = new HBox(downloadBtn);
-        controlsPane.setAlignment(Pos.CENTER_RIGHT);
-        controlsPane.setSpacing(8.0);
-        controlsPane.setPadding(new Insets(3, 5, 3, 5));
-    }
 
 
     private void initPathView() {
@@ -179,7 +133,7 @@ public class FolderTableView extends BorderPane {
         tableView.setItems(items);
         TableColumn<Track, String> nameCol = new TableColumn<>("名称");
         nameCol.getStyleClass().add("detail-table-name");
-        nameCol.setPrefWidth(550);
+        nameCol.setPrefWidth(500);
         TableColumn<Track, String> typeCol = new TableColumn<>("类型");
         nameCol.getStyleClass().add("detail-table-type");
         typeCol.setPrefWidth(60);
@@ -415,5 +369,9 @@ public class FolderTableView extends BorderPane {
 
     public ObservableList<Track> getItems() {
         return items;
+    }
+
+    public ObservableList<Track> getItemsBack() {
+        return itemsBack;
     }
 }

@@ -65,6 +65,7 @@ public class LocalSubtitleStage extends RoundStage {
         HBox.setHgrow(lrcListView, Priority.ALWAYS);
 
         StackPane root=new StackPane();
+        root.setPadding(new Insets(15));
         root.getChildren().add(center);
 
 

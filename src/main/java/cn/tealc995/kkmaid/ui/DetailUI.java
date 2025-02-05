@@ -2,9 +2,13 @@ package cn.tealc995.kkmaid.ui;
 
 import atlantafx.base.theme.Styles;
 import cn.tealc995.kikoreu.model.Role;
+import cn.tealc995.kikoreu.model.Track;
 import cn.tealc995.kikoreu.model.Work;
 import cn.tealc995.kikoreu.model.playList.PlayList;
 import cn.tealc995.kkmaid.App;
+import cn.tealc995.kkmaid.config.Config;
+import cn.tealc995.kkmaid.event.EventBusUtil;
+import cn.tealc995.kkmaid.event.MainDialogEvent;
 import cn.tealc995.kkmaid.model.lrc.LrcFile;
 import cn.tealc995.kkmaid.service.subtitle.SeekSubtitleFileService;
 import cn.tealc995.kkmaid.ui.component.FolderTableView;
@@ -15,6 +19,7 @@ import cn.tealc995.teaFX.controls.notification.Notification;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -46,25 +51,48 @@ public class DetailUI {
     private StackPane root;
     private DetailViewModel viewModel;
     private Work work;
+    private FolderTableView folderTableView;
 
     public DetailUI(Work work) {
         this.work = work;
         viewModel = new DetailViewModel(work);
         root = new StackPane();
         borderPane = new BorderPane();
+        borderPane.getStyleClass().add("detail-dialog");
 
-        ImageView imageView = new ImageView();
-        imageView.imageProperty().bind(viewModel.posterProperty());
-        imageView.setFitHeight(210);
-        imageView.setFitWidth(280);
+        initTop();
+        initLeft();
+        initCenter();
+        if (work.isHasLocalSubtitle()) {
+            initRight();
+        }
+
+        root.getChildren().add(borderPane);
+        root.getStylesheets().add(CssLoader.getCss(CssLoader.detail));
+
+    }
+
+
+    private void initTop(){
+        Label titleLabel = new Label();
+        titleLabel.getStyleClass().add("detail-dialog-title");
+        titleLabel.setText(work.getTitle());
+        borderPane.setTop(titleLabel);
+    }
+
+    private void initLeft(){
+        //封面
+        ImageView posterIV = new ImageView();
+        posterIV.imageProperty().bind(viewModel.posterProperty());
+        posterIV.setFitHeight(210);
+        posterIV.setFitWidth(280);
         Rectangle rectangle = new Rectangle(280, 210);
         rectangle.setArcHeight(15);
         rectangle.setArcWidth(15);
-        imageView.setClip(rectangle);
+        posterIV.setClip(rectangle);
 
-
+        //控制按钮，歌单，下载
         Button playListBtn = new Button("添加到歌单", new FontIcon(Material2AL.ADD));
-        //playListBtn.setContentDisplay(ContentDisplay.RIGHT);
         CheckComboBox<PlayList> checkComboBox = new CheckComboBox<>(viewModel.getPlayLists());
         checkComboBox.setPrefWidth(150.0);
         checkComboBox.setTitle("添加到歌单");
@@ -77,9 +105,7 @@ public class DetailUI {
                     return playList.getName();
                 } else
                     return null;
-
             }
-
             @Override
             public PlayList fromString(String s) {
                 return null;
@@ -98,11 +124,9 @@ public class DetailUI {
                         if (playList.getExist()) {
                             checkComboBox.getCheckModel().check(playList);
                         }
-
                     }
                 }
             }
-
         });
 
         checkComboBox.getCheckModel().getCheckedItems().addListener((ListChangeListener<? super PlayList>) change -> {
@@ -121,16 +145,30 @@ public class DetailUI {
                             viewModel.updatePlayListWork(playList, true);
                             playList.setExist(false);
                         }
-
                     }
                 }
             }
         });
-
-
         StackPane playListPane = new StackPane(checkComboBox, playListBtn);
 
+        Button downloadBtn = new Button(null, new FontIcon(Material2AL.ARROW_DOWNWARD));
+        downloadBtn.getStyleClass().add(Styles.BUTTON_ICON);
+        downloadBtn.setOnAction(event -> {
+            if (Config.setting.getDownloadDir() == null || Config.setting.getAria2Host() == null || Config.setting.getAriaRPCKey() == null) {
+                Notification.show("先在设置中配置下载目录和Aria2", MessageType.WARNING, 2000, Pos.TOP_CENTER, App.mainStage);
+            } else {
+                Track track = new Track();
+                track.setTitle(work.getFullId());
+                track.setType("folder");
+                track.setChildren(folderTableView.getItemsBack());
+                DownloadUI downloadUI = new DownloadUI(work, track);
+                EventBusUtil.getDefault().post(new MainDialogEvent(downloadUI.getRoot()));
+            }
+        });
+        HBox funcPane = new HBox(15.0,playListPane,downloadBtn);
+        funcPane.setAlignment(Pos.CENTER);
 
+        //标签，声优
         FlowPane tagsPane = new FlowPane();
         tagsPane.setHgap(8.0);
         tagsPane.setVgap(5.0);
@@ -161,7 +199,6 @@ public class DetailUI {
             }
         }
 
-
         Label circleLabel = new Label();
         if (work.getCircle() != null) {
             circleLabel.setText(work.getCircle().getName());
@@ -177,61 +214,31 @@ public class DetailUI {
         circleLabel.setPadding(new Insets(0, 0, 0, 10));
 
 
-        Label titleLabel = new Label();
-        titleLabel.getStyleClass().add("detail-dialog-title");
-        titleLabel.setText(work.getTitle());
-
-
-        VBox left = new VBox(imageView, playListPane, circleLabel, tagsPane, actorsPane);
+        VBox left = new VBox(posterIV, funcPane, circleLabel, tagsPane, actorsPane);
         left.getStyleClass().add("detail-dialog-left");
         left.setAlignment(Pos.TOP_LEFT);
         left.setSpacing(15);
         left.setPrefWidth(290);
         ScrollPane leftScrollPane = new ScrollPane(left);
-        leftScrollPane.setPrefWidth(300);
-
-
-        FolderTableView folderTableView = new FolderTableView(work, viewModel.getTracks());
-
-        borderPane.setTop(titleLabel);
+        //leftScrollPane.setPrefWidth(300);
+        //leftScrollPane.setPrefHeight(500);
+        leftScrollPane.setFitToWidth(true);
+        leftScrollPane.setFitToHeight(true);
         borderPane.setLeft(leftScrollPane);
-        borderPane.setCenter(folderTableView);
-        borderPane.getStyleClass().add("detail-dialog");
-
-        if (work.isHasLocalSubtitle()) {
-            createLrcView();
-            //borderPane.setPrefSize(1300,600);
-        } else {
-            //borderPane.setPrefSize(1000,600);
-        }
-
-
-        root.getChildren().add(borderPane);
-        root.getStylesheets().add(CssLoader.getCss(CssLoader.detail));
-
     }
 
+    private void initCenter(){
+        folderTableView = new FolderTableView(work, viewModel.getTracks());
+        borderPane.setCenter(folderTableView);
+    }
 
-    private void createLrcView() {
+    private void initRight() {
         VBox lrcPane = new VBox();
         ListView<LrcFile> lrcFileListView = new ListView<>();
         lrcFileListView.setPrefWidth(300);
         Button showLrcFileBtn = new Button("打开字幕");
 
-        ToggleButton gbkItem = new ToggleButton("GBK");
-        ToggleButton utfItem = new ToggleButton("UTF-8");
-        gbkItem.setSelected(true);
-        ToggleGroup charsetGroup = new ToggleGroup();
-        gbkItem.setToggleGroup(charsetGroup);
-        utfItem.setToggleGroup(charsetGroup);
-        gbkItem.getStyleClass().add(Styles.LEFT_PILL);
-        utfItem.getStyleClass().add(Styles.RIGHT_PILL);
-        HBox charsetPane = new HBox(gbkItem, utfItem);
-
-
         SeekSubtitleFileService seekSubtitleFileService = new SeekSubtitleFileService();
-
-
         seekSubtitleFileService.setIds(work.getAllId());
         seekSubtitleFileService.setOnSucceeded(event -> {
             List<LrcFile> items = seekSubtitleFileService.getValue();
@@ -241,12 +248,9 @@ public class DetailUI {
                 showLrcFileBtn.setDisable(true);
             }
         });
-
         seekSubtitleFileService.start();
+
         lrcFileListView.setCellFactory(lrcFileListView1 -> new LocalLrcCell());
-
-        lrcPane.getChildren().add(lrcFileListView);
-
         showLrcFileBtn.setOnAction(event1 -> {
             if (!lrcFileListView.getItems().isEmpty()) {
                 LrcFile first = lrcFileListView.getItems().getFirst();
@@ -258,23 +262,12 @@ public class DetailUI {
                 }
             }
         });
-
-        HBox buttonsPane = new HBox(10.0, showLrcFileBtn, charsetPane);
-
-        lrcPane.getChildren().addFirst(buttonsPane);
-
-        gbkItem.setOnAction(event1 -> {
-            viewModel.setCharset(Charset.forName("GBK"));
-            seekSubtitleFileService.setCharset(Charset.forName("GBK"));
-            seekSubtitleFileService.restart();
-        });
-
-        utfItem.setOnAction(event1 -> {
-            viewModel.setCharset(StandardCharsets.UTF_8);
-            seekSubtitleFileService.setCharset(StandardCharsets.UTF_8);
-            seekSubtitleFileService.restart();
-        });
-        borderPane.setRight(lrcPane);
+        lrcPane.getChildren().addAll(showLrcFileBtn,lrcFileListView);
+        VBox.setVgrow(lrcFileListView, Priority.ALWAYS);
+        Separator separator = new Separator(Orientation.VERTICAL);
+        HBox buttonsPane = new HBox(10.0,separator,lrcPane);
+        buttonsPane.getStyleClass().add("right");
+        borderPane.setRight(buttonsPane);
     }
 
 
@@ -289,7 +282,6 @@ public class DetailUI {
             setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2) {
                     LocalSubtitleStage stage = new LocalSubtitleStage(getListView().getItems(), getIndex());
-
                     stage.show();
                 }
             });
@@ -300,9 +292,10 @@ public class DetailUI {
             super.updateItem(lrcFile, b);
             if (!b) {
                 setText(lrcFile.getTitle());
-
+                setDisable(false);
             } else {
                 setText(null);
+                setDisable(true);
             }
         }
     }
