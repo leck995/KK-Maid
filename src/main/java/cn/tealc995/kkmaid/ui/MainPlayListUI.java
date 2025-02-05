@@ -2,6 +2,7 @@ package cn.tealc995.kkmaid.ui;
 
 import cn.tealc995.kikoreu.model.playList.PlayList;
 import cn.tealc995.kikoreu.model.Work;
+import cn.tealc995.kkmaid.config.Config;
 import cn.tealc995.kkmaid.ui.cell.PlayListWorkCell;
 import cn.tealc995.kkmaid.util.AnchorPaneUtil;
 import cn.tealc995.kkmaid.util.CssLoader;
@@ -175,16 +176,22 @@ public class MainPlayListUI {
 
 
 
-
         root.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.FORWARD){
-                viewModel.prePage();
+                if (!Config.setting.isGridSideKeyModel()){
+                    viewModel.nextPage();
+                }else {
+                    viewModel.prePage();
+                }
             }
             if (event.getButton() == MouseButton.BACK){
-                viewModel.nextPage();
+                if (!Config.setting.isGridSideKeyModel()){
+                    viewModel.prePage();
+                }else {
+                    viewModel.nextPage();
+                }
             }
         });
-
 
 
         root.setPadding(new Insets(0,0,0,10));

@@ -25,10 +25,12 @@ public class Setting {
     private final SimpleBooleanProperty autoCheckVersion=new SimpleBooleanProperty(false);//检查更新
     private final SimpleDoubleProperty stageWidth=new SimpleDoubleProperty(1600.0);
     private final SimpleDoubleProperty stageHeight=new SimpleDoubleProperty(960.0);
-
+    /*========================主界面========================*/
     private final SimpleBooleanProperty gridSortDescModel=new SimpleBooleanProperty(true);
     private final SimpleBooleanProperty gridSubtitleModel=new SimpleBooleanProperty(false);
     private final SimpleStringProperty gridOrder=new SimpleStringProperty("create_date");
+    private final SimpleBooleanProperty gridSideKeyModel=new SimpleBooleanProperty(false);
+
 
     /*========================服务器========================*/
     private final SimpleStringProperty HOST=new SimpleStringProperty();
@@ -546,5 +548,16 @@ public class Setting {
 
     public void setSaveNameTemplate(String saveNameTemplate) {
         this.saveNameTemplate.set(saveNameTemplate);
+    }
+
+    public boolean isGridSideKeyModel() {
+        return gridSideKeyModel.get();
+    }
+
+    public SimpleBooleanProperty gridSideKeyModelProperty() {
+        return gridSideKeyModel;
+    }
+    public void setGridSideKeyModel(boolean gridSideKeyModel) {
+        this.gridSideKeyModel.set(gridSideKeyModel);
     }
 }

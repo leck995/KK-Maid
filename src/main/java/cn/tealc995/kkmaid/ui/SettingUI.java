@@ -212,7 +212,12 @@ public class SettingUI {
         descSwitch.selectedProperty().bindBidirectional(viewModel.gridDescProperty());
         Pane pane3 = initRowPane(descLabel, descSwitch);
 
-        VBox vBox=new VBox(pane1,pane2,pane3);
+        Label sideKeyLabel=new Label("反转侧键功能");
+        ToggleSwitch sideKeySwitch=new ToggleSwitch();
+        sideKeySwitch.selectedProperty().bindBidirectional(Config.setting.gridSideKeyModelProperty());
+        Pane pane4 = initRowPane(sideKeyLabel, sideKeySwitch);
+
+        VBox vBox=new VBox(pane1,pane2,pane3,pane4);
         vBox.setPadding(new Insets(10,20,10,20));
         return vBox;
 
