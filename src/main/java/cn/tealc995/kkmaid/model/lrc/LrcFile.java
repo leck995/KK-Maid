@@ -26,12 +26,21 @@ public class LrcFile {
     }
 
     public String getTitleWithoutSuffix() {
-        int index=title.lastIndexOf(".");
+        int index = title.toLowerCase().lastIndexOf(".mp3.vtt");
+        if (index != -1) {
+            return title.substring(0, index);
+        }
+        index = title.toLowerCase().lastIndexOf(".wav.vtt");
+        if (index != -1) {
+            return title.substring(0, index);
+        }
+        index = title.lastIndexOf(".");
         if (index != -1)
-            return title.substring(0,index);
+            return title.substring(0, index);
         else
             return title;
     }
+
     public String getTitle() {
         return title;
     }

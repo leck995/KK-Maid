@@ -149,6 +149,7 @@ public class MainGridViewModel {
         this.searchKey.set(event.getKey());
         this.playListId.set(event.getInfo());
         setCurrentPage(0);
+
         update();
     }
 

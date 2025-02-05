@@ -635,7 +635,7 @@ public class VlcPlayer implements TeaMediaPlayer {
             if (!list.isEmpty()){//当有名称对应的歌词时
                 loadSubtitleFile(list.getFirst());
             }else {//如果没有匹配的歌词，
-                if (lrcFiles.size() == music.get().getAudios().size()){ //判断歌词列表size和歌曲列表size，相同则获取对应index的歌词。
+                if (lrcFiles.size() == songs.size()){ //判断歌词列表size和歌曲列表size，相同则获取对应index的歌词。
                     loadSubtitleFile(lrcFiles.get(index));
                 }else {
                     lrcBeans.get().clear();
