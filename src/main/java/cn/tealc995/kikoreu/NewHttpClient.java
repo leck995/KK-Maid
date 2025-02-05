@@ -36,7 +36,7 @@ public class NewHttpClient {
      * @date: 2025/2/1
      */
     public boolean ready() {
-        return token != null;
+        return token != null && host != null;
     }
 
     /**
@@ -45,6 +45,9 @@ public class NewHttpClient {
      * @date: 2025/2/1
      */
     public void setToken(String token) {
+        if (token != null && token.endsWith("/")) {
+            token = token.substring(0, token.length() - 1);
+        }
         this.token = token;
     }
 
