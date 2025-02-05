@@ -22,10 +22,10 @@ public class MainWorksService extends WorksBaseService {
     private SubtitleData subtitleData;
 
     @Override
-    protected Task<MainWorks> createTask() {
-        Task<MainWorks> task = new Task<>() {
+    protected Task<ResponseBody<MainWorks>> createTask() {
+        Task<ResponseBody<MainWorks>> task = new Task<>() {
             @Override
-            protected MainWorks call() {
+            protected ResponseBody<MainWorks> call() {
                 updateMessage("true");
                 if (subtitleData == null) {
                     subtitleData = SubtitleData.getInstance();
@@ -37,12 +37,9 @@ public class MainWorksService extends WorksBaseService {
                     if (works != null) {
                         processWorks(works);
                     }
-                    updateMessage("false");
-                    return works;
-                } else {
-                    updateMessage("false");
-                    return null;
                 }
+                updateMessage("false");
+                return responseBody;
             }
         };
         return task;

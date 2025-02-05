@@ -1,18 +1,19 @@
 package cn.tealc995.kkmaid.ui;
 
+import cn.tealc995.kkmaid.App;
 import cn.tealc995.kkmaid.config.Config;
 import cn.tealc995.kikoreu.model.MainWorks;
 import cn.tealc995.kikoreu.model.SortType;
 import cn.tealc995.kikoreu.model.Work;
-import cn.tealc995.kkmaid.event.BlackWorkEvent;
-import cn.tealc995.kkmaid.event.EventBusUtil;
-import cn.tealc995.kkmaid.event.GridItemRemoveEvent;
-import cn.tealc995.kkmaid.event.SearchEvent;
+import cn.tealc995.kkmaid.event.*;
 import cn.tealc995.kkmaid.service.api.works.MainWorksService;
+import cn.tealc995.teaFX.controls.notification.MessageType;
+import cn.tealc995.teaFX.controls.notification.Notification;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Pos;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.HashMap;
@@ -98,7 +99,17 @@ public class MainGridViewModel {
         if (service == null) {
             service = new MainWorksService();
             loading.bind(Bindings.createBooleanBinding(() -> Boolean.valueOf(service.getMessage()), service.messageProperty()));
-            mainWorks.bind(service.valueProperty());
+            service.valueProperty().addListener((observableValue, mainWorksResponseBody, t1) -> {
+                if (t1 != null) {
+                    if (t1.isSuccess()){
+                        mainWorks.set(t1.getData());
+                    }else {
+                        EventBusUtil.getDefault().post(new MainNotificationEvent("加载失败："+t1.getMsg()));
+                    }
+                }
+
+            });
+
         }
 
 

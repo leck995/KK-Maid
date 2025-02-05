@@ -2,6 +2,7 @@ package cn.tealc995.kkmaid.service.api.works;
 
 import cn.tealc995.kikoreu.model.LanguageEdition;
 import cn.tealc995.kikoreu.model.MainWorks;
+import cn.tealc995.kikoreu.model.ResponseBody;
 import cn.tealc995.kikoreu.model.Work;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
@@ -12,9 +13,9 @@ import javafx.concurrent.Task;
  * @author: Leck
  * @create: 2025-02-04 20:04
  */
-public class WorksBaseService extends Service<MainWorks> {
+public class WorksBaseService extends Service<ResponseBody<MainWorks>> {
     @Override
-    protected Task<MainWorks> createTask() {
+    protected Task<ResponseBody<MainWorks>> createTask() {
         return null;
     }
 

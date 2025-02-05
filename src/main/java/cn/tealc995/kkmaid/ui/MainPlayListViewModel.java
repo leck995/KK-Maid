@@ -1,6 +1,7 @@
 package cn.tealc995.kkmaid.ui;
 
 import cn.tealc995.kikoreu.model.ResponseBody;
+import cn.tealc995.kkmaid.App;
 import cn.tealc995.kkmaid.config.Config;
 import cn.tealc995.kikoreu.model.MainWorks;
 import cn.tealc995.kikoreu.model.playList.PlayList;
@@ -12,10 +13,13 @@ import cn.tealc995.kkmaid.event.MainNotificationEvent;
 import cn.tealc995.kkmaid.event.MainPlayListRemoveWorkEvent;
 import cn.tealc995.kkmaid.service.api.works.PlayListWorksService;
 import cn.tealc995.kkmaid.service.api.playlist.PlayListRemoveWorkTask;
+import cn.tealc995.teaFX.controls.notification.MessageType;
+import cn.tealc995.teaFX.controls.notification.Notification;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Pos;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.HashMap;
@@ -87,7 +91,16 @@ public class MainPlayListViewModel {
         if (service==null){
             service=new PlayListWorksService();
             loading.bind(Bindings.createBooleanBinding(() -> Boolean.valueOf(service.getMessage()),service.messageProperty()));
-            mainWorks.bind(service.valueProperty());
+            service.valueProperty().addListener((observableValue, mainWorksResponseBody, t1) -> {
+                if (t1 != null) {
+                    if (t1.isSuccess()){
+                        mainWorks.set(t1.getData());
+                    }else {
+                        EventBusUtil.getDefault().post(new MainNotificationEvent("加载失败："+t1.getMsg()));
+                    }
+                }
+
+            });
         }
         Map<String,String> params=new HashMap<>();
         params.put("page", String.valueOf(currentPage.get() + 1));
