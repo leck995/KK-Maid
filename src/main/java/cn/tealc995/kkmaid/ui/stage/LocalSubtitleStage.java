@@ -25,6 +25,8 @@ import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -35,7 +37,7 @@ import java.util.List;
  * @create: 2023-09-05 00:49
  */
 public class LocalSubtitleStage extends RoundStage {
-
+    private static final Logger LOG = LoggerFactory.getLogger(LocalSubtitleStage.class);
     private ListView<LrcBean> lrcListView;
     private ObservableList<LrcBean> lrcBeans;
 
@@ -98,6 +100,7 @@ public class LocalSubtitleStage extends RoundStage {
             task.setOnSucceeded(workerStateEvent -> {
                 SubtitleBeansBaseTask source = (SubtitleBeansBaseTask) workerStateEvent.getSource();
                 ResponseBody<List<LrcBean>> value = source.getValue();
+                LOG.debug(value.getMsg());
                 if (value.isSuccess()) {
                     List<LrcBean> list = value.getData();
                     if (list != null) {

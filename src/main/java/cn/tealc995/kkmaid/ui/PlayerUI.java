@@ -22,6 +22,7 @@ import com.jhlabs.image.GaussianFilter;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
@@ -43,6 +44,8 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
 import net.coobird.thumbnailator.Thumbnails;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -50,24 +53,25 @@ import java.io.IOException;
 
 
 public class PlayerUI {
+    private static final Logger LOG = LoggerFactory.getLogger(PlayerUI.class);
     @FXML
-    private StackPane root,lrcPane,albumPane;
+    private StackPane root, lrcPane, albumPane;
     @FXML
     private ImageView album;
     @FXML
-    private Label currentTimeLabel,totalTimeLabel;
+    private Label currentTimeLabel, totalTimeLabel;
     @FXML
     private Pane bgPane;
     @FXML
-    private AnchorPane infoPane,progressPane;
+    private AnchorPane infoPane, progressPane;
     @FXML
     private Label singer;
     @FXML
     private Label songName;
     @FXML
-    private Button backBtn,nextBtn,preBtn,showSongListViewBtn;
+    private Button backBtn, nextBtn, preBtn, showSongListViewBtn;
     @FXML
-    private ToggleButton disorderBtn,loopBtn,playBtn,lrcBtn,volumeBtn;
+    private ToggleButton disorderBtn, loopBtn, playBtn, lrcBtn, volumeBtn;
     @FXML
     private JFXSlider songSlider;
     @FXML
@@ -75,7 +79,7 @@ public class PlayerUI {
     @FXML
     private JFXHamburger hamburger;
     @FXML
-    private Button importLrcZipBtn,importLrcFolderBtn,manageLrcBtn;
+    private Button importLrcZipBtn, importLrcFolderBtn, manageLrcBtn;
     private LrcView<LrcBean> lrcView;
 
     public Boolean isMouseMove = false;
@@ -87,18 +91,18 @@ public class PlayerUI {
     private ContrastFilter contrastFilter;
 
 
-    public PlayerUI(){
-        player= MediaPlayerUtil.mediaPlayer();
+    public PlayerUI() {
+        player = MediaPlayerUtil.mediaPlayer();
     }
 
 
     @FXML
-    private void  initialize(){
-        GaussianFilter gaussianFilter=new GaussianFilter(Config.setting.getDetailGaussianSize());
-        ContrastFilter contrastFilter=new ContrastFilter();
+    private void initialize() {
+        GaussianFilter gaussianFilter = new GaussianFilter(Config.setting.getDetailGaussianSize());
+        ContrastFilter contrastFilter = new ContrastFilter();
         contrastFilter.setBrightness(Config.setting.detailDarkerSizeProperty().floatValue());
 
-        Rectangle rectangle=new Rectangle();
+        Rectangle rectangle = new Rectangle();
         rectangle.setFill(Color.RED);
         rectangle.widthProperty().bind(bgPane.widthProperty());
         rectangle.heightProperty().bind(bgPane.heightProperty());
@@ -107,54 +111,54 @@ public class PlayerUI {
         root.setClip(rectangle);
 
 
-        TitleBar sceneBar=new TitleBar(App.mainStage, TitleBarStyle.NO_LEFT);
+        TitleBar sceneBar = new TitleBar(App.mainStage, TitleBarStyle.NO_LEFT);
         sceneBar.setContent(root.getChildren().get(2));
         root.getChildren().add(sceneBar);
 
 
-        if (player.mainCover() != null){
-            Image image = new Image(player.mainCover(), true);
-            image.progressProperty().addListener((observableValue, number, t1) -> {
-                if (t1.intValue() == 1){
-
-                    try {
-                        BufferedImage bufferedImage = Thumbnails.of(SwingFXUtils.fromFXImage(image, null)).width(100).asBufferedImage();
-
-                        BufferedImage filter = gaussianFilter.filter(bufferedImage, null);
-
-                        filter=contrastFilter.filter(filter,null);
-                        BackgroundImage backgroundImage=new BackgroundImage(
-                                SwingFXUtils.toFXImage(filter,null),
-                                BackgroundRepeat.NO_REPEAT,
-                                BackgroundRepeat.NO_REPEAT,
-                                BackgroundPosition.CENTER,
-                                new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO,true,true,true,true));
-                        Background background=new Background(backgroundImage);
+        if (player.mainCover() != null) {
+            Thread.startVirtualThread(() ->{
+                Image image = new Image(player.mainCover(), false);
+                Platform.runLater(()->{
+                    album.setImage(image);
+                });
+                try {
+                    BufferedImage bufferedImage = Thumbnails.of(SwingFXUtils.fromFXImage(image, null)).width(100).asBufferedImage();
+                    BufferedImage filter = gaussianFilter.filter(bufferedImage, null);
+                    filter = contrastFilter.filter(filter, null);
+                    BackgroundImage backgroundImage = new BackgroundImage(
+                            SwingFXUtils.toFXImage(filter, null),
+                            BackgroundRepeat.NO_REPEAT,
+                            BackgroundRepeat.NO_REPEAT,
+                            BackgroundPosition.CENTER,
+                            new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, true, true, true, true));
+                    Background background = new Background(backgroundImage);
+                    Platform.runLater(()->{
                         bgPane.setBackground(background);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-
+                    });
+                    LOG.error("成功加载背景");
+                } catch (IOException e) {
+                    LOG.error("背景加载出现错误", e);
                 }
             });
 
-            album.setImage(image);
+
+
+
+
         }
 
 
-
-
-
-        SimpleBooleanProperty detailAlbumRadiusModel=new SimpleBooleanProperty();
+        SimpleBooleanProperty detailAlbumRadiusModel = new SimpleBooleanProperty();
         detailAlbumRadiusModel.bind(Config.setting.detailAlbumRadiusModelProperty());
-        if (detailAlbumRadiusModel.get()){
+        if (detailAlbumRadiusModel.get()) {
             albumPane.setClip(creatClip());
         }
         detailAlbumRadiusModel.addListener((observableValue, aBoolean, t1) -> {
-            if (t1){
+            if (t1) {
                 albumPane.setClip(creatClip());
-            }else{
-                if (albumPane.getClip()!=null){
+            } else {
+                if (albumPane.getClip() != null) {
                     Rectangle clip = (Rectangle) albumPane.getClip();
                     clip.widthProperty().unbind();
                     clip.heightProperty().unbind();
@@ -165,11 +169,6 @@ public class PlayerUI {
                 }
             }
         });
-
-
-
-
-
 
 
         album.fitWidthProperty().bind(root.widthProperty().multiply(0.45));
@@ -188,20 +187,18 @@ public class PlayerUI {
             bgPane.setEffect(gaussianBlur);*/
 
 
-        
-
         disorderBtn.setTooltip(new Tooltip("乱序"));
         disorderBtn.selectedProperty().bindBidirectional(player.disorderProperty());
         loopBtn.setTooltip(new Tooltip("循环"));
         loopBtn.selectedProperty().bindBidirectional(player.loopProperty());
         showSongListViewBtn.setTooltip(new Tooltip("播放列表"));
         showSongListViewBtn.setOnMouseClicked(mouseEvent -> {
-            PlayingListUI playingListUI=new PlayingListUI();
+            PlayingListUI playingListUI = new PlayingListUI();
             EventBusUtil.getDefault().post(new MainDialogEvent(playingListUI.getRoot()));
         });
         playBtn.selectedProperty().bindBidirectional(player.playingProperty());
         playBtn.setOnAction(actionEvent -> {
-            if (!player.ready()){
+            if (!player.ready()) {
                 playBtn.setSelected(false);
                 actionEvent.consume();
             }
@@ -217,18 +214,18 @@ public class PlayerUI {
         volumeBtn.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<Event>() {
             @Override
             public void handle(Event event) {
-                if (soundPopup!=null){
+                if (soundPopup != null) {
                     Bounds bounds = volumeBtn.localToScreen(volumeBtn.getBoundsInLocal());
-                    soundPopup.show(root.getScene().getWindow(), bounds.getMinX() -10, bounds.getMinY() - 160);
+                    soundPopup.show(root.getScene().getWindow(), bounds.getMinX() - 10, bounds.getMinY() - 160);
                     event.consume();
                     return;
                 }
                 Bounds bounds = volumeBtn.localToScreen(volumeBtn.getBoundsInLocal());
-                soundPopup=new ContextMenu();
+                soundPopup = new ContextMenu();
                 soundPopup.setPrefWidth(100);
                 soundPopup.setMaxWidth(100);
                 soundPopup.getScene().setRoot(new VolumeUI().getRoot());
-                soundPopup.show(root.getScene().getWindow(), bounds.getMinX() -10, bounds.getMinY() - 160);
+                soundPopup.show(root.getScene().getWindow(), bounds.getMinX() - 10, bounds.getMinY() - 160);
                 event.consume();
             }
         });
@@ -239,9 +236,9 @@ public class PlayerUI {
         songSlider.maxProperty().bind(player.totalTimeProperty());
 
         /*进度条随歌曲时间更改*/
-        SimpleDoubleProperty currentTimeProperty= new SimpleDoubleProperty();
+        SimpleDoubleProperty currentTimeProperty = new SimpleDoubleProperty();
         currentTimeProperty.bind(player.currentTimeProperty());
-        currentTimeProperty.addListener((obs,oldValue,newValue)->{
+        currentTimeProperty.addListener((obs, oldValue, newValue) -> {
             if (!isMouseMove) {
                 songSlider.setValue(newValue.doubleValue());
             }
@@ -250,7 +247,7 @@ public class PlayerUI {
         songSlider.setValueFactory(slider -> Bindings
                 .createStringBinding(() -> (
                         TimeFormatUtil.formatToClock(songSlider.getValue())
-                ) , slider.valueProperty()));
+                ), slider.valueProperty()));
         /*进度条按下监听*/
         songSlider.setOnMousePressed(mouseEvent -> isMouseMove = true);
         /*进度条释放监听，跳转到指定时间*/
@@ -267,37 +264,30 @@ public class PlayerUI {
         songName.textProperty().bind(player.titleProperty());
 
 
-
-
         singer.textProperty().bind(player.artistProperty());
         currentTimeLabel.textProperty().bind(Bindings
                 .createStringBinding(() -> (
                         TimeFormatUtil.formatToClock(player.getCurrentTime())
-                ) , player.currentTimeProperty()));
+                ), player.currentTimeProperty()));
         totalTimeLabel.textProperty().bind(Bindings
                 .createStringBinding(() -> (
                         TimeFormatUtil.formatToClock(player.totalTimeProperty().get())
-                ) ,player.totalTimeProperty()));
+                ), player.totalTimeProperty()));
         initLrcView();
-    
+
         lrcView.itemsProperty().bind(player.lrcBeansProperty());
 
 
-
-
-
-     
         backBtn.setOnAction(actionEvent -> {
             currentTimeProperty.unbind();
 
-            Timeline timeline=new Timeline(new KeyFrame(Duration.millis(240),new KeyValue(root.translateYProperty(),App.mainStage.getHeight())));
+            Timeline timeline = new Timeline(new KeyFrame(Duration.millis(240), new KeyValue(root.translateYProperty(), App.mainStage.getHeight())));
             timeline.setOnFinished(event -> {
-                EventBusUtil.getDefault().post(new MainPaneEvent(null,false));
+                EventBusUtil.getDefault().post(new MainPaneEvent(null, false));
             });
             timeline.play();
 
         });
-
 
 
         nodesList.setRotate(180);
@@ -310,60 +300,60 @@ public class PlayerUI {
         });
 
         importLrcZipBtn.setOnAction(event -> {
-            FileChooser fileChooser=new FileChooser();
+            FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("选择字幕包");
-            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("压缩包","*.zip","*.ZIP"));
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("压缩包", "*.zip", "*.ZIP"));
             File file = fileChooser.showOpenDialog(App.mainStage);
-            if (file != null){
-                LrcZipDialogUI lrcZipDialogUI=new LrcZipDialogUI(file);
+            if (file != null) {
+                LrcZipDialogUI lrcZipDialogUI = new LrcZipDialogUI(file);
                 EventBusUtil.getDefault().post(new MainDialogEvent(lrcZipDialogUI.getRoot()));
             }
         });
         importLrcFolderBtn.setOnAction(event -> {
-            DirectoryChooser directoryChooser=new DirectoryChooser();
+            DirectoryChooser directoryChooser = new DirectoryChooser();
             directoryChooser.setTitle("选择字幕文件夹");
             File file = directoryChooser.showDialog(App.mainStage);
-            if (file!=null){
-                LrcFolderDialogUI lrcFolderDialogUI=new LrcFolderDialogUI(file);
+            if (file != null) {
+                LrcFolderDialogUI lrcFolderDialogUI = new LrcFolderDialogUI(file);
                 EventBusUtil.getDefault().post(new MainDialogEvent(lrcFolderDialogUI.getRoot()));
             }
 
         });
         manageLrcBtn.setOnAction(event -> {
-            LrcFileDialogUI lrcFileDialogUi=new LrcFileDialogUI();
+            LrcFileDialogUI lrcFileDialogUi = new LrcFileDialogUI();
             EventBusUtil.getDefault().post(new MainDialogEvent(lrcFileDialogUi.getRoot()));
         });
 
     }
 
     /**
+     * @return javafx.scene.shape.Rectangle
      * @description: 创建封面的圆角和阴影
      * @name: creatClip
      * @author: Leck
      * @param:
-     * @return  javafx.scene.shape.Rectangle
-     * @date:   2023/3/2
+     * @date: 2023/3/2
      */
     private Rectangle creatClip() {
-        Rectangle rectangle=new Rectangle();
+        Rectangle rectangle = new Rectangle();
         rectangle.widthProperty().bind(albumPane.widthProperty().add(-10));
         rectangle.heightProperty().bind(albumPane.heightProperty().add(-10));
         rectangle.arcWidthProperty().bind(Config.setting.detailAlbumRadiusSizeProperty());
         rectangle.arcHeightProperty().bind(Config.setting.detailAlbumRadiusSizeProperty());
 
-        SimpleBooleanProperty detailAlbumEffectModel=new SimpleBooleanProperty();
-        detailAlbumEffectModel.bind( Config.setting.detailAlbumEffectModelProperty());
+        SimpleBooleanProperty detailAlbumEffectModel = new SimpleBooleanProperty();
+        detailAlbumEffectModel.bind(Config.setting.detailAlbumEffectModelProperty());
 
 
-        if (detailAlbumEffectModel.get()){
-            DropShadow dropShadow = new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(25, 25, 26,0.9), 2, 1, 2, 2);
+        if (detailAlbumEffectModel.get()) {
+            DropShadow dropShadow = new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(25, 25, 26, 0.9), 2, 1, 2, 2);
             dropShadow.radiusProperty().bind(Config.setting.detailAlbumEffectSizeProperty());
             rectangle.setEffect(dropShadow);
         }
 
 
         detailAlbumEffectModel.addListener((o, a, b) -> {
-            if (!b){
+            if (!b) {
                 DropShadow effect = (DropShadow) rectangle.getEffect();
                 effect.radiusProperty().unbind();
                 rectangle.setEffect(null);
@@ -374,21 +364,17 @@ public class PlayerUI {
     }
 
 
-
-
-
-
     /**
+     * @return void
      * @name: initLrcView
      * @description: 初始化LrcView
      * @author: Leck
      * @param:
-     * @return  void
-     * @date:   2022/12/17
+     * @date: 2022/12/17
      */
-    private void initLrcView(){
-        ObservableList<LrcBean> lrcBeanList=FXCollections.observableArrayList();
-        lrcView=new LrcView(player.currentTimeProperty());
+    private void initLrcView() {
+        ObservableList<LrcBean> lrcBeanList = FXCollections.observableArrayList();
+        lrcView = new LrcView(player.currentTimeProperty());
         lrcView.getStyleClass().add("lrc-listview");
         lrcPane.getChildren().add(lrcView);
 
@@ -398,9 +384,6 @@ public class PlayerUI {
 
 
     }
-
-
-
 
 
 }

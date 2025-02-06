@@ -708,9 +708,11 @@ public class LcMediaPlayer implements TeaMediaPlayer {
             List<LrcFile> list = lrcFiles.stream()
                     .filter(lrcFile -> lrcFile.getTitleWithoutSuffix().equals(subtitleTitle)).toList();
             if (!list.isEmpty()){//当有名称对应的歌词时
+                LOG.debug("成功匹配到同名字幕");
                 loadSubtitleFile(list.getFirst());
             }else {//如果没有匹配的歌词，
                 if (lrcFiles.size() == songs.size()){ //判断歌词列表size和歌曲列表size，相同则获取对应index的歌词。
+                    LOG.debug("成功匹配到同index字幕");
                     loadSubtitleFile(lrcFiles.get(index));
                 }else {
                     lrcBeans.get().clear();

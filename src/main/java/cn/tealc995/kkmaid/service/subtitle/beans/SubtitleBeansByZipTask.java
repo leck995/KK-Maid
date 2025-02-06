@@ -39,7 +39,7 @@ public class SubtitleBeansByZipTask extends SubtitleBeansBaseTask {
     }
 
     @Override
-    protected ResponseBody<List<LrcBean>> call() throws Exception {
+    protected ResponseBody<List<LrcBean>> call() {
         ZipFile zipFile = null;
         Optional<BufferedReader> readerOptional = null;
         try {
@@ -58,20 +58,17 @@ public class SubtitleBeansByZipTask extends SubtitleBeansBaseTask {
                 while ((line = bufferedReader.readLine()) != null) {
                     sb.append(line).append("\\n");
                 }
+                LOG.debug(sb.toString());
+                readerOptional.get().close();
+                zipFile.close();
                 return ResponseBody.create(200,"成功加载字幕",LrcFormatUtil.getLrcListFromLrcText(sb.toString()));
             }else {
+                zipFile.close();
                 return ResponseBody.create(0,String.format("无法正确读取压缩包 %s 内字幕文件：%s",source.getZipPath(),source.getPath()),null);
             }
         } catch (IOException e) {
             LOG.error(e.getMessage(), e);
             return ResponseBody.create(-1,"加载字幕出现IO错误,具体原因查看日志",null);
-        } finally {
-            if (readerOptional != null && readerOptional.isPresent()) {
-                readerOptional.get().close();
-            }
-            if (zipFile != null) {
-                zipFile.close();
-            }
         }
     }
 

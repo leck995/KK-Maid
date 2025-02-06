@@ -33,7 +33,7 @@ public class SeekSubtitleFileService extends Service<List<LrcFile>> {
     protected Task<List<LrcFile>> createTask() {
         Task<List<LrcFile>> task = new Task<List<LrcFile>>() {
             @Override
-            protected List<LrcFile> call() throws Exception {
+            protected List<LrcFile> call() {
                 if (ids != null) {
                     for (String id : ids) {
                         List<LrcFile> lrcFiles = seekLrcFile(id);

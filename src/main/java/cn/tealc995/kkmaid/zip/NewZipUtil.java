@@ -122,9 +122,13 @@ public class NewZipUtil {
     public static Optional<BufferedReader> getSubtitleFileBufferedReader(ZipFile zipFile, String subtitlePath) throws IOException {
         ZipArchiveEntry entry = zipFile.getEntry(subtitlePath);
         if (entry != null) {
+            System.out.println("not null");
+            System.out.println(entry.getName());
             InputStream inputStream = zipFile.getInputStream(entry);
             return Optional.of(new BufferedReader(new InputStreamReader(inputStream)));
         } else {
+            System.out.println("null");
+            System.out.println(subtitlePath);
             return Optional.empty();
         }
     }
@@ -140,9 +144,13 @@ public class NewZipUtil {
     public static Optional<BufferedReader> getSubtitleFileBufferedReader(ZipFile zipFile,String subtitlePath,Charset charset) throws IOException {
         ZipArchiveEntry entry = zipFile.getEntry(subtitlePath);
         if (entry != null) {
+            System.out.println("not null");
+            System.out.println(subtitlePath);
             InputStream inputStream = zipFile.getInputStream(entry);
             return Optional.of(new BufferedReader(new InputStreamReader(inputStream,charset)));
         } else {
+            System.out.println("null");
+            System.out.println(subtitlePath);
             return Optional.empty();
         }
     }
