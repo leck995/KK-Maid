@@ -31,7 +31,6 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 
 /**
- * @program: Asmr-Online
  * @description:
  * @author: Leck
  * @create: 2023-09-05 00:49
@@ -51,7 +50,6 @@ public class LocalSubtitleStage extends RoundStage {
         lrcFileView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
            if (newValue != null) {
                load(newValue);
-
            }
         });
         lrcFileView.getSelectionModel().select(index);
@@ -82,11 +80,15 @@ public class LocalSubtitleStage extends RoundStage {
         titleBar.setContent(root);
         titleBar.setTitle("字幕查看");
         setContent(titleBar);
-
-
-        load(list.get(index));
     }
 
+
+    /**
+     * @description: 加载指定歌词文件内容
+     * @param:	lrcFile
+     * @return  void
+     * @date:   2025/2/6
+     */
     private void load(LrcFile lrcFile) {
         SubtitleBeansBaseTask task = null;
         if (lrcFile.getType() == LrcType.NET) {
