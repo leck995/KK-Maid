@@ -31,7 +31,6 @@
             <artifactId>javafx-media</artifactId>
             <version>${javafx.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-swing</artifactId>
@@ -91,7 +90,7 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.5.7</version>
+            <version>1.5.16</version>
         </dependency>
 
 
@@ -111,24 +110,24 @@
             <groupId>net.jthink</groupId>
             <artifactId>jaudiotagger</artifactId>
             <version>3.0.2</version>
-           <!-- <scope>system</scope>
-            <systemPath>${basedir}/libs/jaudiotagger-3.0.2.jar</systemPath>-->
+            <!-- <scope>system</scope>
+             <systemPath>${basedir}/libs/jaudiotagger-3.0.2.jar</systemPath>-->
         </dependency>
 
         <dependency>
             <groupId>com.jianggujin</groupId>
             <artifactId>JRegistry</artifactId>
             <version>1.1.0</version>
-       <!--     <scope>system</scope>
-            <systemPath>${basedir}/libs/JRegistry-1.1.0.jar</systemPath>-->
+            <!--     <scope>system</scope>
+                 <systemPath>${basedir}/libs/JRegistry-1.1.0.jar</systemPath>-->
         </dependency>
 
         <dependency>
             <groupId>net.coobird</groupId>
             <artifactId>thumbnailator</artifactId>
             <version>0.4.20</version>
-    <!--        <scope>system</scope>
-            <systemPath>${basedir}/libs/thumbnailator-0.4.20.jar</systemPath>-->
+            <!--        <scope>system</scope>
+                    <systemPath>${basedir}/libs/thumbnailator-0.4.20.jar</systemPath>-->
         </dependency>
 
         <dependency>
@@ -157,7 +156,6 @@
             <artifactId>commons-compress</artifactId>
             <version>1.27.1</version>
         </dependency>
-
     </dependencies>
 
     <build>
@@ -167,8 +165,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.11.0</version>
                 <configuration>
-                    <source>21</source>
-                    <target>21</target>
+                    <release>23</release>
                 </configuration>
             </plugin>
             <plugin>
