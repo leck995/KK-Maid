@@ -1,27 +1,8 @@
 package cn.tealc995.kkmaid.player;
 
 
-import cn.tealc995.kikoreu.model.ResponseBody;
-import cn.tealc995.kikoreu.model.Work;
 import cn.tealc995.kkmaid.config.Config;
-import cn.tealc995.kkmaid.event.EventBusUtil;
-import cn.tealc995.kkmaid.event.MainNotificationEvent;
 import cn.tealc995.kkmaid.model.Audio;
-import cn.tealc995.kkmaid.model.Music;
-import cn.tealc995.kkmaid.model.lrc.LrcBean;
-import cn.tealc995.kkmaid.model.lrc.LrcFile;
-import cn.tealc995.kkmaid.model.lrc.LrcType;
-import cn.tealc995.kkmaid.service.subtitle.SeekSubtitleFileService;
-import cn.tealc995.kkmaid.service.subtitle.beans.SubtitleBeansBaseTask;
-import cn.tealc995.kkmaid.service.subtitle.beans.SubtitleBeansByFolderTask;
-import cn.tealc995.kkmaid.service.subtitle.beans.SubtitleBeansByNetTask;
-import cn.tealc995.kkmaid.service.subtitle.beans.SubtitleBeansByZipTask;
-import cn.tealc995.kkmaid.ui.component.DesktopLrcDialog;
-import cn.tealc995.kkmaid.zip.NewZipUtil;
-import cn.tealc995.kkmaid.zip.ZipEntityFile;
-import javafx.beans.property.*;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.scene.image.Image;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaException;
@@ -30,12 +11,6 @@ import javafx.util.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 
 /**
  * @program: AmsrPlayer-old
@@ -43,49 +18,11 @@ import java.util.List;
  * @author: Leck
  * @create: 2023-02-06 22:25
  */
-public class LcMediaPlayer implements TeaMediaPlayer {
+public class LcMediaPlayer extends TeaMediaPlayer {
     private static final Logger LOG = LoggerFactory.getLogger(LcMediaPlayer.class);
     private MediaPlayer mediaPlayer;
-    private SimpleObjectProperty<Music> music;
-    private BooleanProperty playing, disorder, loop, isStar, mute, desktopLrcShow;
-    private SimpleDoubleProperty currentTime, totalTime, bufferedTime;
-    private ObjectProperty<Image> album;
-    private DoubleProperty volume;
-    private StringProperty title, artist;
-    private ObservableList<Audio> songs;//播放列表
-    private ObservableList<LrcFile> lrcFiles;
-    private ObjectProperty<ObservableList<LrcBean>> lrcBeans;//歌词列
-    private SimpleIntegerProperty lrcSelectedIndex;
-    private SimpleStringProperty lrcSelectedText;
-    private SimpleObjectProperty<Audio> playingAudio;
-    private int index = 0;
-    private SeekSubtitleFileService seekSubtitleFileService;
-
 
     public LcMediaPlayer() {
-        music = new SimpleObjectProperty<>();
-        playingAudio = new SimpleObjectProperty<>();
-
-        playing = new SimpleBooleanProperty(false);//
-        disorder = new SimpleBooleanProperty(false); //
-        loop = new SimpleBooleanProperty(false);
-        isStar = new SimpleBooleanProperty(false);
-        mute = new SimpleBooleanProperty(false);//
-        album = new SimpleObjectProperty<Image>(new Image(this.getClass().getResource("/cn/tealc995/kkmaid/image/album.jpg").toExternalForm()));
-        title = new SimpleStringProperty("音乐随心");
-        artist = new SimpleStringProperty("Pure");
-
-        totalTime = new SimpleDoubleProperty(0.0);
-        currentTime = new SimpleDoubleProperty(0.0);
-        bufferedTime = new SimpleDoubleProperty(0.0);
-        volume = new SimpleDoubleProperty(100.0);
-        songs = FXCollections.observableArrayList();
-        lrcFiles = FXCollections.observableArrayList();
-        lrcBeans = new SimpleObjectProperty<>(FXCollections.observableArrayList());
-        lrcSelectedIndex = new SimpleIntegerProperty(0);
-        lrcSelectedText = new SimpleStringProperty("无台词");
-        desktopLrcShow = new SimpleBooleanProperty(false);
-
         playing.addListener((observableValue, aBoolean, t1) -> {
             if (mediaPlayer == null) return;
             if (t1) {
@@ -94,13 +31,7 @@ public class LcMediaPlayer implements TeaMediaPlayer {
                 mediaPlayer.pause();
             }
         });
-        disorder.addListener((observableValue, aBoolean, t1) -> {
-            if (t1) {
-                Collections.shuffle(songs);
-            } else {
-                Collections.sort(songs, (o1, o2) -> o1.getTitle().compareTo(o2.getTitle()));
-            }
-        });
+
         volume.addListener((observable, oldValue, newValue) -> {
             if (newValue.doubleValue() == 0) {
                 mute.set(true);
@@ -110,77 +41,6 @@ public class LcMediaPlayer implements TeaMediaPlayer {
             if (mediaPlayer != null)
                 mediaPlayer.setVolume(newValue.doubleValue());
         });
-
-
-        music.addListener((observableValue, music1, t1) -> {
-            if (t1 != null) {
-                if (lrcBeans.get() != null) {
-                    lrcBeans.get().clear();
-                    lrcSelectedText.set("当前无字幕");
-                }
-
-                songs.setAll(t1.getAudios());
-                if (t1.getLrcFiles() != null) {
-                    lrcFiles.setAll(t1.getLrcFiles());
-                } else {
-                    if (!lrcFiles.isEmpty())
-                        lrcFiles.clear();
-                }
-                init(index, true);
-            }
-        });
-
-        playingAudio.addListener((observableValue, media1, t1) -> {
-            if (t1 != null) {
-                changeSubtitle(t1.getTitleWithoutSuffix());
-            }
-        });
-
-
-        desktopLrcShow.addListener((observableValue, aBoolean, t1) -> DesktopLrcDialog.getInstance().setVisible(t1));
-
-        //对歌词进行选择
-        currentTime.addListener((observableValue, number, t1) -> {
-            if (lrcBeans == null || t1 == null || !isDesktopLrcShow()) return;//无歌词时,桌面歌词不显示时不调用
-            if (lrcBeans != null && !lrcBeans.get().isEmpty()) {
-                long millis = (long) t1.doubleValue() * 1000;
-                if (millis < lrcBeans.get().get(0).getLongTime()) {
-                    lrcSelectedIndex.set(0);
-                    if (lrcBeans.get().get(0).getTransText() == null) {
-                        lrcSelectedText.set(lrcBeans.get().get(0).getRowText());
-                    } else {
-                        lrcSelectedText.set(lrcBeans.get().get(0).getRowText() + "\n" + lrcBeans.get().get(0).getTransText());
-                    }
-                }
-                int size = lrcBeans.get().size() - 1;
-                for (int i = 0; i < size; i++) {
-                    if (millis > lrcBeans.get().get(i).getLongTime() && millis < lrcBeans.get().get(i + 1).getLongTime()) {
-                        lrcSelectedIndex.set(i);
-                        if (lrcBeans.get().get(i).getTransText() == null) {
-                            lrcSelectedText.set(lrcBeans.get().get(i).getRowText());
-                        } else {
-                            lrcSelectedText.set(lrcBeans.get().get(i).getRowText() + "\n" + lrcBeans.get().get(i).getTransText());
-                        }
-                    }
-                }
-                if (millis > lrcBeans.get().get(size).getLongTime()) {
-                    lrcSelectedIndex.set(size);
-                    if (lrcBeans.get().get(size).getTransText() == null) {
-                        lrcSelectedText.set(lrcBeans.get().get(size).getRowText());
-                    } else {
-                        lrcSelectedText.set(lrcBeans.get().get(size).getRowText() + "\n" + lrcBeans.get().get(size).getTransText());
-                    }
-                }
-            }
-        });
-        seekSubtitleFileService = new SeekSubtitleFileService();
-        seekSubtitleFileService.valueProperty().addListener((observableValue, list, t1) -> {
-            if (t1 != null) {
-                updateLrcFile(t1);
-                EventBusUtil.getDefault().post(new MainNotificationEvent("检测到本地字幕文件"));
-            }
-        });
-
     }
 
 
@@ -264,29 +124,6 @@ public class LcMediaPlayer implements TeaMediaPlayer {
         });
     }
 
-    @Override
-    public void next() {
-        if (songs.size() == 0) return;
-        if (index == songs.size() - 1) {
-            init(0, true);
-            index = 0;
-        } else {
-            index++;
-            init(index, true);
-        }
-    }
-
-    @Override
-    public void pre() {
-        if (songs.size() == 0) return;
-        if (index == 0) {
-            index = songs.size() - 1;
-            init(index, true);
-        } else {
-            index--;
-            init(index, true);
-        }
-    }
 
     @Override
     public void seek(double time) {
@@ -297,197 +134,8 @@ public class LcMediaPlayer implements TeaMediaPlayer {
 
 
 
-    @Override
-    public ObservableList<LrcFile> getLrcFiles() {
-        return lrcFiles;
-    }
-
-    /**
-     * @return void
-     * @description: 更新歌词文件列表
-     * @name: updateLrcFile
-     * @author: Leck
-     * @param: list    新的歌词文件列表
-     * @param: index    要加载的歌词文件
-     * @date: 2023/7/18
-     */
-    @Override
-    public void updateLrcFile(List<LrcFile> list, int index) {
-        lrcFiles.setAll(list);
-        loadSubtitleFile(list.get(index));
-    }
-
-    @Override
-    public void updateLrcFile(List<LrcFile> list) {
-        lrcFiles.setAll(list);
-        loadSubtitleFile(list.get(index));
-    }
 
 
-    @Override
-    public String getTitle() {
-        return title.get();
-    }
-
-    @Override
-    public StringProperty titleProperty() {
-        return title;
-    }
-
-    @Override
-    public ObservableList<LrcBean> getLrcBeans() {
-        return lrcBeans.get();
-    }
-
-    @Override
-    public ObjectProperty<ObservableList<LrcBean>> lrcBeansProperty() {
-        return lrcBeans;
-    }
-
-    @Override
-    public String getArtist() {
-        return artist.get();
-    }
-
-    @Override
-    public StringProperty artistProperty() {
-        return artist;
-    }
-
-    @Override
-    public Double getCurrentTime() {
-        return currentTime.get();
-    }
-
-    @Override
-    public SimpleDoubleProperty currentTimeProperty() {
-        return currentTime;
-    }
-
-    @Override
-    public double getTotalTime() {
-        return totalTime.get();
-    }
-
-    @Override
-    public DoubleProperty totalTimeProperty() {
-        return totalTime;
-    }
-
-    @Override
-    public boolean isPlaying() {
-        return playing.get();
-    }
-
-    @Override
-    public BooleanProperty playingProperty() {
-        return playing;
-    }
-
-    @Override
-    public boolean isDisorder() {
-        return disorder.get();
-    }
-
-    @Override
-    public BooleanProperty disorderProperty() {
-        return disorder;
-    }
-
-    @Override
-    public boolean isLoop() {
-        return loop.get();
-    }
-
-    @Override
-    public BooleanProperty loopProperty() {
-        return loop;
-    }
-
-    @Override
-    public boolean isMute() {
-        return mute.get();
-    }
-
-    @Override
-    public BooleanProperty muteProperty() {
-        return mute;
-    }
-
-    @Override
-    public double getVolume() {
-        return volume.get();
-    }
-
-    @Override
-    public DoubleProperty volumeProperty() {
-        return volume;
-    }
-
-    @Override
-    public Image getAlbum() {
-        return album.get();
-    }
-
-    @Override
-    public ObjectProperty<Image> albumProperty() {
-        return album;
-    }
-
-    @Override
-    public int getLrcSelectedIndex() {
-        return lrcSelectedIndex.get();
-    }
-
-    @Override
-    public SimpleIntegerProperty lrcSelectedIndexProperty() {
-        return lrcSelectedIndex;
-    }
-
-    @Override
-    public String getLrcSelectedText() {
-        return lrcSelectedText.get();
-    }
-
-    @Override
-    public SimpleStringProperty lrcSelectedTextProperty() {
-        return lrcSelectedText;
-    }
-
-    @Override
-    public boolean isDesktopLrcShow() {
-        return desktopLrcShow.get();
-    }
-
-    @Override
-    public BooleanProperty desktopLrcShowProperty() {
-        return desktopLrcShow;
-    }
-
-    @Override
-    public ObservableList<Audio> getSongs() {
-        return songs;
-    }
-
-    @Override
-    public Audio getPlayingAudio() {
-        return playingAudio.get();
-    }
-
-    @Override
-    public SimpleObjectProperty<Audio> playingAudioProperty() {
-        return playingAudio;
-    }
-
-
-    @Override
-    public Work getWork() {
-        if (music.get() != null) {
-            return music.get().getWork();
-        } else {
-            return null;
-        }
-    }
 
     @Override
     public boolean ready() {
@@ -497,84 +145,7 @@ public class LcMediaPlayer implements TeaMediaPlayer {
             return false;
     }
 
-    @Override
-    public void setMusic(Music music, int index) {
-        this.index = index;
-        this.music.set(music);
-        if (music.getLrcFiles() == null || Config.setting.isLrcPriority()) {
-            if (music.getWork().hasLanguages()) {
-                seekSubtitleFileService.setIds(music.getWork().getAllId());
-            } else {
-                seekSubtitleFileService.setId(music.getWork().getFullId());
-            }
-            seekSubtitleFileService.restart();
-        }
-    }
 
-
-    /**
-     * @return void
-     * @description:
-     * @name: seekLrcFile
-     * @author: Leck
-     * @param: id    记住这个id传过来7位的id变成8位
-     * @date: 2023/7/19
-     */
-    private void seekLrcFile(String id) {
-        String folder = Config.setting.getLrcFileFolder();
-        if (folder != null && folder.length() > 0) {
-            File file = new File(folder);
-            if (file.exists() && file.isDirectory()) {
-                String finalId = "rj" + id;
-                File[] files = file.listFiles(file1 -> file1.isDirectory() && file1.getName().toLowerCase().contains(finalId));
-                if (files != null && files.length > 0) {
-
-                    File rjFolder = files[0];
-                    File[] files1 = rjFolder.listFiles(file1 -> file1.isFile() && file1.getName().toLowerCase().endsWith(".lrc"));
-                    List<LrcFile> list = new ArrayList<>();
-                    if (files1 != null && files1.length > 0) {
-                        for (File file1 : files1) {
-                            list.add(new LrcFile(file1.getName(), file1.getPath(), LrcType.FOLDER));
-                        }
-                    }
-                    updateLrcFile(list);
-                    EventBusUtil.getDefault().post(new MainNotificationEvent("检测到本地字幕文件"));
-                    return;
-                }
-            }
-        }
-
-        folder = Config.setting.getLrcZipFolder();
-        if (folder != null && !folder.isEmpty()) {
-            File rootFolder = new File(folder);
-            if (rootFolder.exists() && rootFolder.isDirectory()) {
-                String finalId = "rj" + id;
-                File[] files = rootFolder.listFiles(file -> {
-                    String name = file.getName().toLowerCase();
-                    return file.isFile() && name.contains(finalId) && name.endsWith(".zip");
-                });
-                if (files != null && files.length > 0) {
-                    File file = files[0];
-
-                    try {
-                        List<ZipEntityFile> allLrcFile = NewZipUtil.getAllLrcFile(file);
-                        List<LrcFile> list = new ArrayList<>();
-                        for (ZipEntityFile zipEntityFile : allLrcFile) {
-                            list.add(new LrcFile(zipEntityFile.getName(), zipEntityFile.getPath(), LrcType.ZIP, file.getPath()));
-                        }
-                        updateLrcFile(list);
-                        EventBusUtil.getDefault().post(new MainNotificationEvent("检测到本地字幕文件"));
-                    } catch (IOException e) {
-                        LOG.error("加载字幕Zip出现错误");
-                    }
-                }
-            }
-
-
-        }
-
-
-    }
 
     /**
      * @return void
@@ -601,126 +172,6 @@ public class LcMediaPlayer implements TeaMediaPlayer {
         //currentTime.set(new Duration(0.0));
     }
 
-    @Override
-    public void clearPlayingList() {
-        dispose();
-        songs.clear();
-        lrcBeans.get().clear();
-        lrcFiles.clear();
-        music.set(null);
-    }
-
-    @Override
-    public int getPlayingIndexInList() {
-        return songs.indexOf(getPlayingAudio());
-    }
-
-
-    @Override
-    public void removeAudio(Audio audio) {
-
-    }
-
-    @Override
-    public void removeAudio(int index) {
-        if (songs.size() == 1) {
-            clearPlayingList();
-        } else {
-            if (index == this.index) {
-                next();
-                this.index--;
-            } else if (index < this.index) {
-                this.index--;
-            }
-
-            songs.remove(index);
-            lrcFiles.remove(index);
-        }
-    }
-
-    @Override
-    public Double getBufferedTime() {
-        return bufferedTime.get();
-    }
-
-    @Override
-    public SimpleDoubleProperty bufferedTimeProperty() {
-        return bufferedTime;
-    }
-
-    public String mainCover() {
-        if (ready()) {
-            return music.get().getWork().getMainCoverUrl();
-        } else {
-            return null;
-        }
-    }
-
-
-    private void loadSubtitleFile(LrcFile lrcFile) {
-        SubtitleBeansBaseTask task = null;
-        if (lrcFile.getType() == LrcType.NET) {
-            task = new SubtitleBeansByNetTask(lrcFile.getPath());
-        } else if (lrcFile.getType() == LrcType.FOLDER) {
-            task = new SubtitleBeansByFolderTask(lrcFile.getPath());
-        } else if (lrcFile.getType() == LrcType.ZIP) {
-            task = new SubtitleBeansByZipTask(lrcFile);
-        }
-        if (task != null) {
-            task.setOnSucceeded(workerStateEvent -> {
-                SubtitleBeansBaseTask source = (SubtitleBeansBaseTask) workerStateEvent.getSource();
-                ResponseBody<List<LrcBean>> value = source.getValue();
-                if (value.isSuccess()) {
-                    List<LrcBean> list = value.getData();
-                    if (list != null) {
-                        //移除黑名单数据
-                        list.removeIf(lrcBean -> {
-                            String row = lrcBean.getRowText();
-                            for (String s : Config.blackList.getTextBlackList()) {
-                                if (row.contains(s)) {
-                                    return true;
-                                }
-                            }
-                            return false;
-                        });
-                        //加载到lrcBeans中
-                        lrcBeans.set(FXCollections.observableArrayList(list));
-                    }else {
-                        lrcBeans.get().clear();
-                        lrcSelectedText.set("当前无字幕");
-                    }
-                }
-            });
-            Thread.startVirtualThread(task);
-        }
-    }
-
-
-
-    /**
-     * @description: 切换字幕
-     * @param:	subtitleTitle
-     * @return  void
-     * @date:   2025/2/3
-     */
-    private void changeSubtitle(String subtitleTitle) {
-        if (!lrcFiles.isEmpty()){
-            List<LrcFile> list = lrcFiles.stream()
-                    .filter(lrcFile -> lrcFile.getTitleWithoutSuffix().equals(subtitleTitle)).toList();
-            if (!list.isEmpty()){//当有名称对应的歌词时
-                LOG.debug("成功匹配到同名字幕");
-                loadSubtitleFile(list.getFirst());
-            }else {//如果没有匹配的歌词，
-                if (lrcFiles.size() == songs.size()){ //判断歌词列表size和歌曲列表size，相同则获取对应index的歌词。
-                    LOG.debug("成功匹配到同index字幕");
-                    loadSubtitleFile(lrcFiles.get(index));
-                }else {
-                    lrcBeans.get().clear();
-                    lrcSelectedText.set("当前无字幕");
-                }
-            }
-        }
-    }
 
 }
 
