@@ -3,7 +3,6 @@ package cn.tealc995.kkmaid.event;
 import org.greenrobot.eventbus.EventBus;
 
 /**
- * @program: Asmr-Online
  * @description:
  * @author: Leck
  * @create: 2023-07-13 08:56

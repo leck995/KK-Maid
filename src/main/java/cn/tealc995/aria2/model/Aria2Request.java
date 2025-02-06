@@ -3,7 +3,6 @@ package cn.tealc995.aria2.model;
 import java.util.List;
 
 /**
- * @program: Asmr-Online
  * @description:
  * @author: Leck
  * @create: 2023-09-13 01:33

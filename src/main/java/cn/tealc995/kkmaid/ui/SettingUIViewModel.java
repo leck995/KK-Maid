@@ -15,7 +15,6 @@ import java.util.Arrays;
 import java.util.function.Consumer;
 
 /**
- * @program: Asmr-Online
  * @description:
  * @author: Leck
  * @create: 2023-07-15 03:46

@@ -30,7 +30,6 @@ import javafx.util.Duration;
 import java.io.IOException;
 
 /**
- * @program: Asmr-Online
  * @description:
  * @author: Leck
  * @create: 2023-07-14 00:48

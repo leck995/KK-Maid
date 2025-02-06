@@ -1,7 +1,6 @@
 package cn.tealc995.kkmaid.model.lrc;
 
 /**
- * @program: Asmr-Online
  * @description: 歌词文件信息，包括名称，地址。
  * @author: Leck
  * @create: 2023-07-18 07:35

@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
 import java.util.Map;
 
 /**
- * @program: Asmr-Online
  * @description: 播放列表API，使用前必须已经设置好Token
  * @author: Leck
  * @create: 2023-07-12 19:35

@@ -1,7 +1,6 @@
 package cn.tealc995.kkmaid.event;
 
 /**
- * @program: Asmr-Online
  * @description:
  * @author: Leck
  * @create: 2023-07-19 05:54

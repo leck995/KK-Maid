@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * @program: AmsrPlayer-old
  * @description:
  * @author: Leck
  * @create: 2023-02-06 22:25

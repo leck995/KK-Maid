@@ -1,7 +1,6 @@
 package cn.tealc995.kikoreu.model.playList;
 
 /**
- * @program: Asmr-Online
  * @description: PlayList基础类
  * @author: Leck
  * @create: 2023-08-08 06:06

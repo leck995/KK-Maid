@@ -8,7 +8,6 @@ import javafx.scene.control.ListCell;
 import javafx.scene.layout.VBox;
 
 /**
- * @program: AsmrPlayer
  * @description: 播放界面歌词显示的Cell
  * @author: Leck
  * @create: 2023-03-01 01:43

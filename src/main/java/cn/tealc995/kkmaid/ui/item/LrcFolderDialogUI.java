@@ -18,7 +18,6 @@ import javafx.util.Callback;
 import java.io.File;
 
 /**
- * @program: Asmr-Online
  * @description:
  * @author: Leck
  * @create: 2023-07-18 14:56

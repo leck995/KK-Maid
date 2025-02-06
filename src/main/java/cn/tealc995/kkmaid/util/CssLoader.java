@@ -4,7 +4,6 @@ package cn.tealc995.kkmaid.util;
 import cn.tealc995.kkmaid.App;
 
 /**
- * @program: AsmrPlayer
  * @description:
  * @author: Leck
  * @create: 2023-04-07 21:39

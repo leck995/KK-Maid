@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FilenameFilter;
 
 /**
- * @program: AmsrPlayer
  * @description: 目录过滤，所有非目录过滤掉
  * @author: Leck
  * @create: 2023-01-09 17:59

@@ -1,7 +1,6 @@
 package cn.tealc995.kkmaid.util;
 
 /**
- * @program: Asmr-Online
  * @description: 判断操作系统工具栏
  * @author: Leck
  * @create: 2023-08-13 12:37

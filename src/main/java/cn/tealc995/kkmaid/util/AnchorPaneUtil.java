@@ -4,7 +4,6 @@ import javafx.scene.Node;
 import javafx.scene.layout.AnchorPane;
 
 /**
- * @program: AmsrPlayer
  * @description:
  * @author: Leck
  * @create: 2023-01-18 22:35

@@ -6,7 +6,6 @@ import cn.tealc995.kkmaid.model.lrc.LrcFile;
 import java.util.List;
 
 /**
- * @program: Asmr-Online
  * @description:
  * @author: Leck
  * @create: 2023-07-14 00:10

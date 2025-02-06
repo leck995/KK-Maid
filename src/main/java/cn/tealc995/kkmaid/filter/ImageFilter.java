@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FilenameFilter;
 
 /**
- * @program: AmsrPlayer
  * @description:
  * @author: Leck
  * @create: 2023-01-13 19:15

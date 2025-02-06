@@ -15,7 +15,6 @@ import javafx.scene.text.Font;
 import javafx.util.Callback;
 
 /**
- * @program: Asmr-Online
  * @description: 弹出式播放列表界面
  * @author: Leck
  * @create: 2023-07-14 06:08

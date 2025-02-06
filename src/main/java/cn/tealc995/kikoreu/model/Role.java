@@ -3,7 +3,6 @@ package cn.tealc995.kikoreu.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
- * @program: Asmr-Online
  * @description:
  * @author: Leck
  * @create: 2023-07-12 03:24

@@ -25,7 +25,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 /**
- * @program: AsmrPlayer
  * @description: 桌面歌词类，注意该类依赖LcMediaPlayer，无法单独使用,该类仅在LcMediaPlayer中使用
  * @author: Leck
  * @create: 2023-02-28 23:56

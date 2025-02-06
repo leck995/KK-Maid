@@ -6,7 +6,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * @program: Asmr-Online
  * @description: 创建歌单时的参数类
  * @author: Leck
  * @create: 2023-08-05 09:24

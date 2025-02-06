@@ -3,7 +3,6 @@ package cn.tealc995.kkmaid.zip;
 import java.util.List;
 
 /**
- * @program: Asmr-Online
  * @description:
  * @author: Leck
  * @create: 2023-07-17 04:39

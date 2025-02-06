@@ -3,7 +3,6 @@ package cn.tealc995.kikoreu.model;
 import java.util.List;
 
 /**
- * @program: Asmr-Online
  * @description:
  * @author: Leck
  * @create: 2023-07-12 19:37

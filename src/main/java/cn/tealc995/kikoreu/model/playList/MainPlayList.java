@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonAlias;
 import java.util.List;
 
 /**
- * @program: Asmr-Online
  * @description:
  * @author: Leck
  * @create: 2023-08-02 08:17

@@ -13,7 +13,6 @@ import java.net.URLConnection;
 import java.util.List;
 
 /**
- * @program: Asmr-Online
  * @description:
  * @author: Leck
  * @create: 2023-08-06 00:43

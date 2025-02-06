@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 /**
- * @program: AmsrPlayer
  * @description:
  * @author: Leck
  * @create: 2023-01-03 14:16

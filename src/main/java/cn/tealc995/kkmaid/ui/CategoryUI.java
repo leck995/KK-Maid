@@ -16,7 +16,6 @@ import org.controlsfx.control.GridCell;
 import org.controlsfx.control.GridView;
 
 /**
- * @program: Asmr-Online
  * @description:
  * @author: Leck
  * @create: 2023-07-13 07:10

@@ -1,7 +1,6 @@
 package cn.tealc995.kkmaid.model;
 
 /**
- * @program: Asmr-Online
  * @description:
  * @author: Leck
  * @create: 2023-07-14 00:08

@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * @program: Asmr-Online
  * @description: 过于离谱，这LanguageEdition居然还有小伎俩，偶尔传个map类型过来。小样，你以为穿个马甲我就解析不了你了。
  * @author: Leck
  * @create: 2023-08-13 10:47

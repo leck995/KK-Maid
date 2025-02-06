@@ -8,7 +8,6 @@ import javafx.scene.control.TextArea;
 import javafx.scene.layout.StackPane;
 
 /**
- * @program: Asmr-Online
  * @description:
  * @author: Leck
  * @create: 2023-09-05 00:49

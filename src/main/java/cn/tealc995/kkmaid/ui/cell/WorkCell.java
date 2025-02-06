@@ -28,7 +28,6 @@ import javafx.scene.shape.Rectangle;
 import org.controlsfx.control.Rating;
 
 /**
- * @program: Asmr-Online
  * @description:
  * @author: Leck
  * @create: 2023-07-12 21:53

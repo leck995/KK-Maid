@@ -15,7 +15,6 @@ import javafx.scene.layout.*;
 import javafx.scene.shape.Rectangle;
 
 /**
- * @program: Asmr-Online
  * @description:
  * @author: Leck
  * @create: 2023-07-12 21:53

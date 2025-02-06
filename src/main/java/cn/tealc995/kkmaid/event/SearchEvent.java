@@ -3,7 +3,6 @@ package cn.tealc995.kkmaid.event;
 import cn.tealc995.kkmaid.ui.CategoryType;
 
 /**
- * @program: Asmr-Online
  * @description:
  * @author: Leck
  * @create: 2023-07-14 21:02

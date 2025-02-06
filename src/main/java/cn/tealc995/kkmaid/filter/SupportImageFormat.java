@@ -1,7 +1,6 @@
 package cn.tealc995.kkmaid.filter;
 
 /**
- * @program: AmsrPlayer
  * @description:
  * @author: Leck
  * @create: 2023-01-13 18:02
