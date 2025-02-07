@@ -210,6 +210,7 @@
                             <noHeaderFiles>true</noHeaderFiles>
                             <options>
                                 <option>-Dfile.encoding=utf-8</option>
+                                <option>-Dprism.lcdtext=false</option>
                                 <option>-XX:+UseZGC</option>
                             </options>
                         </configuration>

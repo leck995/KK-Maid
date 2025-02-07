@@ -100,10 +100,10 @@ public class PlayListViewModel {
 
         task.setOnSucceeded(workerStateEvent -> {
             if (task.getValue().getData()) {
-                EventBusUtil.getDefault().post(new MainNotificationEvent(String.format("修改歌单 %s 成功")));
+                EventBusUtil.getDefault().post(new MainNotificationEvent("修改歌单 %s 成功"));
                 update();
             } else {
-                EventBusUtil.getDefault().post(new MainNotificationEvent(String.format("修改歌单 %s 失败")));
+                EventBusUtil.getDefault().post(new MainNotificationEvent("修改歌单 %s 失败"));
             }
         });
         Thread.startVirtualThread(task);
