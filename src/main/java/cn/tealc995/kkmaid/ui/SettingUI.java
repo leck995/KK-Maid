@@ -621,12 +621,19 @@ public class SettingUI {
         return vBox;
     }
     private Pane initAboutTab(){
-
         Label label=new Label("未来道具11号(KK Maid) " + Config.version);
         label.getStyleClass().add("title-2");
+        Label label2=new Label("免费开源项目，仅供学习交流使用，具体说明请前往Github查看");
 
-
-        VBox vBox=new VBox(label);
+        Hyperlink link=new Hyperlink("Github");
+        link.setOnAction(event -> {
+            try {
+                Desktop.getDesktop().browse(URI.create("https://github.com/leck995/KK-Maid"));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        VBox vBox=new VBox(15.0,label,label2,link);
         vBox.setPadding(new Insets(10,20,10,20));
         return vBox;
     }
