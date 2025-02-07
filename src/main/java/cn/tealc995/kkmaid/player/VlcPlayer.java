@@ -19,11 +19,13 @@ import uk.co.caprica.vlcj.player.component.AudioPlayerComponent;
 public class VlcPlayer extends TeaMediaPlayer {
     private static final Logger LOG = LoggerFactory.getLogger(VlcPlayer.class);
     private final MediaPlayer mediaPlayer;
+    private final AudioPlayerComponent playerComponent;
+    private final MediaPlayerFactory mediaPlayerFactory;
 
     public VlcPlayer() throws RuntimeException {
         LOG.info("初始化VlcPlayer");
-        MediaPlayerFactory mediaPlayerFactory = new MediaPlayerFactory("--clock-synchro=0");
-        AudioPlayerComponent playerComponent = new AudioPlayerComponent(mediaPlayerFactory);
+        mediaPlayerFactory = new MediaPlayerFactory("--clock-synchro=0");
+        playerComponent = new AudioPlayerComponent(mediaPlayerFactory);
         mediaPlayer = playerComponent.mediaPlayer();
 
         playing.addListener((_, _, status) -> {
@@ -136,6 +138,14 @@ public class VlcPlayer extends TeaMediaPlayer {
         artist.set("Pure");
         totalTime.set(0);
         playingAudio.set(null);
+    }
+
+    @Override
+    public void release() {
+        playing.set(false);
+        mediaPlayer.release();
+        mediaPlayerFactory.release();
+        LOG.debug("释放播放器资源");
     }
 
     @Override

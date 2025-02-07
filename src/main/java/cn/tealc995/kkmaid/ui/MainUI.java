@@ -7,6 +7,7 @@ import cn.tealc995.kikoreu.model.User;
 import cn.tealc995.kkmaid.App;
 import cn.tealc995.kkmaid.config.Config;
 import cn.tealc995.kkmaid.event.*;
+import cn.tealc995.kkmaid.player.MediaPlayerUtil;
 import cn.tealc995.kkmaid.service.api.login.CheckLoginTask;
 import cn.tealc995.kkmaid.util.CssLoader;
 import cn.tealc995.kkmaid.util.FXResourcesLoader;
@@ -97,7 +98,6 @@ public class MainUI {
         searchField.setOnAction(event -> search(searchField.getText()));
         searchBtn.setOnAction(event -> search(searchField.getText()));
         root.getTitleBarRightPane().getChildren().add(0, searchPane);
-
 
         root.setOnMouseClicked(mouseEvent -> root.requestFocus());
         root.getStylesheets().add(CssLoader.getCss(CssLoader.main));

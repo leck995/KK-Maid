@@ -162,6 +162,8 @@ public abstract class TeaMediaPlayer {
     public abstract void seek(double time);
 
     public abstract void dispose();
+    public abstract void release();
+
 
     public abstract boolean ready();
 

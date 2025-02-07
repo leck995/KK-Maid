@@ -61,7 +61,7 @@ public class App extends Application {
     @Override
     public void stop() throws Exception {
         super.stop();
-        MediaPlayerUtil.mediaPlayer().dispose();
+        MediaPlayerUtil.mediaPlayer().release();
         Config.saveProperties();
     }
 
