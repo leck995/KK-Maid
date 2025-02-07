@@ -171,6 +171,16 @@ public class LcMediaPlayer extends TeaMediaPlayer {
         //currentTime.set(new Duration(0.0));
     }
 
+    @Override
+    public void release() {
+        if (mediaPlayer != null) {
+            playing.set(false);
+            mediaPlayer.dispose();
+            mediaPlayer = null;
+        }
+        LOG.debug("释放播放器资源");
+    }
+
 
 }
 
