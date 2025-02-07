@@ -25,6 +25,7 @@ public class SubtitleBeansByZipTask extends SubtitleBeansBaseTask {
     private static final Logger LOG = LoggerFactory.getLogger(SubtitleBeansByZipTask.class);
     private final LrcFile source; //要读取的字幕文件信息
     private Charset zipCharset; //编码，压缩包的
+
     private Charset textCharset; //编码，压缩包的文本编码
 
 

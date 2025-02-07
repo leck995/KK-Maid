@@ -274,7 +274,7 @@ public abstract class TeaMediaPlayer {
                         list.removeIf(lrcBean -> {
                             String row = lrcBean.getRowText();
                             for (String s : Config.blackList.getTextBlackList()) {
-                                if (row.contains(s)) {
+                                if (!s.isEmpty() && row.contains(s)) {
                                     return true;
                                 }
                             }
@@ -286,6 +286,9 @@ public abstract class TeaMediaPlayer {
                         lrcBeans.get().clear();
                         lrcSelectedText.set("当前无字幕");
                     }
+                }else {
+                    lrcBeans.get().clear();
+                    lrcSelectedText.set("当前无字幕");
                 }
             });
             Thread.startVirtualThread(task);

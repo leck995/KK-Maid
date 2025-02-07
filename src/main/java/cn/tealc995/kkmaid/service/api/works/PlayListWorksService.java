@@ -47,7 +47,7 @@ public class PlayListWorksService extends WorksBaseService {
     private boolean isBlacklisted(Work work, ObservableSet<String> workBlackList, ObservableSet<String> tagBlackList) {
         work.setBlack(workBlackList.contains(work.getFullId()));
         for (Role tag : work.getTags()) {
-            if (tagBlackList.contains(tag.getName())) {
+            if (!tag.getName().isEmpty() && tagBlackList.contains(tag.getName())) {
                 work.setBlack(true);
                 break;
             }

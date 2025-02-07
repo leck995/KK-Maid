@@ -110,7 +110,7 @@ public class LocalSubtitleStage extends RoundStage {
                         list.removeIf(lrcBean -> {
                             String row = lrcBean.getRowText();
                             for (String s : Config.blackList.getTextBlackList()) {
-                                if (row.contains(s)) {
+                                if (!s.trim().isEmpty() && row.contains(s)) {
                                     return true;
                                 }
                             }

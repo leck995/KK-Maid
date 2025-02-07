@@ -168,21 +168,26 @@ public class SettingUIViewModel {
         for (String s : Config.blackList.getWorkBlackList()) {
             workBuilder.append("RJ").append(s).append(" ");
         }
-        workBlackList.set(workBuilder.toString());
+        if (workBuilder.toString().trim().equals("RJ")){
+            workBlackList.set("");
+        }else {
+            workBlackList.set(workBuilder.toString().trim());
+        }
+
 
         tagBlackList = new SimpleStringProperty();
         StringBuilder tagBuilder = new StringBuilder();
         for (String s : Config.blackList.getTagBlackList()) {
             tagBuilder.append(s).append(" ");
         }
-        tagBlackList.set(tagBuilder.toString());
+        tagBlackList.set(tagBuilder.toString().trim());
 
         textBlackList = new SimpleStringProperty();
         StringBuilder textBuilder = new StringBuilder();
         for (String s : Config.blackList.getTextBlackList()) {
             textBuilder.append(s).append(System.lineSeparator());
         }
-        textBlackList.set(textBuilder.toString());
+        textBlackList.set(textBuilder.toString().trim());
 
         /*===============播放=================*/
         selectPlayerIndex = new SimpleIntegerProperty();

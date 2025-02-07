@@ -136,7 +136,7 @@ public class PlayerUI {
                     Platform.runLater(()->{
                         bgPane.setBackground(background);
                     });
-                    LOG.error("成功加载背景");
+                    LOG.debug("成功加载背景");
                 } catch (IOException e) {
                     LOG.error("背景加载出现错误", e);
                 }

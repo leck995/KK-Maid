@@ -19,6 +19,7 @@ import cn.tealc995.kkmaid.model.lrc.LrcType;
 import cn.tealc995.kkmaid.player.MediaPlayerUtil;
 import cn.tealc995.kkmaid.ui.DownloadUI;
 import cn.tealc995.kkmaid.ui.stage.ImageViewStage;
+import cn.tealc995.kkmaid.ui.stage.LocalSubtitleStage;
 import cn.tealc995.kkmaid.ui.stage.SubtitleStage;
 import cn.tealc995.teaFX.controls.notification.MessageType;
 import cn.tealc995.teaFX.controls.notification.Notification;
@@ -254,9 +255,28 @@ public class FolderTableView extends BorderPane {
 
                                     }
                                 } else if (temp.equals("text")) { //对文本文件进行处理，查看文本文件
-                                    String row = HttpUtils.download(asmrFile.getMediaDownloadUrl());
-                                    SubtitleStage stage = new SubtitleStage(row);
-                                    stage.show();
+                                    boolean isSubtitle = SupportSubtitleFormat.compareFile(asmrFile.getTitle());
+                                    if (isSubtitle) {
+                                        int index = 0;
+                                        List<LrcFile> lrcFileList = new ArrayList<>();
+                                        List<Track> subtitleTrackList = getItems().filtered(track -> SupportSubtitleFormat.compareFile(track.getTitle())).stream().toList();
+                                        for (int i = 0; i < subtitleTrackList.size(); i++) {
+                                            Track track = subtitleTrackList.get(i);
+                                            if (getItem() == track) {
+                                                index = i;
+                                            }
+                                            lrcFileList.add(new LrcFile(track.getTitle(), track.getMediaDownloadUrl(), LrcType.NET));
+                                        }
+
+                                        LocalSubtitleStage stage = new LocalSubtitleStage(lrcFileList,index);
+                                        stage.show();
+                                    }else {
+                                        String row = HttpUtils.download(asmrFile.getMediaDownloadUrl());
+                                        SubtitleStage stage = new SubtitleStage(row);
+                                        stage.show();
+                                    }
+
+
                                 }
                             }
                         });
